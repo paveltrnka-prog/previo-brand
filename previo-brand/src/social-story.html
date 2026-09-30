@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>Previo social – story 9:16</title>
+<!--
+  SOCIÁLNÍ GRAFIKA – STORY / REEL COVER, 1080 × 1920 px.
+  Celá plocha je červená = brandové místo. Zbytek bílý text, žádné další barvy.
+  Bezpečná zóna: nahoře 250 px a dole 340 px nech volné (překrývá je UI aplikace).
+  Export do PNG: viewport 1080 × 1920.
+  Font Inter i logo jsou vložené přímo v souboru.
+-->
+<style>
+/*%%FONTS%%*/
+:root { --primary:#b50000; --font:"Inter","Segoe UI",system-ui,sans-serif; --font-medium:"Inter Medium","Segoe UI",system-ui,sans-serif; }
+@page { size: 1080px 1920px; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { width: 1080px; height: 1920px; background: var(--primary); color: #fff; font: 400 36px/50px var(--font); overflow: hidden; }
+.frame { height: 100%; padding: 250px 88px 340px; display: flex; flex-direction: column; }
+.logo svg { height: 56px; width: auto; display: block; }
+.label { margin-top: auto; font: 500 28px/36px var(--font-medium); letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
+h1 { font: 500 120px/124px var(--font-medium); letter-spacing: -.03em; margin: 28px 0 0; }
+.sub { margin: 40px 0 0; max-width: 24ch; opacity: .92; }
+.cta { margin-top: 72px; padding-top: 32px; border-top: 2px solid rgba(255,255,255,.4); font: 500 34px/44px var(--font-medium); }
+</style>
+</head>
+<body>
+<div class="frame">
+  %%LOGO:white%%
+  <div class="label">{{Téma}}</div>
+  <h1>{{Silné tvrzení, max. 8 slov}}</h1>
+  <p class="sub">{{Jedna věta s konkrétním detailem.}}</p>
+  <div class="cta">{{Výzva k akci}} →</div>
+</div>
+</body>
+</html>

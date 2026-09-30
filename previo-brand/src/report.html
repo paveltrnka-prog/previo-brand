@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>{{Název reportu}}</title>
+<!--
+  REPORT / DASHBOARD Previo. Jak upravit:
+  1) Přepiš {{texty}} a data v tabulce a grafu.
+  2) Struktura: jedna dominantní vizualizace + tabulka detailů + poznámka. Nedělej řadu stejných KPI karet.
+  3) Graf: červená = to, na čem záleží, ostatní šedé. Stavové barvy jen s ikonou/textem.
+  Font Inter i logo jsou vložené přímo v souboru (nic dalšího nepotřebuje).
+  Velké číslo (např. 42 %) přepiš přímo, bez závorek.
+-->
+<style>
+/*%%FONTS%%*/
+
+:root {
+  --primary: #b50000; --primary-tint: #faeaeb;
+  --ink: #202124; --muted: #515151; --border: #e5e5e5; --surface: #f2f2f2; --gray-300: #ccc; --white: #fff;
+  --positive: #1b6422; --negative: #a30000;
+  --font: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-medium: "Inter Medium", "Segoe UI", system-ui, sans-serif;
+  --radius-md: 8px; --radius-lg: 12px;
+}
+@page { size: 210mm 297mm; margin: 0; } /* ÚPRAVA: výšku dolaď podle obsahu */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--white); color: var(--ink); font: 400 14px/24px var(--font); }
+.page { width: 210mm; padding: 48px 56px; }
+
+header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.logo svg { height: 24px; width: auto; display: inline-block; }
+.label { font: 500 12px/16px var(--font-medium); letter-spacing: .08em; text-transform: uppercase; color: var(--primary); }
+h1 { font: 500 28px/34px var(--font-medium); margin: 8px 0 0; letter-spacing: -.01em; }
+.meta { color: var(--muted); font-size: 12px; text-align: right; }
+
+.hero { margin: 40px 0; display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: end; }
+.hero .num { font: 500 72px/72px var(--font-medium); color: var(--primary); letter-spacing: -.03em; }
+.hero .cap { color: var(--muted); margin-top: 8px; }
+
+.chart { background: var(--surface); border-radius: var(--radius-lg); padding: 24px; }
+.chart h2 { font: 500 14px/24px var(--font-medium); margin: 0 0 16px; }
+.chart svg { width: 100%; height: auto; display: block; }
+
+h3 { font: 500 16px/24px var(--font-medium); margin: 40px 0 8px; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font: 500 12px/16px var(--font-medium); color: var(--muted); padding: 8px 0; border-bottom: 1px solid var(--gray-300); }
+td { padding: 12px 0; border-bottom: 1px solid var(--border); }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.up { color: var(--positive); } .down { color: var(--negative); }
+
+.note { margin-top: 40px; padding: 16px 24px; background: var(--primary-tint); border-radius: var(--radius-md); }
+.note b { font-family: var(--font-medium); font-weight: 500; }
+footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div>
+      <span class="label">{{Období, např. Q3 2026}}</span>
+      <h1>{{Název reportu: co se stalo, ne „Přehled“}}</h1>
+    </div>
+    <div class="meta">%%LOGO:color%%<br>{{Autor}} · {{datum}}</div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="num">+18 %</div>
+      <div class="cap">{{Klíčová metrika a srovnání (oproti čemu, za jaké období).}}</div>
+    </div>
+    <div class="chart">
+      <h2>{{Název grafu}}</h2>
+      <!-- ÚPRAVA: ukázkový sloupcový graf; poslední sloupec = zvýrazněný (červený), ostatní šedé -->
+      <svg viewBox="0 0 400 140" role="img" aria-label="{{Popis grafu pro čtečky}}">
+        <line x1="0" y1="120" x2="400" y2="120" stroke="#ccc"/>
+        <rect x="20"  y="70" width="48" height="50" fill="#b2b2b2"/>
+        <rect x="100" y="60" width="48" height="60" fill="#b2b2b2"/>
+        <rect x="180" y="52" width="48" height="68" fill="#b2b2b2"/>
+        <rect x="260" y="48" width="48" height="72" fill="#b2b2b2"/>
+        <rect x="340" y="22" width="48" height="98" fill="#b50000"/>
+        <g font-family="Inter, sans-serif" font-size="11" fill="#515151" text-anchor="middle">
+          <text x="44" y="136">{{Q1}}</text><text x="124" y="136">{{Q2}}</text><text x="204" y="136">{{Q3}}</text>
+          <text x="284" y="136">{{Q4}}</text><text x="364" y="136">{{Q1}}</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <h3>{{Detail podle …}}</h3>
+  <table>
+    <thead><tr><th>{{Položka}}</th><th class="n">{{Hodnota}}</th><th class="n">{{Změna}}</th></tr></thead>
+    <tbody>
+      <!-- Změna: vždy šipka nebo znaménko + barva, ne barva samotná -->
+      <tr><td>{{Řádek 1}}</td><td class="n">{{1 240}}</td><td class="n up">▲ {{+12 %}}</td></tr>
+      <tr><td>{{Řádek 2}}</td><td class="n">{{980}}</td><td class="n down">▼ {{−4 %}}</td></tr>
+      <tr><td>{{Řádek 3}}</td><td class="n">{{610}}</td><td class="n">{{0 %}}</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note"><b>{{Co s tím:}}</b> {{Jedna až dvě věty: doporučení nebo rozhodnutí, které z dat plyne.}}</div>
+  <footer>{{Zdroj dat, definice metrik, datum exportu.}}</footer>
+</div>
+</body>
+</html>

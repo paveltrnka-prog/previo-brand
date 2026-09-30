@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>Previo social – LinkedIn / web banner</title>
+<!--
+  SOCIÁLNÍ GRAFIKA – LINKEDIN POST / OG OBRÁZEK, 1200 × 627 px.
+  Vlevo tvrzení, vpravo jedno velké číslo červeně (jediné brandové místo).
+  Export do PNG: viewport 1200 × 627.
+  Font Inter i logo jsou vložené přímo v souboru.
+  Velké číslo (např. 42 %) přepiš přímo, bez závorek.
+-->
+<style>
+/*%%FONTS%%*/
+:root { --primary:#b50000; --ink:#202124; --muted:#515151; --border:#e5e5e5;
+  --font:"Inter","Segoe UI",system-ui,sans-serif; --font-medium:"Inter Medium","Segoe UI",system-ui,sans-serif; }
+@page { size: 1200px 627px; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { width: 1200px; height: 627px; background: #fff; color: var(--ink); font: 400 24px/34px var(--font); overflow: hidden; }
+.frame { height: 100%; padding: 56px 72px; display: grid; grid-template-columns: 1.35fr 1fr; column-gap: 64px; }
+.left { display: flex; flex-direction: column; }
+.logo svg { height: 36px; width: auto; display: block; }
+.label { margin-top: auto; font: 500 18px/24px var(--font-medium); letter-spacing: .1em; text-transform: uppercase; color: var(--primary); }
+h1 { font: 500 52px/58px var(--font-medium); letter-spacing: -.015em; margin: 12px 0 0; }
+.sub { color: var(--muted); margin: 20px 0 0; font-size: 22px; line-height: 30px; }
+.right { border-left: 2px solid var(--border); padding-left: 56px; display: flex; flex-direction: column; justify-content: flex-end; }
+.num { font: 500 150px/140px var(--font-medium); letter-spacing: -.05em; color: var(--primary); white-space: nowrap; }
+.cap { color: var(--muted); margin-top: 16px; font-size: 22px; line-height: 30px; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="left">
+    %%LOGO:color%%
+    <div class="label">{{Téma}}</div>
+    <h1>{{Tvrzení, ne název tématu}}</h1>
+    <p class="sub">{{Jedna věta s konkrétním detailem.}}</p>
+  </div>
+  <div class="right">
+    <div class="num">42 %</div>
+    <div class="cap">{{Co číslo znamená, zdroj a období.}}</div>
+  </div>
+</div>
+</body>
+</html>
