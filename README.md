@@ -24,6 +24,32 @@ Automaticky se spouští při tvorbě čehokoli vizuálního (`.pptx`, PDF, HTML
 
 Textové `.md` výstupy skill nechává neutrální. U `.docx` rozhoduje podle účelu dokumentu (viz sekce „Hranice .docx" v [`SKILL.md`](previo-brand/SKILL.md)) — plošně to nevylučuje.
 
+## Jak s ním pracovat
+
+Skill se spouští sám, stačí říct, co chceš. Pošli jen obsah (texty, čísla, cíl), vzhled řeší skill.
+
+| Zadání | Co skill udělá |
+|---|---|
+| „Udělej onepager o Alfredovi pro hoteliéry.“ | Vezme `templates/onepager.html`, přepíše texty, jedno velké číslo a fakty vedle. A4. |
+| „Z těchto čísel udělej report za Q3.“ | Použije `templates/report.html`: jedna hlavní vizualizace, tabulka, doporučení. |
+| „Sociální post s číslem 42 %.“ | Feed 4:5 (1080 × 1350 px) ze `social-feed.html`, export do PNG. |
+| „Story k novince v Plachtě.“ | Story 9:16 (1080 × 1920 px), celá plocha červená, bezpečné zóny. |
+| „Obrázek na LinkedIn k článku.“ | `social-linkedin.html`, 1200 × 627 px, tvrzení + číslo. |
+| „Prezentace pro klienta, 8 slidů.“ | `.pptx` podle typů slidů z `templates/deck-struktura.md`. |
+| „Ukaž Alfreda, jak představuje novou funkci.“ | Postavička `alfred/alfred.svg` vedle obsahu, na světlé ploše, nedeformovaná. |
+| „Mockup Plachty se stavy rezervací.“ | Barvy stavů z `tokens.md` (potvrzená, opce, ubytovaný…). |
+
+Doladění jde běžnou řečí: „ať je to méně přeplácané“, „zvýrazni jen jedno číslo“, „bez fialové“.
+
+**Co umí nového ve v3**
+- **AI fialová jen pro AI**: AI tlačítka, štítky a odpovědi Alfreda mají `#673AB7`. Na červené ploše ji skill nepoužije a nemíchá ji jako druhý akcent.
+- **Hotové šablony**: skill kopíruje nejbližší šablonu a přepisuje texty, netvoří layout znovu. HTML jsou samostatné, font i logo nesou v sobě.
+- **Alfred**: maskot a AI ikona s pravidly (světlé pozadí, jen celek, gesto představuje obsah).
+- **Stavy produktu**: věrné UI Plachty bez vymýšlení odstínů.
+- **Pro kolegy**: [`INSTALACE.md`](previo-brand/INSTALACE.md), návod na 2 minuty. Výstup pro ostatní posílej jako PDF, `.pptx` a `.docx` font nenesou.
+
+**Úprava šablon:** měň `previo-brand/src/*.html` a spusť `python3 previo-brand/build.py`. `templates/` se přegeneruje.
+
 ## Rychlý přehled barev
 
 | Token | HEX | Použití |
