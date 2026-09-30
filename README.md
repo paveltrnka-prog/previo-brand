@@ -2,7 +2,7 @@
 
 Claude skill, který aplikuje oficiální Previo brand (barvy, typografie, logo) na vizuální výstupy generované přes Claude — prezentace, PDF, HTML reporty, onepagery, dashboardy.
 
-Zdroj pravdy pro hodnoty je Previo design systém (Figma: **P – design system**). Skill sám o sobě neřeší kompozici/layout — od v2 obsahuje aspoň základní pravidla, jak se vyhnout genericky vyhlížejícímu AI výstupu, ale pro bohatší vizuální výstupy se doporučuje kombinace s obecným `frontend-design` skillem.
+Zdroj pravdy pro hodnoty je Previo design systém (Figma: **P – design system**). Skill obsahuje pravidla kompozice proti genericky vyhlížejícímu AI výstupu a hotové šablony, takže většinu výstupů zvládne sám. U bohatších vizuálů se dál hodí kombinace s obecným `frontend-design` skillem.
 
 **Nejnovější balíček ke stažení:** [previo-brand-v3.skill](https://github.com/paveltrnka-prog/previo-brand/releases/latest)
 
@@ -14,7 +14,7 @@ Automaticky se spouští při tvorbě čehokoli vizuálního (`.pptx`, PDF, HTML
 
 | Oblast | Co dělá |
 |---|---|
-| **Barvy** | Primární červená `#b50000` jako jediná dominantní značková barva, škála šedých, sémantické barvy jen pro stav (viz [`tokens.md`](previo-brand/tokens.md)) |
+| **Barvy** | Primární červená `#b50000` jako dominantní značková barva (jedinou výjimkou je AI fialová), škála šedých, sémantické barvy jen pro stav (viz [`tokens.md`](previo-brand/tokens.md)) |
 | **Typografie** | Font Inter (Regular 400 / Medium 500), přibalený přímo ve skillu |
 | **Logo** | Tři varianty (color/black/white) podle pozadí, přibalené jako SVG |
 | **Radius / stín / spacing** | Jednotné hodnoty vycházející z Figma DS |
@@ -61,8 +61,9 @@ Doladění jde běžnou řečí: „ať je to méně přeplácané“, „zvýra
 | Positive | `#1b6422` | Kladný stav |
 | Negative | `#a30000` | Záporný stav (nezaměňovat s Primary Dark) |
 | Warning | `#ff6d0a` | Varování |
+| AI | `#673AB7` | Jen AI funkce a Alfred (gradient do `#4E2C8B`) |
 
-Kompletní tabulka barev, typografie, radiusů a CSS proměnných je v [`tokens.md`](previo-brand/tokens.md).
+Kompletní tabulka barev (vč. stavů rezervací a plateb), typografie, radiusů a CSS proměnných je v [`tokens.md`](previo-brand/tokens.md).
 
 ## Jak to použít
 
@@ -158,4 +159,4 @@ Oproti první verzi (jen `SKILL.md` + `tokens.md`, bez přibalených assetů):
 
 ## Zdroj a údržba
 
-Tokeny odpovídají stavu Previo design systému (Figma: *P – design system*). Při změně DS stačí aktualizovat `tokens.md` — `SKILL.md` se typicky měnit nemusí.
+Tokeny odpovídají stavu Previo design systému (Figma: *P – design system*). Při změně DS stačí aktualizovat `tokens.md` — `SKILL.md` se typicky měnit nemusí. Po změně loga nebo fontu spusť `python3 previo-brand/build.py`, aby se přegenerovaly `templates/`.
