@@ -49,6 +49,27 @@ navíc, ne jen barvu.
 **Info nemá potvrzenou default barvu** v aktuálním exportu DS (jen dark `#004466`). Než se to ověří ve
 Figmě, neinformuj čistě barvou — přidej ikonu/label. Nevymýšlej si vlastní odstín pro info default.
 
+### AI (Alfred) — z Previo design systému (`--color-ai*`)
+| Token | HEX | Použití |
+|---|---|---|
+| AI | `#673AB7` | AI tlačítko (PBtnAi), štítky a akce AI |
+| AI Dark | `#4E2C8B` | konec gradientu AI tlačítka (135°) |
+| AI Light | `#8B69C8` | AI prvky na tmavém podkladu, grafy odpovědí AI |
+| AI Transparent | `#E7DFF3` | pozadí AI štítku („Přečteno pomocí AI") |
+| Alfred (postavička) | `#6F2F6A` | jen ilustrace `alfred/alfred.svg`, ne UI |
+
+### Stavy rezervací a plateb (Plachta)
+| Token | HEX |
+|---|---|
+| resConfirmed (potvrzená) | `#40A801` |
+| resOption (opce) | `#FA8200` |
+| resCheckedIn (ubytovaný) | `#0385BD` |
+| resCheckedOut (odhlášený) | `#808080` |
+| resCanceled / resNoShow / resOther / resWaitingList | `#9F0403` / `#976601` / `#8E369E` / `#2B2B2B` |
+| payUnpaid / payPartially / payPaid | `#E40D01` / `#FB8EAC` / `#808080` |
+| note (sloupec Dnes) / noteDark (hlavička Dnes) | `#FDEAA8` / `#F4D053` |
+| primaryLight / primaryTransparent (DS) | `#D90000` / `#F9EBEB` |
+
 ## Typografie
 
 - **Family/Main: Inter.** Fallback: `Inter, "Segoe UI", system-ui, sans-serif`.
@@ -117,6 +138,13 @@ Krok 8 px. Škála: xs · sm · md · **lg = 24 px** (kanonické odsazení mezi 
   --previo-negative: #a30000;
   --previo-warning: #ff6d0a;
   --previo-info-dark: #004466; /* no confirmed default; pair with icon, not color alone */
+
+  /* AI (Alfred) — only for AI features */
+  --previo-ai: #673AB7;
+  --previo-ai-dark: #4E2C8B;
+  --previo-ai-light: #8B69C8;
+  --previo-ai-tint: #E7DFF3;
+  --previo-ai-gradient: linear-gradient(135deg, #673AB7, #4E2C8B);
 
   /* Type */
   --previo-font: "Inter", "Segoe UI", system-ui, sans-serif;

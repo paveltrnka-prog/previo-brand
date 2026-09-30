@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>Previo social – feed 4:5</title>
+<!--
+  SOCIÁLNÍ GRAFIKA – FEED (Instagram / Facebook / LinkedIn), 1080 × 1350 px.
+  Jak upravit: přepiš {{texty}}. Jedno velké číslo červeně = jediné brandové místo.
+  Číslo ať je skutečné a doložitelné. Když číslo nemáš, použij šablonu social-story.
+  Export do PNG: viewport 1080 × 1350, device scale 1 (nebo 2 pro ostřejší).
+  Font Inter i logo jsou vložené přímo v souboru.
+  Velké číslo (např. 42 %) přepiš přímo, bez závorek.
+-->
+<style>
+/*%%FONTS%%*/
+:root { --primary:#b50000; --ink:#202124; --muted:#515151; --border:#e5e5e5;
+  --font:"Inter","Segoe UI",system-ui,sans-serif; --font-medium:"Inter Medium","Segoe UI",system-ui,sans-serif; }
+@page { size: 1080px 1350px; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { width: 1080px; height: 1350px; background: #fff; color: var(--ink); font: 400 32px/44px var(--font); overflow: hidden; }
+.frame { height: 100%; padding: 88px 88px 80px; display: flex; flex-direction: column; }
+.top { display: flex; justify-content: space-between; align-items: center; }
+.logo svg { height: 48px; width: auto; display: block; }
+.label { font: 500 24px/32px var(--font-medium); letter-spacing: .1em; text-transform: uppercase; color: var(--primary); }
+.num { margin-top: auto; font: 500 300px/280px var(--font-medium); letter-spacing: -.05em; color: var(--primary); }
+.num small { font-size: 150px; letter-spacing: -.02em; }
+h1 { font: 500 68px/76px var(--font-medium); letter-spacing: -.015em; margin: 40px 0 0; max-width: 17ch; }
+.sub { margin: 28px 0 0; color: var(--muted); max-width: 30ch; }
+.foot { margin-top: 64px; padding-top: 28px; border-top: 2px solid var(--border); display: flex; justify-content: space-between; font-size: 26px; color: var(--muted); }
+.foot b { font: 500 26px/44px var(--font-medium); color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="top">%%LOGO:color%%<span class="label">{{Téma}}</span></div>
+  <div class="num">42<small>%</small></div>
+  <h1>{{Co ten údaj znamená, jednou větou}}</h1>
+  <p class="sub">{{Zdroj nebo upřesnění: období, vzorek.}}</p>
+  <div class="foot"><b>{{Výzva k akci, např. Zjistěte víc}}</b><span>{{previo.cz}}</span></div>
+</div>
+</body>
+</html>

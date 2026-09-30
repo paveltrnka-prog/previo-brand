@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>{{Název onepageru}}</title>
+<!--
+  ONEPAGER Previo. Jak upravit:
+  1) Přepiš vše ve {{dvojitých závorkách}} (texty) a v komentářích označených ÚPRAVA.
+  2) Jedno "brandové" místo = velké číslo vlevo. Nepřidávej další červené plochy.
+  3) Výšku stránky (@page) po vyrenderování dolaď podle obsahu, ať nezůstane prázdný spodek.
+  Font Inter i logo jsou vložené přímo v souboru (nic dalšího nepotřebuje).
+  Velké číslo (např. 42 %) přepiš přímo, bez závorek.
+-->
+<style>
+/*%%FONTS%%*/
+
+:root {
+  --primary: #b50000; --primary-tint: #faeaeb;
+  --ink: #202124; --muted: #515151; --border: #e5e5e5; --surface: #f2f2f2; --white: #fff;
+  --font: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-medium: "Inter Medium", "Segoe UI", system-ui, sans-serif;
+  --space: 24px;
+}
+@page { size: 210mm 297mm; margin: 0; } /* ÚPRAVA: výšku dolaď podle obsahu */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--white); color: var(--ink); font: 400 14px/24px var(--font); }
+.page { width: 210mm; padding: 48px 56px; }
+
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 56px; }
+.logo svg { height: 28px; width: auto; display: block; }
+.label { font: 500 12px/16px var(--font-medium); letter-spacing: .08em; text-transform: uppercase; color: var(--primary); }
+
+/* Asymetrie: široký levý sloupec s číslem, úzký pravý s fakty */
+.main { display: grid; grid-template-columns: 1.7fr 1fr; gap: 56px; }
+h1 { font: 500 34px/40px var(--font-medium); margin: 8px 0 var(--space); letter-spacing: -.01em; }
+.lead { color: var(--muted); font-size: 16px; max-width: 46ch; margin: 0 0 40px; }
+
+.big { border-top: 1px solid var(--border); padding-top: var(--space); }
+.big .num { font: 500 96px/96px var(--font-medium); color: var(--primary); letter-spacing: -.03em; }
+.big .cap { color: var(--muted); margin-top: 8px; max-width: 36ch; }
+
+aside h2 { font: 500 14px/24px var(--font-medium); margin: 0 0 8px; }
+aside section { padding: 16px 0; border-top: 1px solid var(--border); }
+aside section:first-child { border-top: 0; padding-top: 0; }
+aside p { margin: 0; color: var(--muted); }
+
+.steps { margin: 48px 0 0; padding: 0; list-style: none; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 32px 1fr; padding: 12px 0; border-top: 1px solid var(--border); }
+.steps li::before { content: counter(s); font: 500 14px/24px var(--font-medium); color: var(--muted); }
+
+footer { margin-top: 64px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+footer a { color: var(--primary); text-decoration: none; font-family: var(--font-medium); }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    %%LOGO:color%%
+    <span class="label">{{Téma / segment, např. Hotely}}</span>
+  </header>
+
+  <div class="main">
+    <div>
+      <h1>{{Konkrétní tvrzení, ne slogan. Co se změní a o kolik.}}</h1>
+      <p class="lead">{{Jedna až dvě věty: co produkt dělá jinak. Čísla, kroky, mechanika; žádné „bezproblémové“.}}</p>
+
+      <div class="big">
+        <div class="num">42 %</div>
+        <div class="cap">{{Co to číslo znamená a odkud je (zdroj, období).}}</div>
+      </div>
+
+      <!-- ÚPRAVA: kroky jen pokud jsou skutečně sekvenční; jinak celý blok smaž -->
+      <ol class="steps">
+        <li><span>{{Krok 1}}</span></li>
+        <li><span>{{Krok 2}}</span></li>
+        <li><span>{{Krok 3}}</span></li>
+      </ol>
+    </div>
+
+    <aside>
+      <section><h2>{{Pro koho}}</h2><p>{{Jedna věta.}}</p></section>
+      <section><h2>{{Co je v ceně / co potřebujete}}</h2><p>{{Jedna věta.}}</p></section>
+      <section><h2>{{Reference}}</h2><p>{{Jméno hotelu a výsledek.}}</p></section>
+    </aside>
+  </div>
+
+  <footer>
+    <span>{{Jméno Příjmení, role}} · {{e-mail}} · {{telefon}}</span>
+    <a href="{{https://www.previo.cz}}">{{previo.cz}}</a>
+  </footer>
+</div>
+</body>
+</html>

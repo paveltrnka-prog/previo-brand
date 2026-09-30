@@ -18,6 +18,42 @@ Sjednocuje vzhled vizuálních výstupů podle oficiálního Previo brandu. Toke
 z Figma souboru **P – design system** (variables), ne z náhodného decku. Tenhle skill je
 zdroj pravdy — přebíjí defaultní paletu a fonty jakéhokoli nástroje.
 
+## Rychlý start pro kolegy
+
+Nemusíte znát barvy ani fonty. Stačí říct, co chcete, např.:
+- „Udělej onepager o Alfredovi pro hoteliéry.“
+- „Připrav prezentaci pro klienta, 8 slidů, Previo styl.“
+- „Z těchto čísel udělej report za Q3.“
+
+Skill sám použije správnou červenou, font Inter, logo a hotovou šablonu ze složky `templates/`.
+Pošlete jen obsah (texty, čísla, cíl). Když něco nesedí, napište třeba „ať je to méně přeplácané“
+nebo „zvýrazni jen jedno číslo“. Před odesláním ven zkontrolujte čísla a jména; brand hlídá vzhled,
+ne pravdivost obsahu.
+
+## Šablony
+
+Hotové výchozí body jsou v `templates/`. HTML šablony jsou **samostatné**: font Inter i logo jsou
+vložené přímo v souboru, takže fungují i po zkopírování jinam, bez složek `fonts/` a `logo/`.
+- `onepager.html`: jednostránkový materiál, jedno velké číslo, fakty vedle (A4).
+- `report.html`: report/dashboard, jedna hlavní vizualizace + tabulka + doporučení (A4).
+- `social-feed.html`: sociální síť, feed 4:5, 1080 × 1350 px, jedno velké číslo.
+- `social-story.html`: story / reel cover 9:16, 1080 × 1920 px, celá plocha červená, bezpečné zóny 250/340 px.
+- `social-linkedin.html`: LinkedIn / OG obrázek, 1200 × 627 px, tvrzení + číslo.
+- `deck-struktura.md`: typy slidů a pravidla pro `.pptx`.
+
+Při tvorbě výstupu **zkopíruj nejbližší šablonu a přepiš `{{texty}}`**, nesestavuj layout znovu.
+Velká čísla (např. `42 %`) se přepisují přímo, bez závorek. Šablonu měň jen tam, kde to obsah
+vyžaduje (např. smaž blok kroků, když nejsou sekvenční). Zachovej pravidla z „Layout a kompozice“:
+jedno brandové místo, žádné 3 stejné KPI karty. Sociální grafiky exportuj do PNG ve velikosti
+uvedené v názvu (viewport = velikost grafiky); v jedné kampani střídej typy, ne jen jeden layout.
+
+**Úpravy zdroje (údržba):** šablony se generují z `src/` příkazem `python3 build.py`. Upravuj vždy
+`src/*.html`, ne `templates/*.html`. Když se změní logo nebo font, spusť build znovu.
+
+**Písmo u kolegů:** HTML a PDF nesou font v sobě, tam Inter funguje vždy. `.pptx` a `.docx` font
+nenesou; pokud ho kolega nemá nainstalovaný, PowerPoint/Word ho nahradí. Proto výstup pro ostatní
+posílej jako PDF, nebo kolega jednou nainstaluje fonty ze `fonts/` (viz `INSTALACE.md`).
+
 ## Kdy použít
 
 Spusť při tvorbě čehokoli vizuálního: **prezentace (.pptx), PDF, HTML dashboard/report,
@@ -78,6 +114,20 @@ Kompletní tokeny včetně hodnot jsou v `tokens.md`. Jádro:
 - **Nekombinuj Negative (`#a30000`) a Primary Dark (`#910000`) vedle sebe** — jsou si vizuálně
   příliš blízko a bez rozdílu v ikonografii splývají (např. chybová hláška u červeného CTA).
 
+### AI a Alfred (fialová)
+
+Vše, co dělá AI (virtuální recepční **Alfred**, AI odpovědi, ScanID, optimalizace Plachty), má v design systému
+vlastní fialovou: **AI `#673AB7` → AI Dark `#4E2C8B`** (gradient 135° na AI tlačítku), světlá `#8B69C8`, pozadí
+`#E7DFF3`. Fialová je **výhradně pro AI**. Neslouží jako druhý akcent ani k dekoraci. Červená zůstává barvou značky.
+Na jednom místě v kompozici smí být obě barvy (červená = Previo, fialová = Alfred), ale fialovou nedávej na červenou
+plochu, protože tam zaniká.
+
+### Stavy rezervací a plateb (UI Plachty)
+
+Pro věrné UI (Plachta, rezervace) použij barvy stavů z `tokens.md`: potvrzená `#40A801`, opce `#FA8200`,
+ubytovaný `#0385BD`, odhlášený `#808080`; nezaplaceno `#E40D01`; sloupec „Dnes" `#FDEAA8`. Jsou to barvy produktu,
+ne paleta pro grafy ani dekoraci.
+
 ## Typografie
 
 - **Font: Inter** (celý brand, nadpisy i text). Přibalený v `fonts/`, viz **Font handling** výše.
@@ -104,7 +154,7 @@ Kompletní tokeny včetně hodnot jsou v `tokens.md`. Jádro:
 - Neměň odstín červené (žádné #D4202C, #FF0000 apod.) — kanonická je `#b50000`.
 - Nepoužívej Trebuchet, Calibri, Arial ani default nástroje — vždy Inter (s fallbacky), a pokud
   se nepodaří font aplikovat, řekni to uživateli (viz Font handling).
-- Nemíchej víc akcentních barev najednou; červená je jediná dominantní.
+- Nemíchej víc akcentních barev najednou; červená je jediná dominantní. Jedinou výjimkou je AI fialová, a to jen u AI/Alfreda.
 - Nedělej barevné duhy sémantickými barvami; nejsou paleta.
 - Nezaplácej plochy tučným textem — Medium na nadpisy stačí.
 - Nepoužívej Negative a Primary Dark vedle sebe bez dalšího odlišení (ikona/label).
@@ -183,6 +233,16 @@ minimálně výška wordmarku "previo" z každé strany (nezmenšovat blíž).
 **Podle výstupu:**
 - **.pptx**: vlož SVG jako obrázek na cover/section slide (bílé pozadí → color, červené/tmavé pozadí → white variant). Pokud nástroj pro export do PPTX neumí SVG přímo, převeď na PNG při zachování průhledného pozadí.
 - **HTML/PDF**: `<img src="logo/previo-logo-color.svg">` (nebo white/black podle pozadí sekce), případně inline SVG pro čisté škálování v tisku.
+
+## Alfred (postavička)
+
+`alfred/alfred.svg` (113 × 232) je maskot AI: hotelový piccolo v gestu, kterým něco představuje. Má dvě barvy,
+švestkovou `#6F2F6A` a bílou. Pravidla:
+- Umisťuj ho **na bílou nebo světle šedou** plochu, nikdy na červenou. Na tmavé ploše funguje, ale Previo stojí na světlé.
+- Jeho gesto (dlaň natažená k levé straně) využij k tomu, aby **představoval obsah**. Stojí napravo od UI nebo textu,
+  o kterém se mluví.
+- Postavičku nedeformuj, nepřebarvuj a nerozkládej na části. Animuj ji jako celek (vstup, pohyb, jemné „dýchání").
+- `alfred/ai-icon.svg` je AI ikona z design systému (Alfredova hlava s jiskrami, 24 × 20) pro tlačítka a štítky AI.
 
 ## Zdroj pravdy a údržba
 
