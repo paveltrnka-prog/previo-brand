@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="cs">
+<html lang="en"><!-- EDIT: set lang to the language of the content (e.g. cs) -->
 <head>
 <meta charset="utf-8">
 <title>Previo social – LinkedIn / web banner</title>
 <!--
-  SOCIÁLNÍ GRAFIKA – LINKEDIN POST / OG OBRÁZEK, 1200 × 627 px.
-  Vlevo tvrzení, vpravo jedno velké číslo červeně (jediné brandové místo).
-  Export do PNG: viewport 1200 × 627.
-  Font Inter i logo jsou vložené přímo v souboru.
-  Velké číslo (např. 42 %) přepiš přímo, bez závorek.
+  SOCIAL GRAPHIC – LINKEDIN POST / OG IMAGE, 1200 × 627 px.
+  Claim on the left, one big red number on the right (the hero). Red signal: the topic label.
+  Export to PNG: viewport 1200 × 627.
+  Inter and the logo are embedded in this file.
+  Replace the big number (e.g. 42 %) directly, without braces.
 -->
 <style>
 /*%%FONTS%%*/
@@ -33,13 +33,13 @@ h1 { font: 500 52px/58px var(--font-medium); letter-spacing: -.015em; margin: 12
 <div class="frame">
   <div class="left">
     %%LOGO:color%%
-    <div class="label">{{Téma}}</div>
-    <h1>{{Tvrzení, ne název tématu}}</h1>
-    <p class="sub">{{Jedna věta s konkrétním detailem.}}</p>
+    <div class="label">{{Topic}}</div>
+    <h1>{{A claim, not a topic name}}</h1>
+    <p class="sub">{{One sentence with a concrete detail.}}</p>
   </div>
   <div class="right">
     <div class="num">42 %</div>
-    <div class="cap">{{Co číslo znamená, zdroj a období.}}</div>
+    <div class="cap">{{What the number means, source and period.}}</div>
   </div>
 </div>
 </body>

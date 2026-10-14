@@ -1,15 +1,16 @@
 <!doctype html>
-<html lang="cs">
+<html lang="en"><!-- EDIT: set lang to the language of the content (e.g. cs) -->
 <head>
 <meta charset="utf-8">
-<title>{{Název reportu}}</title>
+<title>{{Report title}}</title>
 <!--
-  REPORT / DASHBOARD Previo. Jak upravit:
-  1) Přepiš {{texty}} a data v tabulce a grafu.
-  2) Struktura: jedna dominantní vizualizace + tabulka detailů + poznámka. Nedělej řadu stejných KPI karet.
-  3) Graf: červená = to, na čem záleží, ostatní šedé. Stavové barvy jen s ikonou/textem.
-  Font Inter i logo jsou vložené přímo v souboru (nic dalšího nepotřebuje).
-  Velké číslo (např. 42 %) přepiš přímo, bez závorek.
+  PREVIO REPORT / DASHBOARD, A4, multiple pages allowed. How to edit:
+  1) Replace the {{texts}} and the data in the table and chart.
+  2) Structure: one dominant visualization + detail table + note. No row of identical KPI cards.
+  3) Hero = the big red number. Red signals: section label and the one highlighted chart item
+     (the same thing the number talks about); everything else gray. State colors only with an icon/sign.
+  Inter and the logo are embedded in this file (nothing else needed).
+  Replace the big number (e.g. 42 %) directly, without braces.
 -->
 <style>
 /*%%FONTS%%*/
@@ -22,7 +23,7 @@
   --font-medium: "Inter Medium", "Segoe UI", system-ui, sans-serif;
   --radius-md: 8px; --radius-lg: 12px;
 }
-@page { size: 210mm 297mm; margin: 0; } /* ÚPRAVA: výšku dolaď podle obsahu */
+@page { size: 210mm 297mm; margin: 0; } /* A4; long reports continue on further pages */
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--white); color: var(--ink); font: 400 14px/24px var(--font); }
 .page { width: 210mm; padding: 48px 56px; }
@@ -57,21 +58,21 @@ footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
 <div class="page">
   <header>
     <div>
-      <span class="label">{{Období, např. Q3 2026}}</span>
-      <h1>{{Název reportu: co se stalo, ne „Přehled“}}</h1>
+      <span class="label">{{Period, e.g. Q3 2026}}</span>
+      <h1>{{Report title: what happened, not "Overview"}}</h1>
     </div>
-    <div class="meta">%%LOGO:color%%<br>{{Autor}} · {{datum}}</div>
+    <div class="meta">%%LOGO:color%%<br>{{Author}} · {{date}}</div>
   </header>
 
   <section class="hero">
     <div>
       <div class="num">+18 %</div>
-      <div class="cap">{{Klíčová metrika a srovnání (oproti čemu, za jaké období).}}</div>
+      <div class="cap">{{Key metric and comparison (against what, for which period).}}</div>
     </div>
     <div class="chart">
-      <h2>{{Název grafu}}</h2>
-      <!-- ÚPRAVA: ukázkový sloupcový graf; poslední sloupec = zvýrazněný (červený), ostatní šedé -->
-      <svg viewBox="0 0 400 140" role="img" aria-label="{{Popis grafu pro čtečky}}">
+      <h2>{{Chart title}}</h2>
+      <!-- EDIT: sample bar chart; last bar = highlighted (red), the rest gray -->
+      <svg viewBox="0 0 400 140" role="img" aria-label="{{Chart description for screen readers}}">
         <line x1="0" y1="120" x2="400" y2="120" stroke="#ccc"/>
         <rect x="20"  y="70" width="48" height="50" fill="#b2b2b2"/>
         <rect x="100" y="60" width="48" height="60" fill="#b2b2b2"/>
@@ -86,19 +87,19 @@ footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
     </div>
   </section>
 
-  <h3>{{Detail podle …}}</h3>
+  <h3>{{Breakdown by …}}</h3>
   <table>
-    <thead><tr><th>{{Položka}}</th><th class="n">{{Hodnota}}</th><th class="n">{{Změna}}</th></tr></thead>
+    <thead><tr><th>{{Item}}</th><th class="n">{{Value}}</th><th class="n">{{Change}}</th></tr></thead>
     <tbody>
-      <!-- Změna: vždy šipka nebo znaménko + barva, ne barva samotná -->
-      <tr><td>{{Řádek 1}}</td><td class="n">{{1 240}}</td><td class="n up">▲ {{+12 %}}</td></tr>
-      <tr><td>{{Řádek 2}}</td><td class="n">{{980}}</td><td class="n down">▼ {{−4 %}}</td></tr>
-      <tr><td>{{Řádek 3}}</td><td class="n">{{610}}</td><td class="n">{{0 %}}</td></tr>
+      <!-- Change: always an arrow or sign + color, never color alone -->
+      <tr><td>{{Row 1}}</td><td class="n">{{1 240}}</td><td class="n up">▲ {{+12 %}}</td></tr>
+      <tr><td>{{Row 2}}</td><td class="n">{{980}}</td><td class="n down">▼ {{−4 %}}</td></tr>
+      <tr><td>{{Row 3}}</td><td class="n">{{610}}</td><td class="n">{{0 %}}</td></tr>
     </tbody>
   </table>
 
-  <div class="note"><b>{{Co s tím:}}</b> {{Jedna až dvě věty: doporučení nebo rozhodnutí, které z dat plyne.}}</div>
-  <footer>{{Zdroj dat, definice metrik, datum exportu.}}</footer>
+  <div class="note"><b>{{What to do:}}</b> {{One or two sentences: the recommendation or decision that follows from the data.}}</div>
+  <footer>{{Data source, metric definitions, export date.}}</footer>
 </div>
 </body>
 </html>

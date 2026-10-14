@@ -1,13 +1,12 @@
-# Fonty — licence
+# Fonts: license
 
-Inter (previo-brand/fonts/Inter-Regular.ttf, Inter-Medium.ttf)
+Inter (`fonts/Inter-Regular.ttf`, `fonts/Inter-Medium.ttf`)
 
-Zdroj: Google Fonts distribuce Inter (statické instance vytvořené z Inter Variable pro
-kompatibilitu s nástroji, které neumí variabilní osu `wght` — např. PowerPoint,
-LibreOffice).
+Source: the Google Fonts distribution of Inter (static instances created from Inter Variable for
+compatibility with tools that cannot use the variable `wght` axis, e.g. PowerPoint, LibreOffice).
 
-Licence: SIL Open Font License, Version 1.1.
-Plné znění: https://openfontlicense.org
+License: SIL Open Font License, Version 1.1.
+Full text: https://openfontlicense.org
 
-Volně použitelné, upravitelné a redistribuovatelné, včetně komerčního použití, za
-podmínek OFL (mj. font nesmí být prodáván samostatně pod stejným jménem).
+Free to use, modify and redistribute, including commercial use, under the terms of the OFL (among
+other things, the font may not be sold on its own under the same name).
