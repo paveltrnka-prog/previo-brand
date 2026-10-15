@@ -36,6 +36,26 @@ Just ask; branding happens automatically:
 
 Fine-tune in plain words: "less busy", "highlight just one number", "no purple".
 
+## Examples
+
+What the templates look like once Claude fills them in. Sample content, the numbers are
+illustrative, not real Previo data.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/examples/onepager.png" alt="One-pager, A4"><br><b>One-pager</b> · A4, one red number as the hero, facts beside it, steps only when sequential.</td>
+    <td width="50%"><img src="docs/examples/report.png" alt="Report, A4"><br><b>Report</b> · A4, one key number + one chart with the highlighted bar, table with signed changes, recommendation.</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td width="36%"><img src="docs/examples/social-feed.png" alt="Social feed 4:5"><br><b>Feed 4:5</b> · 1080 × 1350 px.</td>
+    <td width="28%"><img src="docs/examples/social-story.png" alt="Story 9:16"><br><b>Story 9:16</b> · 1080 × 1920 px, full red, app UI safe zones.</td>
+    <td width="36%"><img src="docs/examples/social-linkedin.png" alt="LinkedIn / OG image"><br><b>LinkedIn / OG</b> · 1200 × 627 px, claim + number.</td>
+  </tr>
+</table>
+
 ## Color roles at a glance
 
 | Color | Role |
@@ -66,12 +86,15 @@ previo-brand/          the skill (this folder is what gets packaged)
 └── templates/         self-contained HTML templates + deck-structure.md (generated, do not edit HTML)
 tools/                 maintenance only, not part of the skill
 ├── src/               template sources (edit here)
-└── build.py           builds templates/ from src/ (embeds font + logo)
+├── build.py           builds templates/ from src/ (embeds font + logo)
+└── examples.py        renders the README examples into docs/examples/
+docs/examples/         README example images
 ```
 
 ## Maintenance (author)
 
-1. Edit `tools/src/*.html`, then run `python3 tools/build.py`.
+1. Edit `tools/src/*.html`, then run `python3 tools/build.py` and `python3 tools/examples.py`
+   (refreshes the example images; needs Google Chrome).
 2. Package: `zip -r -X previo-brand-v4.skill previo-brand -x '.*'`.
 3. Publish the `.skill` file as a GitHub Release with tag `vN` and update the download link at the
    top of this README. The package is a build artifact and is not committed (`.gitignore`).
