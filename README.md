@@ -5,7 +5,7 @@ to visual outputs: decks, PDFs, HTML reports and dashboards, one-pagers, social 
 come from the Previo design system in Figma (**P – design system**). The skill ships ready-made
 templates, so most outputs start from a proven Previo layout.
 
-**Latest package:** [previo-brand-v4.skill](https://github.com/paveltrnka-prog/previo-brand/releases/latest)
+**Download:** [previo-brand-v4.skill](https://github.com/paveltrnka-prog/previo-brand/releases/download/v4/previo-brand-v4.skill) (v4) · all versions in [Releases](https://github.com/paveltrnka-prog/previo-brand/releases)
 
 ## Install
 
@@ -73,8 +73,11 @@ tools/                 maintenance only, not part of the skill
 
 1. Edit `tools/src/*.html`, then run `python3 tools/build.py`.
 2. Package: `zip -r -X previo-brand-v4.skill previo-brand -x '.*'`.
-3. Publish the `.skill` file as a GitHub Release. The package is a build artifact and is not
-   committed.
+3. Publish the `.skill` file as a GitHub Release with tag `vN` and update the download link at the
+   top of this README. The package is a build artifact and is not committed (`.gitignore`).
+   ```bash
+   gh release create v4 previo-brand-v4.skill --title "previo-brand v4" --notes "…"
+   ```
 
 When the design system changes, update `tokens.md`; `SKILL.md` usually stays as is.
 
