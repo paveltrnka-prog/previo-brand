@@ -1,15 +1,16 @@
 <!doctype html>
-<html lang="cs">
+<html lang="en"><!-- EDIT: set lang to the language of the content (e.g. cs) -->
 <head>
 <meta charset="utf-8">
-<title>{{Název onepageru}}</title>
+<title>{{One-pager title}}</title>
 <!--
-  ONEPAGER Previo. Jak upravit:
-  1) Přepiš vše ve {{dvojitých závorkách}} (texty) a v komentářích označených ÚPRAVA.
-  2) Jedno "brandové" místo = velké číslo vlevo. Nepřidávej další červené plochy.
-  3) Výšku stránky (@page) po vyrenderování dolaď podle obsahu, ať nezůstane prázdný spodek.
-  Font Inter i logo jsou vložené přímo v souboru (nic dalšího nepotřebuje).
-  Velké číslo (např. 42 %) přepiš přímo, bez závorek.
+  PREVIO ONE-PAGER, fixed A4. How to edit:
+  1) Replace everything in {{double braces}} (texts) and in comments marked EDIT.
+  2) Hero = the big red number on the left. Red signals: section label and footer link. No other red.
+  3) The page is fixed A4. Render it and check it is exactly one page. If the content overflows,
+     shorten the text or drop a block (e.g. steps); never change the @page size.
+  Inter and the logo are embedded in this file (nothing else needed).
+  Replace the big number (e.g. 42 %) directly, without braces.
 -->
 <style>
 /*%%FONTS%%*/
@@ -21,16 +22,16 @@
   --font-medium: "Inter Medium", "Segoe UI", system-ui, sans-serif;
   --space: 24px;
 }
-@page { size: 210mm 297mm; margin: 0; } /* ÚPRAVA: výšku dolaď podle obsahu */
+@page { size: 210mm 297mm; margin: 0; } /* fixed A4, do not change */
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--white); color: var(--ink); font: 400 14px/24px var(--font); }
-.page { width: 210mm; padding: 48px 56px; }
+.page { width: 210mm; height: 297mm; overflow: hidden; padding: 48px 56px; display: flex; flex-direction: column; }
 
 header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 56px; }
 .logo svg { height: 28px; width: auto; display: block; }
 .label { font: 500 12px/16px var(--font-medium); letter-spacing: .08em; text-transform: uppercase; color: var(--primary); }
 
-/* Asymetrie: široký levý sloupec s číslem, úzký pravý s fakty */
+/* Asymmetry: wide left column with the number, narrow right column with facts */
 .main { display: grid; grid-template-columns: 1.7fr 1fr; gap: 56px; }
 h1 { font: 500 34px/40px var(--font-medium); margin: 8px 0 var(--space); letter-spacing: -.01em; }
 .lead { color: var(--muted); font-size: 16px; max-width: 46ch; margin: 0 0 40px; }
@@ -48,7 +49,7 @@ aside p { margin: 0; color: var(--muted); }
 .steps li { counter-increment: s; display: grid; grid-template-columns: 32px 1fr; padding: 12px 0; border-top: 1px solid var(--border); }
 .steps li::before { content: counter(s); font: 500 14px/24px var(--font-medium); color: var(--muted); }
 
-footer { margin-top: 64px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
 footer a { color: var(--primary); text-decoration: none; font-family: var(--font-medium); }
 </style>
 </head>
@@ -56,36 +57,36 @@ footer a { color: var(--primary); text-decoration: none; font-family: var(--font
 <div class="page">
   <header>
     %%LOGO:color%%
-    <span class="label">{{Téma / segment, např. Hotely}}</span>
+    <span class="label">{{Topic / segment, e.g. Hotels}}</span>
   </header>
 
   <div class="main">
     <div>
-      <h1>{{Konkrétní tvrzení, ne slogan. Co se změní a o kolik.}}</h1>
-      <p class="lead">{{Jedna až dvě věty: co produkt dělá jinak. Čísla, kroky, mechanika; žádné „bezproblémové“.}}</p>
+      <h1>{{A concrete claim, not a slogan. What changes and by how much.}}</h1>
+      <p class="lead">{{One or two sentences: what the product does differently. Numbers, steps, mechanics; no "seamless".}}</p>
 
       <div class="big">
         <div class="num">42 %</div>
-        <div class="cap">{{Co to číslo znamená a odkud je (zdroj, období).}}</div>
+        <div class="cap">{{What the number means and where it comes from (source, period).}}</div>
       </div>
 
-      <!-- ÚPRAVA: kroky jen pokud jsou skutečně sekvenční; jinak celý blok smaž -->
+      <!-- EDIT: steps only if they are truly sequential; otherwise delete the whole block -->
       <ol class="steps">
-        <li><span>{{Krok 1}}</span></li>
-        <li><span>{{Krok 2}}</span></li>
-        <li><span>{{Krok 3}}</span></li>
+        <li><span>{{Step 1}}</span></li>
+        <li><span>{{Step 2}}</span></li>
+        <li><span>{{Step 3}}</span></li>
       </ol>
     </div>
 
     <aside>
-      <section><h2>{{Pro koho}}</h2><p>{{Jedna věta.}}</p></section>
-      <section><h2>{{Co je v ceně / co potřebujete}}</h2><p>{{Jedna věta.}}</p></section>
-      <section><h2>{{Reference}}</h2><p>{{Jméno hotelu a výsledek.}}</p></section>
+      <section><h2>{{Who it is for}}</h2><p>{{One sentence.}}</p></section>
+      <section><h2>{{What is included / what you need}}</h2><p>{{One sentence.}}</p></section>
+      <section><h2>{{Reference}}</h2><p>{{Hotel name and result.}}</p></section>
     </aside>
   </div>
 
   <footer>
-    <span>{{Jméno Příjmení, role}} · {{e-mail}} · {{telefon}}</span>
+    <span>{{Name Surname, role}} · {{e-mail}} · {{phone}}</span>
     <a href="{{https://www.previo.cz}}">{{previo.cz}}</a>
   </footer>
 </div>

@@ -1,252 +1,302 @@
 ---
 name: previo-brand
 description: >-
-  Aplikuje oficiální Previo brand (barvy, typografii, styl) na vizuální výstupy.
-  Použij VŽDY, když vzniká prezentace/deck (.pptx), PDF, HTML dashboard nebo report,
-  onepager, poster, banner nebo jakýkoli vizuál, který má vypadat "jako od Previa" —
-  i když uživatel branding nezmíní. Zdroj pravdy jsou tokeny z Previo design systému
-  (P – design system): primární červená #b50000, font Inter (přibalený v fonts/), logo
-  ve třech variantách (přibalené v logo/: color/black/white). Obsahuje i kompoziční pravidla
-  proti generickému "AI slop" vzhledu (KPI trojice, stejné sloupce, status pill, atd.) —
-  viz sekce "Layout a kompozice". Textové .md nech neutrální; u .docx viz sekce "Hranice .docx"
-  — reporty a onepagery ve Wordu branding většinou chtějí, čistě interní poznámky ne.
+  Applies the official Previo brand (colors, Inter typography, logo and composition rules) to any
+  visual output: decks (.pptx), PDFs, HTML reports and dashboards, one-pagers, posters, banners and
+  social graphics. Use it whenever something should look like it comes from Previo, even if the user
+  does not mention branding; plain-text .md files and internal notes stay unbranded. The skill ships
+  the brand tokens, the Inter font, the logo, the Alfred AI mascot and ready-made templates, so every
+  output starts from a proven Previo layout instead of a generic one.
 ---
 
-# Previo Brand — styling vizuálních výstupů
+# Previo Brand: styling visual outputs
 
-Sjednocuje vzhled vizuálních výstupů podle oficiálního Previo brandu. Tokeny pocházejí
-z Figma souboru **P – design system** (variables), ne z náhodného decku. Tenhle skill je
-zdroj pravdy — přebíjí defaultní paletu a fonty jakéhokoli nástroje.
+Unifies the look of visual outputs according to the official Previo brand. The tokens come from the
+Previo design system in Figma (**P – design system**, variables), not from a random deck. This skill
+is the source of truth and overrides the default palette and fonts of any tool.
 
-## Rychlý start pro kolegy
+## Files in this skill
 
-Nemusíte znát barvy ani fonty. Stačí říct, co chcete, např.:
-- „Udělej onepager o Alfredovi pro hoteliéry.“
-- „Připrav prezentaci pro klienta, 8 slidů, Previo styl.“
-- „Z těchto čísel udělej report za Q3.“
+All paths below are relative to **this skill's folder**, wherever it is installed. Never write an
+absolute path or a path from your own machine into an output.
 
-Skill sám použije správnou červenou, font Inter, logo a hotovou šablonu ze složky `templates/`.
-Pošlete jen obsah (texty, čísla, cíl). Když něco nesedí, napište třeba „ať je to méně přeplácané“
-nebo „zvýrazni jen jedno číslo“. Před odesláním ven zkontrolujte čísla a jména; brand hlídá vzhled,
-ne pravdivost obsahu.
+| Path | What it is |
+|---|---|
+| `tokens.md` | All values: colors, type scale, radius, spacing, CSS variables, RGB for pptx |
+| `fonts/Inter-Regular.ttf`, `fonts/Inter-Medium.ttf` | Inter 400 and 500 (SIL OFL 1.1) |
+| `logo/previo-logo-{color,black,white}.svg` | Logo in three variants |
+| `alfred/alfred.svg`, `alfred/ai-icon.svg` | Alfred mascot and the AI icon |
+| `templates/*.html` | Self-contained HTML templates (font and logo already embedded) |
+| `templates/deck-structure.md` | Slide types and rules for `.pptx` |
 
-## Šablony
+## How people use it
 
-Hotové výchozí body jsou v `templates/`. HTML šablony jsou **samostatné**: font Inter i logo jsou
-vložené přímo v souboru, takže fungují i po zkopírování jinam, bez složek `fonts/` a `logo/`.
-- `onepager.html`: jednostránkový materiál, jedno velké číslo, fakty vedle (A4).
-- `report.html`: report/dashboard, jedna hlavní vizualizace + tabulka + doporučení (A4).
-- `social-feed.html`: sociální síť, feed 4:5, 1080 × 1350 px, jedno velké číslo.
-- `social-story.html`: story / reel cover 9:16, 1080 × 1920 px, celá plocha červená, bezpečné zóny 250/340 px.
-- `social-linkedin.html`: LinkedIn / OG obrázek, 1200 × 627 px, tvrzení + číslo.
-- `deck-struktura.md`: typy slidů a pravidla pro `.pptx`.
+Users do not need to know colors or fonts. They say what they want, e.g. "Make a one-pager about
+Alfred for hoteliers", "Prepare a client deck, 8 slides", "Turn these numbers into a Q3 report". You
+pick the right template, apply the brand and fill in their content. Write the output in the language
+the user writes in. Before the output goes outside the company, remind the user to check numbers and
+names: the brand controls the look, not the truth of the content.
 
-Při tvorbě výstupu **zkopíruj nejbližší šablonu a přepiš `{{texty}}`**, nesestavuj layout znovu.
-Velká čísla (např. `42 %`) se přepisují přímo, bez závorek. Šablonu měň jen tam, kde to obsah
-vyžaduje (např. smaž blok kroků, když nejsou sekvenční). Zachovej pravidla z „Layout a kompozice“:
-jedno brandové místo, žádné 3 stejné KPI karty. Sociální grafiky exportuj do PNG ve velikosti
-uvedené v názvu (viewport = velikost grafiky); v jedné kampani střídej typy, ne jen jeden layout.
+## Templates
 
-**Úpravy zdroje (údržba):** šablony se generují z `src/` příkazem `python3 build.py`. Upravuj vždy
-`src/*.html`, ne `templates/*.html`. Když se změní logo nebo font, spusť build znovu.
+Ready-made starting points live in `templates/`. The HTML templates are **self-contained**: Inter and
+the logo are embedded in the file, so a copy works anywhere without the `fonts/` and `logo/` folders.
 
-**Písmo u kolegů:** HTML a PDF nesou font v sobě, tam Inter funguje vždy. `.pptx` a `.docx` font
-nenesou; pokud ho kolega nemá nainstalovaný, PowerPoint/Word ho nahradí. Proto výstup pro ostatní
-posílej jako PDF, nebo kolega jednou nainstaluje fonty ze `fonts/` (viz `INSTALACE.md`).
+- `onepager.html`: one-page material, fixed A4, one big number with facts beside it.
+- `report.html`: report/dashboard, A4, one main visualization + table + recommendation.
+- `social-feed.html`: social feed 4:5, 1080 × 1350 px, one big number.
+- `social-story.html`: story / reel cover 9:16, 1080 × 1920 px, full red area, safe zones 250/340 px.
+- `social-linkedin.html`: LinkedIn / OG image, 1200 × 627 px, claim + number.
+- `deck-structure.md`: slide types and rules for `.pptx`.
 
-## Kdy použít
+**Copy the closest template and replace the `{{placeholders}}`**; do not rebuild the layout. Big
+numbers (e.g. `42 %`) are replaced directly, without braces. Change the template only where the
+content requires it (e.g. delete the steps block when the content is not sequential). Keep the rules
+from "Use of red" and "Layout and composition". Export social graphics to PNG at the size in their
+description (viewport = graphic size); within one campaign alternate the types, not a single layout.
 
-Spusť při tvorbě čehokoli vizuálního: **prezentace (.pptx), PDF, HTML dashboard/report,
-onepager, poster, banner, sociální grafika, e-mailový vizuál**. Aplikuj brand automaticky,
-i když o něj uživatel výslovně nepožádá.
+## When to use it
 
-**Nepoužívej** na čistě textové `.md` — ty nech neutrální, ledaže si uživatel branding
-výslovně řekne. Pro `.docx` viz sekci **Hranice .docx** níže — není to plošné "ne".
+Use it for anything visual: **presentations (.pptx), PDF, HTML dashboards/reports, one-pagers,
+posters, banners, social graphics, e-mail visuals**. Apply the brand automatically, even when the
+user does not ask for it.
 
-## Hranice .docx
+**Do not use it** for plain-text `.md` files; keep those neutral unless the user explicitly asks for
+branding. For `.docx` see the next section.
 
-`.docx` není automaticky vyloučen. Rozhodni podle účelu dokumentu:
+## .docx boundary
 
-- **Aplikuj brand** (nadpisy Inter Medium, barevné section labely, případně hlavička/patička
-  s logem): report pro klienta, onepager, nabídka, cokoli, co opustí firmu nebo jde na sdílenou
-  plochu (SharePoint, e-mail navenek).
-- **Nech neutrální**: interní poznámky, pracovní draft, meeting notes, cokoli co zůstává jen
-  mezi kolegy a nikdy se neprezentuje ven.
+`.docx` is not excluded by default. Decide by the purpose of the document:
 
-Pokud účel není jasný z kontextu, zeptej se jednou větou ("Má to být brandované, nebo interní
-draft?"), než začneš stylovat.
+- **Apply the brand** (Inter Medium headings, red section labels, optionally a header/footer with
+  the logo): client report, one-pager, offer, anything that leaves the company or goes to a shared
+  space (SharePoint, external e-mail).
+- **Keep it neutral**: internal notes, working drafts, meeting notes, anything that stays among
+  colleagues and is never presented externally.
 
-## Font handling (kritické — bez tohoto brand nesedí)
+If the purpose is unclear, ask once in one sentence ("Should this be branded, or is it an internal
+draft?") before styling.
 
-Font **Inter** je přibalený přímo ve skillu ve složce `fonts/`:
-- `fonts/Inter-Regular.ttf` — váha 400, family name `Inter`
-- `fonts/Inter-Medium.ttf` — váha 500, samostatná family name `Inter Medium` (statická instance,
-  ne variabilní — potřeba kvůli nástrojům jako PowerPoint/LibreOffice, které neumí osu `wght`)
+## Fonts (critical: the brand does not hold without them)
 
-Licence: SIL Open Font License 1.1 (Google Fonts distribuce Inter) — volně použitelné a
-redistribuovatelné.
+Inter is bundled in `fonts/`:
+- `fonts/Inter-Regular.ttf`: weight 400, family name `Inter`.
+- `fonts/Inter-Medium.ttf`: weight 500, separate family name `Inter Medium` (static instance, not
+  variable, because PowerPoint/LibreOffice cannot use the `wght` axis).
 
-**Podle výstupu:**
+License: SIL Open Font License 1.1, free to use and redistribute (see `fonts/LICENSE-Inter.md`).
 
-- **HTML / PDF (přes HTML→PDF pipeline)**: vlož `@font-face` blok z `tokens.md` s relativní cestou
-  k `fonts/*.ttf`. Nikdy nespoléhej na to, že systém Inter má — bez `@font-face` renderer tiše
-  spadne na fallback (`Segoe UI` / `system-ui`) a brand vizuálně neplatí, i když kód barvy sedí.
-- **.pptx**: nástroj (LibreOffice/python-pptx render) potřebuje font nainstalovaný v systému, ne
-  jen odkázaný cestou. Před generováním nakopíruj oba `.ttf` do systémové fontové složky
-  (např. `~/.local/share/fonts/` nebo `/usr/share/fonts/truetype/previo/`) a spusť `fc-cache -f`.
-  Nadpisy/labely pak referencuj jako font `"Inter Medium"`, běžný text jako `"Inter"` — ne jako
-  jeden font se dvěma řezy, protože PowerPoint/LibreOffice bez variabilní osy neumí přepnout váhu
-  jen přes bold/regular přepínač spolehlivě.
-- **Pokud font selže / nejde nainstalovat**: nepoužívej Trebuchet/Calibri/Arial potichu jako
-  náhradu bez upozornění — řekni uživateli, že Inter nešlo aplikovat a použil se fallback
-  `Segoe UI / system-ui`, ať ví, že finální vizuál není 1:1 s brandem.
+**By output type:**
 
-## Barvy
+- **HTML / PDF (via HTML→PDF)**: start from a template, which already embeds the font. When you
+  build HTML from scratch, embed both TTF files as base64 `data:` URIs in `@font-face` (read them
+  from this skill's `fonts/` folder). Do not link `fonts/...` relatively from the output file: the
+  output lives somewhere else and the link breaks. Never rely on Inter being installed; without
+  `@font-face` the renderer silently falls back to `Segoe UI` / `system-ui` and the brand is off even
+  when the colors are right.
+- **.pptx / .docx**: the file does not carry the font, the system that renders or opens it must
+  have Inter installed. If your environment lets you install fonts, install both TTF files from
+  `fonts/` into the system font folder (refresh the font cache if the OS needs it) before rendering.
+  Reference headings and labels as font `"Inter Medium"` and body text as `"Inter"`, not as one
+  family with two weights, because PowerPoint/LibreOffice cannot switch weight reliably without
+  a variable axis.
+- **Sharing .pptx / .docx**: tell the user that colleagues without Inter will see a substitute
+  font. Recommend sending a PDF, or installing the two fonts from the skill's `fonts/` folder once.
+- **If the font fails or cannot be installed**: do not silently substitute Trebuchet, Calibri or
+  Arial. Tell the user that Inter could not be applied and the fallback `Segoe UI / system-ui` was
+  used, so they know the result is not 1:1 with the brand.
 
-Kompletní tokeny včetně hodnot jsou v `tokens.md`. Jádro:
+## Colors
 
-- **Primární červená `#b50000`** je jediná výrazná značková barva — logo, akcenty, klíčová čísla,
-  primární CTA, section labely. Tmavší varianta `#910000` (hover/důraz), jemné pozadí `#faeaeb`.
-- **Text a plochy**: základ je bílá `#ffffff` + tmavý text z grays (`#202124` nadpisy, `#515151`
-  sekundární). Škála šedých `#fafafa → #202124` na plochy, oddělovače a UI.
-- **Sémantické** (jen když nesou význam, ne dekoraci): positive `#1b6422`, negative `#a30000`,
-  warning `#ff6d0a`, info — zatím bez potvrzeného default odstínu, viz `tokens.md`.
-- **Nekombinuj Negative (`#a30000`) a Primary Dark (`#910000`) vedle sebe** — jsou si vizuálně
-  příliš blízko a bez rozdílu v ikonografii splývají (např. chybová hláška u červeného CTA).
+Full tokens with values are in `tokens.md`. The core:
 
-### AI a Alfred (fialová)
+- **Primary red `#b50000`** is the one brand color. How much of it to use is defined in
+  **Use of red** below. Darker variant `#910000` (hover/emphasis), soft background `#faeaeb`.
+- **Text and surfaces**: white `#ffffff` as the base, dark text from the grays (`#202124` headings,
+  `#515151` secondary). Gray scale `#fafafa → #202124` for surfaces, dividers and UI.
+- **Semantic** (only when they carry meaning, never decoration): positive `#1b6422`, negative
+  `#a30000`, warning `#ff6d0a`, info has no confirmed default yet (see `tokens.md`).
+- **Do not put Negative (`#a30000`) and Primary Dark (`#910000`) next to each other.** They are too
+  close and blend together without a difference in iconography (e.g. an error message next to a
+  red CTA).
 
-Vše, co dělá AI (virtuální recepční **Alfred**, AI odpovědi, ScanID, optimalizace Plachty), má v design systému
-vlastní fialovou: **AI `#673AB7` → AI Dark `#4E2C8B`** (gradient 135° na AI tlačítku), světlá `#8B69C8`, pozadí
-`#E7DFF3`. Fialová je **výhradně pro AI**. Neslouží jako druhý akcent ani k dekoraci. Červená zůstává barvou značky.
-Na jednom místě v kompozici smí být obě barvy (červená = Previo, fialová = Alfred), ale fialovou nedávej na červenou
-plochu, protože tam zaniká.
+### Use of red
 
-### Stavy rezervací a plateb (UI Plachty)
+Each page, slide or graphic has **exactly one hero** and may have a few **small signals**.
 
-Pro věrné UI (Plachta, rezervace) použij barvy stavů z `tokens.md`: potvrzená `#40A801`, opce `#FA8200`,
-ubytovaný `#0385BD`, odhlášený `#808080`; nezaplaceno `#E40D01`; sloupec „Dnes" `#FDEAA8`. Jsou to barvy produktu,
-ne paleta pro grafy ani dekoraci.
+- **Hero (one per page/slide):** either a full red area (cover, closing, story) **or** the largest
+  number in red. Never both, never two red numbers.
+- **Signals (small, allowed):** the section label (12 px / 12 pt, uppercase), the primary CTA or
+  link, and in a chart the one highlighted item that the hero talks about. They guide the eye, they
+  do not compete with the hero.
+- **Not allowed:** red keywords inside body text, red headings, several red numbers, red icons or
+  borders as decoration, red series in charts beyond the one highlighted item.
+- **Decks:** a content slide with a red number keeps its section label gray (`#515151`); a slide
+  without a red number gets a red section label.
+- Everything else stands on the gray scale and on type size and weight.
 
-## Typografie
+### AI and Alfred (purple)
 
-- **Font: Inter** (celý brand, nadpisy i text). Přibalený v `fonts/`, viz **Font handling** výše.
-- Váhy: **Regular 400** (text) a **Medium 500** (nadpisy, labely, CTA). Bold používej střídmě.
-- Typová škála a line-heighty viz `tokens.md`. Line-height je vesměs 24 px, nadpisy těsnější.
+There are two purples with clearly separate jobs. They are the same values on screen and in print;
+the brand does not define separate print (CMYK) values, so leave the conversion to the printer.
 
-## Radius, stíny, spacing
+| Color | Where it belongs |
+|---|---|
+| **AI `#673AB7` → AI Dark `#4E2C8B`** (135° gradient on the AI button), light `#8B69C8`, background `#E7DFF3` | AI features inside the **Previo product** UI: AI buttons, AI labels, AI answers, ScanID, Plachta optimization. Use it in mockups, screenshots-like UI, reports and decks whenever you show an AI feature of Previo. |
+| **Alfred plum `#6F2F6A`** | The **Alfred mascot** illustration (`alfred/alfred.svg`) and materials about the **Alfred guest app** (the guest-facing app), where it is that app's own primary color. Not for Previo product UI. |
 
-- Radius: SM 4 / MD 8 / LG 12 / XL 16 px, plné zaoblení (pill) pro tagy a avatary.
-- Stín (elevace): `0 4px 8px rgba(10,10,10,0.12)`.
-- Spacing: 8px základní krok, kanonický **LG = 24 px** (odsazení mezi bloky). Škála v `tokens.md`.
+Rules for both:
+- They are **only for AI / Alfred**, never a second accent or decoration. Red stays the brand color.
+- Do not mix the two purples on one surface. Red (Previo) and one purple (AI or Alfred) may share a
+  composition.
+- Never put purple on a red area; it disappears there.
 
-## Do's & Don'ts
+### Reservation and payment states (Plachta UI)
+
+For a faithful product UI (Plachta, reservations) use the state colors from `tokens.md`: confirmed
+`#40A801`, option `#FA8200`, checked-in `#0385BD`, checked-out `#808080`; unpaid `#E40D01`; "Today"
+column `#FDEAA8`. These are product colors, not a palette for charts or decoration.
+
+## Typography
+
+- **Font: Inter** (whole brand, headings and text). Bundled in `fonts/`, see **Fonts** above.
+- Weights: **Regular 400** (text) and **Medium 500** (headings, labels, CTA). Use bold sparingly.
+- Type scale and line heights are in `tokens.md`. Line height is mostly 24 px, tighter for headings.
+
+## Radius, shadow, spacing
+
+- Radius: SM 4 / MD 8 / LG 12 / XL 16 px, full rounding (pill) for tags and avatars.
+- Shadow (elevation): `0 4px 8px rgba(10,10,10,0.12)`.
+- Spacing: 8 px base step, canonical **LG = 24 px** (gap between blocks). Scale in `tokens.md`.
+
+## Do's and don'ts
 
 **Do**
-- Drž bílé/světlé pozadí a jednu značkovou červenou `#b50000` jako akcent.
-- Červenou dávej na to, co má táhnout oko: čísla, CTA, section labely, klíčové slovo.
-- Nadpisy Inter Medium, text Inter Regular; hierarchii dělej velikostí a váhou, ne barvami.
-- Sémantické barvy jen pro stav/význam (chyba, úspěch), ne pro dekoraci — a vždy s ikonou, ne
-  jen barvou samotnou (accessibility + kolize s primary dark).
-- Cover / closing plochy smí být plná červená nebo tmavá (`#202124`) s bílým textem.
+- Keep a white/light background and one brand red `#b50000`, used as described in **Use of red**.
+- Inter Medium for headings, Inter Regular for text; build hierarchy with size and weight, not color.
+- Semantic colors only for state/meaning (error, success), and always with an icon, never color
+  alone (accessibility + the collision with Primary Dark).
+- Cover and closing areas may be full red or dark (`#202124`) with white text.
 
 **Don't**
-- Neměň odstín červené (žádné #D4202C, #FF0000 apod.) — kanonická je `#b50000`.
-- Nepoužívej Trebuchet, Calibri, Arial ani default nástroje — vždy Inter (s fallbacky), a pokud
-  se nepodaří font aplikovat, řekni to uživateli (viz Font handling).
-- Nemíchej víc akcentních barev najednou; červená je jediná dominantní. Jedinou výjimkou je AI fialová, a to jen u AI/Alfreda.
-- Nedělej barevné duhy sémantickými barvami; nejsou paleta.
-- Nezaplácej plochy tučným textem — Medium na nadpisy stačí.
-- Nepoužívej Negative a Primary Dark vedle sebe bez dalšího odlišení (ikona/label).
+- Do not change the red (no `#D4202C`, `#FF0000` etc.); the canonical value is `#b50000`.
+- Do not use Trebuchet, Calibri, Arial or the tool default; always Inter (with fallbacks), and tell
+  the user when the font could not be applied (see **Fonts**).
+- Do not mix several accent colors; red is the only dominant one. The only exception is the AI /
+  Alfred purple, and only for AI / Alfred.
+- Do not make rainbows out of semantic colors; they are not a palette.
+- Do not flood surfaces with bold text; Medium is enough for headings.
+- Do not use Negative and Primary Dark next to each other without another distinction (icon/label).
 
-## Instrukce pro výstupy
+## Output instructions
 
-- **.pptx**: aplikuj barvy inline (skill `pptx`). Cover/section plná červená nebo tmavá plocha,
-  obsahové slidy bílé s červeným section labelem, patičkou a číslem stránky. Nadpisy Inter Medium
-  (font nainstalovaný ze složky `fonts/`, viz **Font handling**).
-- **PDF / HTML**: definuj tokeny jako CSS proměnné (blok v `tokens.md`), `@font-face` na lokální
-  `fonts/*.ttf`, radius a stín podle výše. Karty na `#f2f2f2`/bílé s borderem `#e5e5e5`.
-  U onepageru/jednostránkového PDF nastav `@page` výšku podle skutečného obsahu (ne fixní A4) —
-  vyrenderuj, zkontroluj počet stran a případně dolaď výšku, ať nevznikne prázdný spodek stránky
-  ani přetečení na druhou stranu.
-- **Dashboard/report**: KPI čísla červeně, grafy primárně červená + škála šedých, sémantické
-  barvy jen pro stav — vždy s ikonou vedle barvy.
+- **.pptx**: follow `templates/deck-structure.md`; apply colors inline (with a pptx skill or library
+  if one is available). Cover/closing full red or dark, content slides white with section label,
+  footer and page number. Headings Inter Medium (see **Fonts**).
+- **PDF / HTML**: start from the closest template. If you build from scratch, take the CSS variables
+  from `tokens.md` and embed the fonts as described in **Fonts**. Cards on `#f2f2f2` or white with a
+  `#e5e5e5` border.
+- **One-pager**: always **fixed A4** (210 × 297 mm), one page. Render it and check the page count.
+  If the content overflows, shorten the text or drop the least important block; never stretch the
+  page or let it spill onto a second page. If there is empty space at the bottom, give the hero more
+  room rather than adding filler. A variable page height is only acceptable for a screen-only PDF
+  when the user explicitly asks for it.
+- **Report**: A4, multiple pages allowed. Same hero/signal rule per page.
+- **Dashboard/report charts**: the one item that matters in red, everything else on the gray scale;
+  semantic colors only for state, always with an icon or sign next to the color.
 
-## Layout a kompozice — jak se vyhnout generickému vzhledu
+## Layout and composition: avoiding the generic look
 
-Brand tokeny (barva, font, radius) samy o sobě negarantují, že výstup nebude vypadat jako
-univerzální template. Tenhle skill řeší *jaké* barvy a fonty použít, ne *jak* je poskládat —
-za kompozici odpovídá `frontend-design` skill, ale tady jsou konkrétní pravidla specifická pro
-Previo výstupy, odpozorovaná z reálných chyb:
+Brand tokens (color, font, radius) alone do not stop an output from looking like a universal
+template. These are concrete rules specific to Previo outputs, taken from real mistakes.
 
-**Rozpoznané vzorce, kterým se vyhnout (AI slop):**
-- **3 stejné KPI karty** (velké číslo + malý label, opakované 3×) — je to bezpečný default, ne
-  rozhodnutí. Pokud data nejsou skutečně 3 rovnocenné metriky, nevynucuj tenhle tvar.
-- **Sloupce se stejnou vahou pro nerovnocenný obsah** — pokud tři features/kroky nejsou skutečně
-  rovnocenné nebo sekvenční, nedávej je do 3 stejně širokých sloupců jen kvůli symetrii.
-- **Generický status pill s tečkou** (barevná tečka + text v zaoblené liště) — je to univerzální
-  dashboard vzorec (Stripe/Linear), ne nic, co vzniklo z Previa nebo hotelnictví. Použij, jen
-  pokud stav skutečně potřebuje vlastní vizuální kontejner, ne jako výchozí dekorace.
-- **Stejný radius na všem** (karty, pill, obrázky) bez rozmyslu — je to neutrální "soft card"
-  estetika. Radius je nástroj hierarchie (větší = důležitější blok), ne plošná dekorace.
-- **Vatová copy** ("bezproblémové", "v rámci stejného flow", "recepce jen potvrzuje") — piš
-  konkrétně, co produkt dělá jinak (čísla, kroky, mechanika), ne obecné SaaS věty.
-- **Červená používaná stejně silně všude** (cover, čísla, labely najednou） — nech červenou
-  udělat jednu věc pořádně (typicky nejdůležitější číslo nebo cover), zbytek ať stojí na
-  šedé škále a velikosti textu.
+**Recognized patterns to avoid (AI slop):**
+- **Three identical KPI cards** (big number + small label, repeated 3×). It is a safe default, not a
+  decision. Unless the data really are three equal metrics, do not force this shape.
+- **Equal-width columns for unequal content.** If three features/steps are not truly equal or
+  sequential, do not put them into three equal columns just for symmetry.
+- **Generic status pill with a dot** (colored dot + text in a rounded bar). It is a universal
+  dashboard pattern (Stripe/Linear), nothing that comes from Previo or hospitality. Use it only if the
+  state really needs its own visual container, not as default decoration.
+- **The same radius on everything** (cards, pills, images) without thought. Radius is a hierarchy
+  tool (bigger = more important block), not blanket decoration.
+- **Filler copy** ("seamless", "within the same flow", "reception just confirms"). Write concretely
+  what the product does differently (numbers, steps, mechanics), not generic SaaS sentences.
+- **Red used equally strongly everywhere.** See **Use of red**: one hero, a few small signals.
 
-**Co udělat místo toho:**
-- Než začneš skládat layout, over-ridni bezpečný default: podívej se na skutečný obsah (kolik
-  položek, jsou rovnocenné/sekvenční/jinak strukturované?) a teprve podle toho vyber tvar —
-  timeline pro proces, jedna dominantní vizualizace pro jedno klíčové číslo, asymetrický layout
-  pokud jedna věc je důležitější než zbytek.
-- Jedno místo v kompozici smí být maximálně "brandové" (plná červená plocha, největší číslo,
-  signature grafický prvek) — zbytek disciplinovaně tichý. Never spread the boldness evenly.
-- Pokud výstup po sestavení vypadá jako šablona, která by fungovala pro jakoukoli jinou firmu se
-  stejnými daty, projdi ho znovu a nahraď aspoň jeden prvek něčím, co vychází konkrétně z toho,
-  co Previo/produkt dělá (ne z obecné "dashboard/onepager" estetiky).
-- U vizuálně bohatších výstupů (onepager, cover slide, poster) zvaž kombinaci s `frontend-design`
-  skillem pro kompoziční rozhodnutí — `previo-brand` dodá barvy/font/logo, `frontend-design`
-  pomůže s tím, aby výsledný tvar nebyl univerzální.
+**What to do instead:**
+- Before composing, override the safe default: look at the real content (how many items, are they
+  equal, sequential, structured differently?) and only then pick the shape: a timeline for a process,
+  one dominant visualization for one key number, an asymmetric layout when one thing matters more.
+- One place in the composition may be maximally "brand" (full red area, biggest number, signature
+  element); the rest stays disciplined and quiet. Never spread the boldness evenly.
+- If the finished output looks like a template that would work for any other company with the same
+  data, go over it again and replace at least one element with something that comes specifically
+  from what Previo / the product does.
+- For richer visuals (one-pager, cover slide, poster), combine with a frontend/design skill if one is
+  available: `previo-brand` supplies color/font/logo, the design skill helps keep the shape from
+  being generic.
 
 ## Logo
 
-Značka je červené 3D „P" (paperclip) + wordmark **previo** malými písmeny. Logo drž s dostatečným
-clear-space, needeformuj, nepřebarvuj mimo brand (žádné jiné odstíny než níže uvedené varianty).
+The mark is a red 3D "P" (paperclip) plus the wordmark **previo** in lowercase. Keep enough clear
+space, do not distort it, do not recolor it outside the variants below.
 
-Asset je přibalený v `logo/` ve třech variantách (SVG, vektor, škáluje bez ztráty kvality):
+The logo is bundled in `logo/` in three SVG variants (vector, scales without loss):
 
-| Soubor | Použití |
+| File | Use |
 |---|---|
-| `logo/previo-logo-color.svg` | Výchozí — na bílém/světlém pozadí (`#ffffff`, `#fafafa`, `#f2f2f2`) |
-| `logo/previo-logo-black.svg` | Na světlém pozadí, kde barevná verze nesedí kontextem (např. tiskové černobílé materiály, faxové/scan-friendly výstupy) |
-| `logo/previo-logo-white.svg` | Na tmavém nebo plně červeném pozadí (`#202124`, `#b50000`, `#910000`) — cover/section plochy |
+| `logo/previo-logo-color.svg` | Default, on white/light backgrounds (`#ffffff`, `#fafafa`, `#f2f2f2`) |
+| `logo/previo-logo-black.svg` | On light backgrounds where color does not fit the context (e.g. black-and-white print, scan-friendly output) |
+| `logo/previo-logo-white.svg` | On dark or full red backgrounds (`#202124`, `#b50000`, `#910000`): cover/section areas |
 
-**Volba varianty podle pozadí:**
-- Světlé pozadí → `previo-logo-color.svg` (default), `previo-logo-black.svg` jen když barva vyloženě nejde použít.
-- Tmavé nebo červené pozadí → vždy `previo-logo-white.svg`. Nikdy barevnou verzi na červené ploše (splývá/špatný kontrast).
-- Nikdy nekombinuj black variantu s barevným pozadím jiným než bílá/gray-50/gray-100 — na barevném podkladu ztrácí kontrast nebo vypadá jako chyba tisku.
+**Choosing the variant:**
+- Light background → `previo-logo-color.svg` (default); `previo-logo-black.svg` only when color
+  really cannot be used.
+- Dark or red background → always `previo-logo-white.svg`. Never the color version on a red area.
+- Never use the black variant on a colored background other than white / gray-50 / gray-100.
 
-**Rozměry a clear-space**: SVG má vlastní viewBox, nedeformuj poměr stran. Clear-space kolem loga =
-minimálně výška wordmarku "previo" z každé strany (nezmenšovat blíž).
+**Size and clear space:** keep the SVG's aspect ratio. Clear space around the logo = at least the
+height of the "previo" wordmark on every side.
 
-**Podle výstupu:**
-- **.pptx**: vlož SVG jako obrázek na cover/section slide (bílé pozadí → color, červené/tmavé pozadí → white variant). Pokud nástroj pro export do PPTX neumí SVG přímo, převeď na PNG při zachování průhledného pozadí.
-- **HTML/PDF**: `<img src="logo/previo-logo-color.svg">` (nebo white/black podle pozadí sekce), případně inline SVG pro čisté škálování v tisku.
+**By output type:**
+- **.pptx**: insert the SVG as an image on cover/section slides (white background → color, red/dark
+  background → white). If the tool cannot handle SVG, convert to PNG with a transparent background.
+- **HTML/PDF**: paste the SVG markup inline (read it from `logo/`), as the templates do. Do not use
+  `<img src="logo/...">`; the relative path does not exist next to the output file.
 
-## Alfred (postavička)
+## Alfred (mascot)
 
-`alfred/alfred.svg` (113 × 232) je maskot AI: hotelový piccolo v gestu, kterým něco představuje. Má dvě barvy,
-švestkovou `#6F2F6A` a bílou. Pravidla:
-- Umisťuj ho **na bílou nebo světle šedou** plochu, nikdy na červenou. Na tmavé ploše funguje, ale Previo stojí na světlé.
-- Jeho gesto (dlaň natažená k levé straně) využij k tomu, aby **představoval obsah**. Stojí napravo od UI nebo textu,
-  o kterém se mluví.
-- Postavičku nedeformuj, nepřebarvuj a nerozkládej na části. Animuj ji jako celek (vstup, pohyb, jemné „dýchání").
-- `alfred/ai-icon.svg` je AI ikona z design systému (Alfredova hlava s jiskrami, 24 × 20) pro tlačítka a štítky AI.
+`alfred/alfred.svg` (113 × 232) is the AI mascot: a hotel bellboy in a presenting gesture. It has
+two colors, plum `#6F2F6A` and white. Rules:
+- Place it **on white or light gray**, never on red. It works on dark, but Previo stands on light.
+- Use its gesture (open palm towards the left) to **present the content**: it stands to the right
+  of the UI or text being talked about.
+- Do not distort, recolor or take it apart. Animate it as a whole (entrance, movement, subtle
+  "breathing").
+- `alfred/ai-icon.svg` is the AI icon from the design system (Alfred's head with sparkles, 24 × 20)
+  for AI buttons and labels; it uses the AI purple, not the Alfred plum.
 
-## Zdroj pravdy a údržba
+## Source of truth
 
-Tokeny odpovídají stavu Previo design systému (Figma: *P – design system*). Když se DS změní,
-aktualizuj `tokens.md` — SKILL.md se měnit nemusí. Při pochybnosti o hodnotě vyhrává `tokens.md`,
-ne odhad ani default nástroje. Info sémantická barva a přesná spacing škála (xs/sm/md) čekají na
-potvrzení v aktuálním DS — nefixuj je bez ověření.
+The tokens match the Previo design system (Figma: *P – design system*). When in doubt about a value,
+`tokens.md` wins over a guess or a tool default. The info semantic color and the exact spacing scale
+(xs/sm/md) are still waiting for confirmation in the current design system; do not invent them.
+
+## When something is missing: feedback for the skill author
+
+If the user asks for something this skill does not cover (a new format, a missing color or asset,
+a rule that is unclear or contradicts the request), do the best you can within the rules above, then
+end your answer with a short note the user can forward to the skill author (Pavel Trnka, Previo).
+Keep it to a few lines, in the user's language:
+
+```
+Feedback for previo-brand skill
+Request: <what the user wanted, one sentence>
+Missing / unclear: <what the skill did not cover>
+What I did instead: <the decision you made>
+Suggested change: <what to add or clarify in the skill>
+```
+
+Tell the user in one sentence that they can send this note to the author so the skill can be
+improved. Do not suggest editing the skill files, cloning a repository or opening a pull request.
