@@ -26,8 +26,10 @@ absolute path or a path from your own machine into an output.
 | `fonts/Inter-Regular.ttf`, `fonts/Inter-Medium.ttf` | Inter 400 and 500 (SIL OFL 1.1) |
 | `logo/previo-logo-{color,black,white}.svg` | Logo in three variants |
 | `alfred/alfred.svg`, `alfred/ai-icon.svg` | Alfred mascot and the AI icon |
-| `templates/*.html` | Self-contained HTML templates (font and logo already embedded) |
-| `templates/deck-structure.md` | Slide types and rules for `.pptx` |
+| `icons/*.svg`, `icons/png/<name>-<red,ink,white>.png` | The Previo icon set (line, 24 px grid); PNG for `.pptx` |
+| `templates/*.html` | Self-contained HTML templates (font, logo and icons already embedded) |
+| `templates/deck.html` | Deck in 6 slide types, 1280 × 720 px: visual reference for `.pptx`, or a PDF deck |
+| `templates/deck-structure.md` | Slide types, rhythm, icons, photos and the pre-delivery check for decks |
 
 ## How people use it
 
@@ -47,7 +49,8 @@ the logo are embedded in the file, so a copy works anywhere without the `fonts/`
 - `social-feed.html`: social feed 4:5, 1080 × 1350 px, one big number.
 - `social-story.html`: story / reel cover 9:16, 1080 × 1920 px, full red area, safe zones 250/340 px.
 - `social-linkedin.html`: LinkedIn / OG image, 1200 × 627 px, claim + number.
-- `deck-structure.md`: slide types and rules for `.pptx`.
+- `deck.html`: deck, 16:9, red cover / content / process / red statement / number / red closing.
+- `deck-structure.md`: slide types and rules for `.pptx` (read it together with `deck.html`).
 
 **Copy the closest template and replace the `{{placeholders}}`**; do not rebuild the layout. Big
 numbers (e.g. `42 %`) are replaced directly, without braces. Change the template only where the
@@ -127,12 +130,16 @@ Each page, slide or graphic has **exactly one hero** and may have a few **small 
 - **Hero (one per page/slide):** either a full red area (cover, closing, story) **or** the largest
   number in red. Never both, never two red numbers.
 - **Signals (small, allowed):** the section label (12 px / 12 pt, uppercase), the primary CTA or
-  link, and in a chart the one highlighted item that the hero talks about. They guide the eye, they
-  do not compete with the hero.
+  link, **icon tiles** (red icon on soft red `#faeaeb`, see **Icons**), and in a chart the one
+  highlighted item that the hero talks about. They guide the eye, they do not compete with the hero.
 - **Not allowed:** red keywords inside body text, red headings, several red numbers, red icons or
-  borders as decoration, red series in charts beyond the one highlighted item.
-- **Decks:** a content slide with a red number keeps its section label gray (`#515151`); a slide
-  without a red number gets a red section label.
+  borders as pure decoration (an icon must label an item), red series in charts beyond the one
+  highlighted item.
+- **A slide or page with a red number keeps everything else gray:** section label `#515151`, icon
+  tiles `#f2f2f2` with ink icons. This is the rule most often broken; check it on every slide.
+- **Red is not only for small signals.** A deck opens and closes on a full red slide with white text
+  and may have one red statement slide in between (see `templates/deck-structure.md`). Outputs that
+  are all white and gray read as sterile; the red areas give the rhythm.
 - Everything else stands on the gray scale and on type size and weight.
 
 ### AI and Alfred (purple)
@@ -163,6 +170,28 @@ column `#FDEAA8`. These are product colors, not a palette for charts or decorati
 - Weights: **Regular 400** (text) and **Medium 500** (headings, labels, CTA). Use bold sparingly.
 - Type scale and line heights are in `tokens.md`. Line height is mostly 24 px, tighter for headings.
 
+## Icons
+
+The skill ships its own icon set in `icons/`: line icons on a 24 px grid, 1.75 px stroke, round
+ends (bed, building, calendar, key, globe, monitor, megaphone, chart, tag, percent, gift, camera,
+mail, phone, chat, users, document, search, star, card, clock, check, pin, sliders, repeat, link,
+arrow). Use only these; never mix in another set or emoji.
+
+- **HTML/PDF:** paste the SVG inline; it uses `currentColor`, so the parent sets the color.
+- **.pptx:** insert `icons/png/<name>-red.png`, `-ink.png` or `-white.png` (256 px, transparent).
+- **Icon tile** (the standard way to use an icon next to text): rounded square, icon at half its
+  size. Red icon on `#faeaeb` by default; ink icon on `#f2f2f2` when the slide/page has a red number
+  hero; white icon without a tile on red or dark areas.
+- One icon per item, labelling what the item is. Not on every line of text, not as decoration.
+- Missing icon? Pick the closest one and mention the gap in the feedback note (see the end).
+
+## Photos
+
+- **Never distort a photo.** Keep the aspect ratio and crop to the frame (`object-fit: cover` in
+  HTML; `crop_*` in python-pptx, see `templates/deck-structure.md`).
+- Prefer real photos of the client's property over stock; edge to edge or in a 16 px radius frame.
+- Text stays on a calm area (red, white, dark), not over a busy part of the photo.
+
 ## Radius, shadow, spacing
 
 - Radius: SM 4 / MD 8 / LG 12 / XL 16 px, full rounding (pill) for tags and avatars.
@@ -190,9 +219,13 @@ column `#FDEAA8`. These are product colors, not a palette for charts or decorati
 
 ## Output instructions
 
-- **.pptx**: follow `templates/deck-structure.md`; apply colors inline (with a pptx skill or library
-  if one is available). Cover/closing full red or dark, content slides white with section label,
-  footer and page number. Headings Inter Medium (see **Fonts**).
+- **.pptx**: follow `templates/deck-structure.md` and copy the look of `templates/deck.html`; apply
+  colors inline (with a pptx skill or library if one is available). Red cover and red closing with
+  white text, white content slides with section label, icon tiles, footer and page number. Headings
+  Inter Medium (see **Fonts**). **Before handing it over, render it and go through the check list at
+  the end of `deck-structure.md`** (distorted photos, overflow, red rule, consistency of content).
+- **Deck that is only sent and read** (an offer, a proposal): consider filling `templates/deck.html`
+  and exporting it to PDF; it carries Inter, the logo and icons, so it looks right on any machine.
 - **PDF / HTML**: start from the closest template. If you build from scratch, take the CSS variables
   from `tokens.md` and embed the fonts as described in **Fonts**. Cards on `#f2f2f2` or white with a
   `#e5e5e5` border.
@@ -215,6 +248,8 @@ template. These are concrete rules specific to Previo outputs, taken from real m
   decision. Unless the data really are three equal metrics, do not force this shape.
 - **Equal-width columns for unequal content.** If three features/steps are not truly equal or
   sequential, do not put them into three equal columns just for symmetry.
+- **Tag clouds of pills** (metric names in rounded capsules). Write them as a line of text or a list
+  with icons.
 - **Generic status pill with a dot** (colored dot + text in a rounded bar). It is a universal
   dashboard pattern (Stripe/Linear), nothing that comes from Previo or hospitality. Use it only if the
   state really needs its own visual container, not as default decoration.
@@ -225,6 +260,11 @@ template. These are concrete rules specific to Previo outputs, taken from real m
 - **Red used equally strongly everywhere.** See **Use of red**: one hero, a few small signals.
 
 **What to do instead:**
+- **Do not let everything turn gray.** Gray `#f2f2f2` fill is for one block that should recede, not
+  for every card; the default card is white with a `#e5e5e5` border. Bring warmth with the red cover,
+  closing and statement areas, icon tiles and photos of the property, not with more gray boxes.
+- **A row of identical gray cards** (2×2, 3×2) is the deck version of the KPI trio. Use a list with
+  icons, a timeline or one dominant block instead.
 - Before composing, override the safe default: look at the real content (how many items, are they
   equal, sequential, structured differently?) and only then pick the shape: a timeline for a process,
   one dominant visualization for one key number, an asymmetric layout when one thing matters more.

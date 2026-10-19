@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en"><!-- EDIT: set lang to the language of the content (e.g. cs) -->
+<head>
+<meta charset="utf-8">
+<title>Previo deck</title>
+<!--
+  DECK, 16:9, 1280 × 720 px per slide. One <section class="slide"> = one slide.
+  Two uses:
+   1. HTML/PDF deck: fill in, delete the slides you do not need, print to PDF (one slide per page).
+      Fonts, logo and icons are embedded, so the PDF looks the same everywhere.
+   2. Visual reference for a .pptx: rebuild the same slide types with the same proportions
+      (see templates/deck-structure.md, which also gives the pptx measurements).
+  Rhythm: red cover → white content slides (alternate types) → optional red statement slide in the
+  middle → red closing. Never two red slides in a row, never two same content layouts in a row.
+  Icons: each tile holds an inline SVG from the skill's icons/ folder; swap it by pasting another
+  icons/<name>.svg (it uses currentColor, so the tile sets its color).
+  Text sizes are set for a READ deck (1 px = 0.5625 pt): body text 22 px = 12.4 pt, never smaller;
+  labels and footer 18 px = 10 pt. For a PROJECTED deck use the larger sizes in deck-structure.md
+  and fewer items per slide.
+  Inter, the logo and the icons are embedded in this file.
+-->
+<style>
+/*%%FONTS%%*/
+:root {
+  --primary:#b50000; --primary-dark:#910000; --primary-soft:#faeaeb;
+  --ink:#202124; --muted:#515151; --gray-400:#b2b2b2; --border:#e5e5e5; --surface:#f2f2f2;
+  --font:"Inter","Segoe UI",system-ui,sans-serif; --font-medium:"Inter Medium","Segoe UI",system-ui,sans-serif;
+}
+@page { size: 1280px 720px; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #888; }
+body { font: 400 22px/32px var(--font); color: var(--ink); }
+.slide { position: relative; width: 1280px; height: 720px; overflow: hidden; background: #fff;
+  padding: 64px 80px 0; display: flex; flex-direction: column; break-after: page; margin: 0 auto 24px; }
+@media print { html, body { background: none; } .slide { margin: 0; } }
+.logo svg { height: 40px; width: auto; display: block; }
+.ico svg { width: 100%; height: 100%; display: block; }
+
+/* content slide chrome */
+.label { font: 500 18px/24px var(--font-medium); letter-spacing: .1em; text-transform: uppercase; color: var(--primary); }
+.label--gray { color: var(--muted); }
+h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12px 0 0; max-width: 22ch; }
+.lead { margin: 16px 0 0; color: var(--muted); max-width: 52ch; }
+.foot { margin-top: auto; height: 64px; display: flex; align-items: center; gap: 16px; font-size: 18px; color: var(--muted); border-top: 1px solid var(--border); margin-left: -80px; margin-right: -80px; padding: 0 80px; }
+.foot .logo svg { height: 20px; }
+.foot .num { margin-left: auto; font-variant-numeric: tabular-nums; }
+
+/* red slides: cover, statement, closing */
+.slide--red { background: var(--primary); color: #fff; padding: 64px 80px; }
+.slide--red .label { color: #fff; opacity: .8; }
+.cover h1 { font: 500 72px/78px var(--font-medium); letter-spacing: -.03em; margin: 20px 0 0; max-width: 14ch; }
+.cover .sub { font-size: 28px; line-height: 38px; margin: 24px 0 0; opacity: .9; max-width: 34ch; }
+.cover .meta { margin-top: auto; display: flex; gap: 32px; font-size: 22px; opacity: .85; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.3); max-width: 560px; }
+.cover .body { margin-top: auto; }
+/* cover with a photo: the photo takes the right part edge to edge, always cropped (object-fit: cover) */
+.cover--photo { padding-right: 0; }
+.cover--photo .text { width: 600px; display: flex; flex-direction: column; height: 100%; }
+.cover--photo .photo { position: absolute; top: 0; right: 0; bottom: 0; width: 560px; object-fit: cover; }
+
+/* statement / section slide */
+.statement .num { font: 500 160px/1 var(--font-medium); letter-spacing: -.04em; opacity: .35; }
+.statement h2 { font-size: 64px; line-height: 72px; max-width: 18ch; margin-top: auto; }
+.statement .lead { color: #fff; opacity: .85; margin-top: 24px; }
+
+/* icon tile: the small signal that marks a list item */
+.tile { display: block; flex: none; width: 48px; height: 48px; border-radius: 12px; background: var(--primary-soft); color: var(--primary); padding: 12px; }
+.tile--ink { background: var(--surface); color: var(--ink); }
+
+/* layout: intro + list (asymmetric) */
+.split { display: grid; grid-template-columns: 400px 1fr; gap: 80px; margin: auto 0; padding: 32px 0; }
+.split .intro { font-size: 28px; line-height: 40px; color: var(--ink); }
+.split .intro p { margin: 0; }
+.list { display: flex; flex-direction: column; gap: 32px; }
+.item { display: flex; gap: 20px; align-items: flex-start; }
+.item h3 { font: 500 28px/36px var(--font-medium); margin: 0; }
+.item p { margin: 4px 0 0; color: var(--muted); font-size: 23px; line-height: 32px; }
+
+/* timeline */
+.steps { display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 24px; margin: auto 0; padding: 32px 0; position: relative; }
+.steps::before { content: ""; position: absolute; left: 24px; right: 24px; top: 56px; border-top: 2px solid var(--border); }
+.step { position: relative; }
+.step .tile { box-shadow: 0 0 0 8px #fff; }
+.step .n { display: block; margin-top: 20px; font: 500 18px/24px var(--font-medium); color: var(--gray-400); }
+.step h3 { font: 500 26px/34px var(--font-medium); margin: 4px 0 0; }
+.step p { margin: 6px 0 0; color: var(--muted); font-size: 22px; line-height: 30px; }
+.step--loop .tile { background: var(--ink); color: #fff; }
+
+/* number hero + facts */
+.hero { display: grid; grid-template-columns: 1fr 520px; gap: 80px; margin: auto 0; padding: 32px 0; align-items: center; }
+.big { font: 500 168px/1 var(--font-medium); letter-spacing: -.04em; color: var(--primary); }
+.hero .what { font: 500 28px/36px var(--font-medium); margin: 16px 0 0; max-width: 22ch; }
+.hero .src { color: var(--muted); font-size: 22px; margin: 12px 0 0; }
+.facts { border: 1px solid var(--border); border-radius: 16px; padding: 8px 32px; }
+.fact { display: flex; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+.fact:last-child { border-bottom: 0; }
+.fact .tile { width: 40px; height: 40px; padding: 10px; border-radius: 10px; }
+.fact h3 { font: 500 24px/32px var(--font-medium); margin: 0; }
+.fact p { margin: 2px 0 0; color: var(--muted); font-size: 22px; line-height: 30px; }
+
+/* closing */
+.closing h2 { font-size: 72px; line-height: 78px; max-width: 14ch; margin-top: auto; }
+.closing .contact { display: flex; gap: 48px; margin-top: 48px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.3); font-size: 24px; }
+.closing .contact .who { font: 500 26px/34px var(--font-medium); }
+.closing .contact span { display: flex; align-items: center; gap: 12px; }
+.closing .ico { width: 24px; height: 24px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER: full red, white text. Optional photo: add class cover--photo, wrap the text in
+     <div class="text">…</div> and add <img class="photo" src="data:…"> (never stretched, always cropped). -->
+<section class="slide slide--red cover">
+  %%LOGO:white%%
+  <div class="body">
+    <div class="label">{{Deck type, e.g. Offer}}</div>
+    <h1>{{Title: what the client gets}}</h1>
+    <p class="sub">{{Subtitle: client name, place or one concrete promise}}</p>
+  </div>
+  <div class="meta"><span>{{Name Surname, role}}</span><span>{{date}}</span></div>
+</section>
+
+<!-- 2 · CONTENT – intro + list with icon tiles (red label, no red number on this slide) -->
+<section class="slide">
+  <div class="label">{{Section}}</div>
+  <h2>{{Headline as a claim}}</h2>
+  <div class="split">
+    <div class="intro"><p>{{Two or three sentences of context: why this matters to the client.}}</p></div>
+    <div class="list">
+      <div class="item"><span class="tile ico">%%ICON:globe%%</span><div><h3>{{Item 1}}</h3><p>{{One concrete sentence.}}</p></div></div>
+      <div class="item"><span class="tile ico">%%ICON:megaphone%%</span><div><h3>{{Item 2}}</h3><p>{{One concrete sentence.}}</p></div></div>
+      <div class="item"><span class="tile ico">%%ICON:tag%%</span><div><h3>{{Item 3}}</h3><p>{{One concrete sentence.}}</p></div></div>
+    </div>
+  </div>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">2</span></div>
+</section>
+
+<!-- 3 · PROCESS – timeline with icons; only for sequential content. Set --n to the number of steps (3–5).
+     .step--loop marks a repeating step (dark tile). -->
+<section class="slide">
+  <div class="label">{{Section}}</div>
+  <h2>{{Headline as a claim about the process}}</h2>
+  <div class="steps" style="--n:5">
+    <div class="step"><span class="tile ico">%%ICON:search%%</span><span class="n">01</span><h3>{{Step}}</h3><p>{{What happens.}}</p></div>
+    <div class="step"><span class="tile ico">%%ICON:users%%</span><span class="n">02</span><h3>{{Step}}</h3><p>{{What happens.}}</p></div>
+    <div class="step"><span class="tile ico">%%ICON:globe%%</span><span class="n">03</span><h3>{{Step}}</h3><p>{{What happens.}}</p></div>
+    <div class="step"><span class="tile ico">%%ICON:link%%</span><span class="n">04</span><h3>{{Step}}</h3><p>{{What happens.}}</p></div>
+    <div class="step step--loop"><span class="tile ico">%%ICON:repeat%%</span><span class="n">05</span><h3>{{Step}}</h3><p>{{What happens.}}</p></div>
+  </div>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">3</span></div>
+</section>
+
+<!-- 4 · STATEMENT / SECTION – full red, at most one in the middle of a deck (or one per part of a long deck).
+     A section number or one strong claim; nothing else. -->
+<section class="slide slide--red statement">
+  <div class="num">{{02}}</div>
+  <h2>{{One strong claim or section title}}</h2>
+  <p class="lead">{{Optional single sentence.}}</p>
+</section>
+
+<!-- 5 · NUMBER HERO – the red number is the hero, so the label is gray and icon tiles are gray (tile--ink). -->
+<section class="slide">
+  <div class="label label--gray">{{Section}}</div>
+  <h2>{{Headline as a claim about the number}}</h2>
+  <div class="hero">
+    <div>
+      <div class="big">42 %</div>
+      <p class="what">{{What the number means}}</p>
+      <p class="src">{{Source, period or condition.}}</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="tile tile--ink ico">%%ICON:calendar%%</span><div><h3>{{Fact}}</h3><p>{{Detail.}}</p></div></div>
+      <div class="fact"><span class="tile tile--ink ico">%%ICON:chart%%</span><div><h3>{{Fact}}</h3><p>{{Detail.}}</p></div></div>
+      <div class="fact"><span class="tile tile--ink ico">%%ICON:clock%%</span><div><h3>{{Fact}}</h3><p>{{Detail.}}</p></div></div>
+    </div>
+  </div>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">5</span></div>
+</section>
+
+<!-- 6 · CLOSING – full red, white text, contact with white icons. -->
+<section class="slide slide--red closing">
+  %%LOGO:white%%
+  <h2>{{Closing line, e.g. a next step}}</h2>
+  <div class="contact">
+    <span class="who">{{Name Surname}}</span>
+    <span><span class="ico">%%ICON:mail%%</span>{{e-mail}}</span>
+    <span><span class="ico">%%ICON:phone%%</span>{{phone}}</span>
+  </div>
+</section>
+
+</body>
+</html>

@@ -54,6 +54,33 @@ examples = [
         "{{One or two sentences: the recommendation or decision that follows from the data.}}": "Move part of the OTA commission budget into the direct booking engine promo for Q4.",
         "{{Data source, metric definitions, export date.}}": "Source: Previo PMS, confirmed reservations, exported 1 October 2026. Sample data.",
     }, ["{{Q1}}", "Q3 25", "Q3 26"]),
+    ("deck", 1312, 1144, {
+        "{{Deck type, e.g. Offer}}": "Offer",
+        "{{Title: what the client gets}}": "Marketing+ for Hotel Example",
+        "{{Subtitle: client name, place or one concrete promise}}": "Website, campaigns and pricing from one partner, measured on revenue.",
+        "{{Name Surname, role}}": "Previo Sales",
+        "{{date}}": "October 2026",
+        "{{Headline as a claim}}": "Marketing+ links promotion with sales",
+        "{{Two or three sentences of context: why this matters to the client.}}": "Campaigns, website and prices run on data from Previo and follow one goal: higher hotel revenue.",
+        "{{Item 1}}": "More direct bookings", "{{Item 2}}": "Better yield per room", "{{Item 3}}": "Ongoing support",
+        "{{Headline as a claim about the process}}": "From data audit to a monthly review in five steps",
+        "{{02}}": "02",
+        "{{One strong claim or section title}}": "Phase 1 builds the base for direct bookings",
+        "{{Optional single sentence.}}": "Website, campaigns, pricing and photos first.",
+        "{{Headline as a claim about the number}}": "Commission only grows when your revenue grows",
+        "42 %": "15 %",
+        "{{What the number means}}": "commission for the first 18 months, then 13 %",
+        "{{Source, period or condition.}}": "Plus 6 % of the year-on-year revenue increase, excl. VAT. Sample terms.",
+        "{{Closing line, e.g. a next step}}": "Let us start with an audit of your data",
+        "{{Name Surname}}": "Previo Sales", "{{e-mail}}": "sales@previo.cz", "{{phone}}": "+420 000 000 000",
+    }, [("{{Section}}", "Why Marketing+", "Process", "Terms"),
+        ("{{Footer: deck title}}", "Marketing+ · Hotel Example", "Marketing+ · Hotel Example", "Marketing+ · Hotel Example"),
+        ("{{One concrete sentence.}}", "New website, campaigns and your own guest database.", "Prices follow demand, season and occupancy.", "One plan for marketing, distribution and operations."),
+        ("{{Step}}", "Audit", "Kick-off", "Phase 1", "Phase 2", "Reporting"),
+        ("{{What happens.}}", "Data from Previo, Analytics and campaigns.", "Priorities and who does what.", "Website, campaigns, prices, photos.", "OTA, mailing, restrictions, Hotel Ads.", "Every month, year on year."),
+        ("{{Fact}}", "2 years", "Monthly report", "No setup fee"),
+        ("{{Detail.}}", "Contract length, can be extended.", "Year-on-year, with next steps.", "Website and hosting included in the commission."),
+    ], "body{background:#d9d9d9;zoom:.5;display:grid;grid-template-columns:1280px 1280px;gap:32px;padding:32px}.slide{margin:0}"),
     ("social-feed", 1080, 1350, {
         "{{Topic}}": "Alfred",
         "{{What the figure means, in one sentence}}": "fewer guest questions at reception after Alfred launch",
@@ -78,15 +105,18 @@ examples = [
 
 out.mkdir(parents=True, exist_ok=True)
 with tempfile.TemporaryDirectory() as tmp:
-    for name, w, h, fills, seq in examples:
+    for name, w, h, fills, seq, *css in examples:
         html = (templates / f"{name}.html").read_text()
         head, body = html.split("<body>", 1)
         for k, v in fills.items():
             body = body.replace(k, v)
-        if seq:  # placeholders that repeat with different values, filled in order
-            key, *values = seq
+        if seq and isinstance(seq[0], str):
+            seq = [seq]
+        for key, *values in seq or []:  # placeholders that repeat with different values, filled in order
             for v in values:
                 body = body.replace(key, v, 1)
+        if css:
+            head = head.replace("</style>", css[0] + "</style>", 1)
         left = re.findall(r"\{\{[^}]*\}\}", body)
         assert not left, f"{name}: unfilled {left}"
         page = pathlib.Path(tmp) / f"{name}.html"
