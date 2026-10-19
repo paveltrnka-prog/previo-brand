@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Builds the self-contained templates: tools/src/*.html -> previo-brand/templates/*.html.
 
-Embeds the Inter font (base64) and the logo (inline SVG) into every template, so the
+Embeds the Inter font (base64), the logo and icons (inline SVG) into every template, so the
 resulting HTML file works anywhere without the fonts/ and logo/ folders.
 Run from anywhere: python3 tools/build.py
 """
@@ -18,6 +18,9 @@ def font_css():
                    f'src: url("data:font/ttf;base64,{b64}") format("truetype"); }}')
     return "\n".join(out)
 
+def icon_svg(name):
+    return (skill / "icons" / f"{name}.svg").read_text().strip()
+
 def logo_svg(variant):
     svg = (skill / "logo" / f"previo-logo-{variant}.svg").read_text().strip()
     return f'<span class="logo" role="img" aria-label="Previo">{svg}</span>'
@@ -28,6 +31,7 @@ for src in sorted((here / "src").glob("*.html")):
     html = src.read_text()
     html = html.replace("/*%%FONTS%%*/", fonts)
     html = re.sub(r"%%LOGO:(color|black|white)%%", lambda m: logo_svg(m.group(1)), html)
+    html = re.sub(r"%%ICON:([a-z-]+)%%", lambda m: icon_svg(m.group(1)), html)
     assert "%%" not in html, f"unresolved marker in {src.name}"
     (skill / "templates" / src.name).write_text(html)
     print(f"{src.name}: {len(html)//1024} KB")

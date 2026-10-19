@@ -5,7 +5,7 @@ to visual outputs: decks, PDFs, HTML reports and dashboards, one-pagers, social 
 come from the Previo design system in Figma (**P – design system**). The skill ships ready-made
 templates, so most outputs start from a proven Previo layout.
 
-**Download:** [previo-brand-v4.skill](https://github.com/paveltrnka-prog/previo-brand/releases/download/v4/previo-brand-v4.skill) (v4) · all versions in [Releases](https://github.com/paveltrnka-prog/previo-brand/releases)
+**Download:** [previo-brand-v5.skill](https://github.com/paveltrnka-prog/previo-brand/releases/download/v5/previo-brand-v5.skill) (v5) · all versions in [Releases](https://github.com/paveltrnka-prog/previo-brand/releases)
 
 ## Install
 
@@ -30,7 +30,7 @@ Just ask; branding happens automatically:
 | "Instagram post with 42 %." | `social-feed.html`, 4:5, exported to PNG. |
 | "Story for the campaign." | `social-story.html`, 9:16, full red, safe zones. |
 | "LinkedIn image for an article." | `social-linkedin.html`, 1200 × 627 px. |
-| "Client deck, 8 slides." | `.pptx` following `templates/deck-structure.md`. |
+| "Client deck, 8 slides." | `.pptx` following `templates/deck-structure.md` and `templates/deck.html`: red cover and closing, icons, checked render. |
 | "Show Alfred presenting a new feature." | The mascot `alfred/alfred.svg` next to the content, on a light background. |
 | "Plachta mockup with reservation states." | State colors from `tokens.md`. |
 
@@ -40,6 +40,17 @@ Fine-tune in plain words: "less busy", "highlight just one number", "no purple".
 
 What the templates look like once Claude fills them in. Sample content, the numbers are
 illustrative, not real Previo data.
+
+<p><img src="docs/examples/deck.png" alt="Deck, 16:9"><br><b>Deck template</b> · 16:9, all slide types of <code>templates/deck.html</code>: red cover and closing, icon list, process timeline, red statement slide, number hero with a gray label.</p>
+
+<details>
+<summary><b>A real sales deck, 12 slides</b> (an actual offer rebuilt with the skill; client, contact and terms anonymized)</summary>
+<p><img src="docs/examples/deck-offer.png" alt="Sales deck, 12 slides"></p>
+<p>What the skill changed compared to the first version: red cover and closing instead of white, one red statement slide before phase 1,
+an icon on every item instead of gray card grids and pill clouds, a gray label and gray icon tiles on the slide whose hero is the red
+15&nbsp;%, one product name throughout, text 13&nbsp;pt and up with at most 5 items per slide, and hotel photos cropped instead of
+stretched (photos left out of this public sample).</p>
+</details>
 
 <table>
   <tr>
@@ -55,6 +66,44 @@ illustrative, not real Previo data.
     <td width="36%"><img src="docs/examples/social-linkedin.png" alt="LinkedIn / OG image"><br><b>LinkedIn / OG</b> · 1200 × 627 px, claim + number.</td>
   </tr>
 </table>
+
+## Prompting tips
+
+The skill fills in the brand by itself; the prompt decides the content. These make the biggest difference:
+
+1. **Say what it is, for whom and how it will be used.** "Offer deck for the owner of a 60-room mountain
+   hotel, sent as a PDF to read" gets other text sizes and density than "deck I will present at a
+   conference" (projected: bigger text, max. 3 items per slide).
+2. **Give the real material.** Numbers, prices, terms, dates, the presenter's name and contact, the
+   client's name. Attach the source (old deck, brief, notes, export); Claude restructures it but does
+   not invent facts. Missing facts come back as `{{placeholders}}`.
+3. **Attach photos of the client's property** and say where they belong (cover, a product slide). They
+   make a deck specific; the skill crops them, never stretches them.
+4. **One message per slide, in your words.** List the slides as claims ("Commission grows only with
+   revenue"), not topics ("Terms"). Say how many slides you want.
+5. **Name the one number that matters.** "The hero is 15 % commission" tells Claude which slide gets the
+   big red number; everything else stays quiet.
+6. **Use one product name** and say it ("call it Marketing+, never M+"). Mixed names are the most common
+   error in decks built from several sources.
+7. **Say what is not included or must not be promised.** Exclusions in one place keep other slides from
+   contradicting them.
+8. **Ask for the check.** "Render every slide and run the check from deck-structure.md before you hand it
+   over" catches overflowing text, squeezed photos and red used twice.
+9. **Refine in plain words**, one slide at a time: "slide 6 is too dense, split it", "less red on slide 4",
+   "swap the icon for a calendar".
+
+Example:
+
+```text
+Make an offer deck (.pptx + PDF) for Hotel Example, 60 rooms, Beskydy. It will be sent by e-mail
+and read, not presented. Product name: Marketing+ (never M+). Presenter: Jana Nováková,
+jana.novakova@previo.cz, +420 000 000 000, date October 2026.
+Slides: 1 why Marketing+ (more direct bookings, better yield, ongoing support), 2 five-step process,
+3 phase 1 (web, Sklik + Google Ads, prices and packages, photos), 4 phase 2 (OTA, mailing, Hotel Ads),
+5 monthly reporting, 6 terms: the hero is 15 % commission for 18 months, then 13 %; 2-year contract.
+Meta/Facebook campaigns are NOT included. Use the attached lobby photo on the cover.
+Render every slide and run the check before you hand it over.
+```
 
 ## Color roles at a glance
 
@@ -82,12 +131,14 @@ previo-brand/          the skill (this folder is what gets packaged)
 ├── tokens.md          values: colors, typography, radius, spacing, CSS variables
 ├── fonts/             Inter 400 + 500 (SIL OFL 1.1)
 ├── logo/              color / black / white SVG
+├── icons/             line icons (SVG) + png/ in red / ink / white for .pptx
 ├── alfred/            mascot + AI icon
 └── templates/         self-contained HTML templates + deck-structure.md (generated, do not edit HTML)
 tools/                 maintenance only, not part of the skill
 ├── src/               template sources (edit here)
-├── build.py           builds templates/ from src/ (embeds font + logo)
-└── examples.py        renders the README examples into docs/examples/
+├── build.py           builds templates/ from src/ (embeds font, logo, icons)
+├── examples.py        renders the README examples into docs/examples/
+└── icons.py           renders icons/png/ from icons/*.svg (needs Google Chrome, macOS sips)
 docs/examples/         README example images
 ```
 
@@ -95,16 +146,27 @@ docs/examples/         README example images
 
 1. Edit `tools/src/*.html`, then run `python3 tools/build.py` and `python3 tools/examples.py`
    (refreshes the example images; needs Google Chrome).
-2. Package: `zip -r -X previo-brand-v4.skill previo-brand -x '.*'`.
+2. Package: `zip -r -X previo-brand-v5.skill previo-brand -x '.*'`.
 3. Publish the `.skill` file as a GitHub Release with tag `vN` and update the download link at the
    top of this README. The package is a build artifact and is not committed (`.gitignore`).
    ```bash
-   gh release create v4 previo-brand-v4.skill --title "previo-brand v4" --notes "…"
+   gh release create v5 previo-brand-v5.skill --title "previo-brand v5" --notes "…"
    ```
 
 When the design system changes, update `tokens.md`; `SKILL.md` usually stays as is.
 
 ## Changelog
+
+**v5**
+- New `templates/deck.html`: 16:9 deck with red cover and closing, red statement slide, icon lists,
+  process timeline and number hero; visual reference for `.pptx` and a ready HTML/PDF deck.
+- Icon set `icons/` (27 line icons, SVG + PNG in red / ink / white) and icon tile rules.
+- Decks are no longer gray: red rhythm (cover → content → statement → content → closing), white
+  cards by default, no grids of identical gray cards or pill clouds.
+- Photos: never stretched, always cropped (python-pptx `crop_*`).
+- Text sizes for projected vs. read decks; one product name throughout; check-list before hand-over.
+- `deck.html` text set to read-deck sizes (body 12 pt+).
+- README: prompting tips and a real 12-slide sales deck as an example.
 
 **v4**
 - Skill translated to English; description says in three sentences what the skill is for.
