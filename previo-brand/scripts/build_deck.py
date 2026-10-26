@@ -22,7 +22,10 @@ C = dict(red="b50000", soft="faeaeb", ink="202124", muted="515151", g400="b2b2b2
          border="e5e5e5", surface="f2f2f2", white="ffffff")
 ICONS = {p.stem for p in (SKILL / "icons").glob("*.svg")}
 CONTENT_TOP, CONTENT_BOTTOM = 268, 632  # content block on white slides; footer line at 656
+REGULAR = (64, "red", (28, 36), (23, 32), 24, 3)  # item: tile, tile color, title and text size/line, gap, max text lines
 COMPACT = (56, "red", (24, 32), (22, 30), 20, 2)  # item in two columns: smaller tile and type
+DENSE = COMPACT[:-1] + (3,)  # last resort before an error: compact type, three lines of text
+QUOTES = {"cs": "„“", "sk": "„“", "de": "„“", "pl": "„”"}  # other languages: “”
 FOCUS = dict(center=(.5, .5), top=(.5, 0), bottom=(.5, 1), left=(0, .5), right=(1, .5))
 SHARP = 1.5  # photo px per slide px: a full-slide photo needs 1920 x 1080 to stay sharp on a projector
 TMP = pathlib.Path(tempfile.mkdtemp(prefix="previo-deck-"))  # scaled photos and the scrim; the preview links to them
@@ -200,6 +203,14 @@ class Build:
             self.err(f"{what} needs {n} lines, max. {max_lines}: shorten it ({text[:50]!r}…)")
         return min(n, max_lines)
 
+    def trial(self, measure):
+        """Runs a layout only to measure it: returns (height, fits the texts) and forgets its errors."""
+        mark = len(self.errors)
+        h = measure()
+        ok = len(self.errors) == mark
+        del self.errors[mark:]
+        return h, ok
+
     def count(self, items, lo, hi, what):
         if not lo <= len(items) <= hi:
             self.err(f"{len(items)} {what}, allowed {lo}–{hi}: split the slide or merge items")
@@ -207,7 +218,8 @@ class Build:
 
     def bottom(self, y):
         if y > CONTENT_BOTTOM:
-            self.err(f"content ends at {y:.0f} px, limit {CONTENT_BOTTOM} px: shorten the texts or split the slide")
+            self.err(f"content is {y - CONTENT_BOTTOM:.0f} px too tall even in the tightest layout: shorten item texts "
+                     "to one line, drop an item or the note, or split the slide")
 
     # shared pieces
 
@@ -255,7 +267,37 @@ class Build:
         s and self.tile(s, x, y, tile, it.get("icon", "check"), variant)
         return max(h, tile)
 
-    def content(self, d, gray_label=False, head_w=720, x=80):
+    def stack(self, s, items, x, w, style, gap):
+        y = CONTENT_TOP
+        for it in items:
+            y += self.item(s, x, y, w, it, *style) + gap
+        return y - gap
+
+    def grid(self, s, items, cols, style, gap):
+        """Items in 2 or 3 columns; the tallest item of a row sets its height so rows line up."""
+        col_gap = 80 if cols == 2 else 40
+        w = (1120 - col_gap * (cols - 1)) / cols
+        y = CONTENT_TOP
+        for r in range(0, len(items), cols):
+            row = items[r:r + cols]
+            h = max(self.item(None, 0, 0, w, it, *style) for it in row)
+            for i, it in enumerate(row):
+                s and self.item(s, 80 + i * (w + col_gap), y, w, it, *style)
+            y += h + gap
+        return y - gap
+
+    def layout(self, s, options, limit):
+        """Draws the first option whose texts fit and that ends above limit; else the last one, which reports why."""
+        for draw in options:
+            end, ok = self.trial(lambda: draw(None))
+            if ok and end <= limit:
+                return draw(s)
+        return draw(s)
+
+    def note_h(self, d):
+        return 24 + self.trial(lambda: self.fit(d["note"], 22, 1072, 2, "note"))[0] * 30 + 32 if d.get("note") else 0
+
+    def content(self, d, gray_label=False, head_w=960, x=80):
         s = Slide(C["white"], d.get("notes", ""))
         s.text(x, 64, 1200 - x, 24, d.get("label", "").upper(), 18, 24, "med", C["muted"] if gray_label else C["red"], spacing=.1)
         n = self.fit(d["title"], 52, head_w, 2, "headline", "med", -.02)
@@ -274,7 +316,7 @@ class Build:
             self.bottom(y)
             return
         n = self.fit(d["note"], 22, 1072, 2, "note")
-        y += 32
+        y += 24
         s.rect(80, y, 1120, n * 30 + 32, C["surface"], r=12)
         s.text(104, y + 16, 1072, n * 30, d["note"], 22, 30, color=C["muted"])
         self.bottom(y + n * 30 + 32)
@@ -285,7 +327,7 @@ class Build:
         s = Slide(C["red"], d.get("notes", ""))
         path, ratio = logo("white")
         s.image(80, 64, 40 * ratio, 40, path)
-        w = 560
+        w = 560 if d.get("photo") else 760
         if d.get("photo"):
             self.photo_el(s, 720, 0, 560, 720, d["photo"], d.get("focus"))
         s.rect(80, 576, w, 1, on_red(.3))
@@ -314,18 +356,19 @@ class Build:
 
     def list(self, d):
         s = self.content(d)
-        items = self.count(d["items"], 1, 4, "items")
-        end = CONTENT_TOP
-        if d.get("intro"):
-            n = self.fit(d["intro"], 28, 400, 8, "intro")
-            s.text(80, CONTENT_TOP, 400, n * 40, d["intro"], 28, 40)
-            x, w, end = 560, 640, CONTENT_TOP + n * 40
-        else:
-            x, w = 80, 760
-        y, gap = CONTENT_TOP, 24 if len(items) < 4 else 16  # four items only fit with the tighter gap
-        for it in items:
-            y += self.item(s, x, y, w, it) + gap
-        self.note(s, d, max(end, y - gap))
+        intro = d.get("intro")
+        items = self.count(d["items"], 1, 4 if intro else 6, "items next to an intro" if intro else "items")
+        end, limit = CONTENT_TOP, CONTENT_BOTTOM - self.note_h(d)
+        tight = ((REGULAR, 24), (REGULAR, 16), (DENSE, 16))
+        if intro:
+            n = self.fit(intro, 28, 400, 8, "intro")
+            s.text(80, CONTENT_TOP, 400, n * 40, intro, 28, 40)
+            end = CONTENT_TOP + n * 40
+            options = [lambda t, st=st, g=g: self.stack(t, items, 560, 640, st, g) for st, g in tight]
+        else:  # one column while it fits, then 2 columns; 3 only as a last resort (narrow, titles wrap unevenly)
+            options = [lambda t, st=st, g=g: self.stack(t, items, 80, 760, st, g) for st, g in tight if len(items) <= 4]
+            options += [lambda t, c=c, st=st, g=g: self.grid(t, items, c, st, g) for c in (2, 3) for st, g in tight]
+        self.note(s, d, max(end, self.layout(s, options, limit)))
         self.footer(s)
         return s
 
@@ -343,15 +386,17 @@ class Build:
             s.rect(x, CONTENT_TOP + 44, w, 1, C["border"])
         # both columns share the row positions: the taller item of a row sets its height
         lists = [self.count(c["items"], 1, 3, "items in a column") for c in cols]
-        rows = [max(self.item(None, 0, 0, 520, l[r], *COMPACT) for l in lists if r < len(l))
-                for r in range(max(map(len, lists)))]
-        for i, items in enumerate(lists):
-            y = CONTENT_TOP + 68
-            for r, it in enumerate(items):
-                self.item(s, 80 + i * 600, y, 520, it, *COMPACT)
-                y += rows[r] + 20
-        end = CONTENT_TOP + 68 + sum(rows) + 20 * (len(rows) - 1)
-        self.note(s, d, end)
+        def draw(t, style, gap):
+            rows = [max(self.item(None, 0, 0, 520, l[r], *style) for l in lists if r < len(l))
+                    for r in range(max(map(len, lists)))]
+            for i, items in enumerate(lists):
+                y = CONTENT_TOP + 68
+                for r, it in enumerate(items):
+                    t and self.item(t, 80 + i * 600, y, 520, it, *style)
+                    y += rows[r] + gap
+            return CONTENT_TOP + 68 + sum(rows) + gap * (len(rows) - 1)
+        options = [lambda t, st=st, g=g: draw(t, st, g) for st, g in ((COMPACT, 20), (COMPACT, 12), (DENSE, 12))]
+        self.note(s, d, self.layout(s, options, CONTENT_BOTTOM - self.note_h(d)))
         self.footer(s)
         return s
 
@@ -474,6 +519,48 @@ class Build:
         self.footer(s)
         return s
 
+    def chart(self, d):
+        """Horizontal bars: the highlighted item red, the rest gray; the red bar is the hero, so the label is gray."""
+        s = self.content(d, gray_label=True)
+        bars = self.count(d["bars"], 2, 6, "bars")
+        if sum(bool(b.get("highlight")) for b in bars) != 1:
+            self.warnings.append(f"slide {self.n}: highlight exactly one bar, the one the headline talks about")
+        bottom = CONTENT_BOTTOM
+        if d.get("source"):
+            n = self.fit(d["source"], 18, 1120, 2, "chart source")
+            bottom -= n * 24
+            s.text(80, bottom, 1120, n * 24, d["source"], 18, 24, color=C["muted"])
+            bottom -= 24
+        top = max(b["value"] for b in bars) or 1
+        step = min(64, (bottom - CONTENT_TOP - 30) / max(len(bars) - 1, 1))
+        unit = d.get("unit", "")
+        for i, b in enumerate(bars):
+            y = CONTENT_TOP + i * step
+            self.fit(b["label"], 22, 300, 1, "bar label")
+            s.text(80, y, 300, 30, b["label"], 22, 30, "med" if b.get("highlight") else "reg")
+            w = max(4, b["value"] / top * 640)
+            s.rect(400, y + 1, w, 28, C["red"] if b.get("highlight") else C["g400"], r=4)
+            value = b.get("text") or f"{b['value']:,}".replace(",", " ") + unit
+            s.text(400 + w + 16, y, 180, 30, value, 22, 30, "med", C["red"] if b.get("highlight") else C["ink"])
+        self.footer(s)
+        return s
+
+    def quote(self, d):
+        """A client's words on a light gray slide; the quote takes the headline's place, the name sits at the bottom."""
+        s = Slide(C["surface"], d.get("notes", ""))
+        s.text(80, 64, 1120, 24, d.get("label", "").upper(), 18, 24, "med", C["red"], spacing=.1)
+        q = QUOTES.get(self.deck.get("lang", "cs-CZ").split("-")[0], "“”")
+        text = q[0] + d["text"] + q[1]
+        n = self.fit(text, 44, 960, 5, "quote", "med", -.01)
+        s.text(80, 100, 960, max(n, 2) * 56, text, 44, 56, "med", spacing=-.01)
+        s.rect(80, 528, 64, 2, C["red"])
+        s.text(80, 552, 1120, 34, d["name"], 26, 34, "med")
+        if d.get("role"):
+            self.fit(d["role"], 22, 1120, 1, "quote role")
+            s.text(80, 590, 1120, 30, d["role"], 22, 30, color=C["muted"])
+        self.footer(s)
+        return s
+
     def closing(self, d):
         s = Slide(C["red"], d.get("notes", ""))
         path, ratio = logo("white")
@@ -506,9 +593,10 @@ class Build:
     def run(self):
         lang = self.deck.get("lang", "cs-CZ")
         fix = lambda v: typeset(v, lang) if isinstance(v, str) else [fix(i) for i in v] if isinstance(v, list) \
-            else {k: fix(i) if k not in ("type", "icon", "photo", "focus", "side") else i for k, i in v.items()} if isinstance(v, dict) else v
+            else {k: fix(i) if k not in ("type", "icon", "photo", "focus", "side", "value", "highlight") else i for k, i in v.items()} if isinstance(v, dict) else v
         self.deck["slides"] = fix(self.deck["slides"])
-        types = ("cover", "list", "columns", "process", "statement", "number", "photo", "photo-full", "gallery", "closing")
+        types = ("cover", "list", "columns", "process", "statement", "number", "chart", "quote", "photo", "photo-full",
+                 "gallery", "closing")
         slides = []
         for self.n, d in enumerate(self.deck["slides"], 1):
             t = d.get("type")
@@ -658,6 +746,8 @@ def main():
     if a.preview:
         to_html(slides, a.preview, lang.split("-")[0])
     print(f"{a.out}: {len(slides)} slides" + (f", preview {a.preview}" if a.preview else ""))
+    print("Inter must be installed where the .pptx is opened (the skill's fonts/), or PowerPoint swaps the font and "
+          "line breaks move. For clients send the PDF: python3 scripts/check_deck.py deck.pptx --render DIR")
 
 
 if __name__ == "__main__":

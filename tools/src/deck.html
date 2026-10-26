@@ -39,7 +39,7 @@ body { font: 400 22px/32px var(--font); color: var(--ink); }
 /* content slide chrome */
 .label { font: 500 18px/24px var(--font-medium); letter-spacing: .1em; text-transform: uppercase; color: var(--primary); }
 .label--gray { color: var(--muted); }
-h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12px 0 0; max-width: 22ch; }
+h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12px 0 0; max-width: 960px; }
 /* fixed grid: the headline box always reserves two lines, so content starts at the same y (268 px) on every content slide */
 .slide:not(.slide--red) h2 { min-height: 120px; }
 .lead { margin: 16px 0 0; color: var(--muted); max-width: 52ch; }
@@ -89,7 +89,7 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
 .cols .item h3 { font-size: 24px; line-height: 32px; }
 .cols .item p { font-size: 22px; line-height: 30px; margin-top: 4px; }
 /* note: a remark that must not get lost (e.g. what is not included), under the content */
-.note { margin: 32px 0 0; padding: 16px 24px; border-radius: 12px; background: var(--surface); color: var(--muted); }
+.note { margin: 24px 0 0; padding: 16px 24px; border-radius: 12px; background: var(--surface); color: var(--muted); }
 
 /* photos: always cropped, never stretched (object-fit: cover; move the crop with object-position).
    .ph is a stand-in: replace it with <img class="photo" src="data:…" style="object-position: 50% 30%">. */
@@ -131,6 +131,27 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
 .fact .tile { width: 56px; height: 56px; padding: 14px; border-radius: 14px; }
 .fact h3 { font: 500 24px/32px var(--font-medium); margin: 0; padding-top: 2px; }
 .fact p { margin: 2px 0 0; color: var(--muted); font-size: 22px; line-height: 30px; }
+
+/* chart: horizontal bars, the highlighted one red, the rest gray; --v = value / largest value */
+.bars { display: grid; gap: 34px; margin: 48px 0 0; }
+.bar { display: flex; align-items: center; font-size: 22px; line-height: 30px; }
+.bar span { width: 300px; margin-right: 20px; }
+.bar i { width: calc(640px * var(--v)); min-width: 4px; height: 28px; border-radius: 4px; background: var(--gray-400); margin-right: 16px; }
+.bar b { font: 500 22px/30px var(--font-medium); }
+.bar--hi span { font-family: var(--font-medium); font-weight: 500; }
+.bar--hi i { background: var(--primary); }
+.bar--hi b { color: var(--primary); }
+.chart-src { margin: auto 0 24px; font-size: 18px; line-height: 24px; color: var(--muted); }
+.chart-src + .foot { margin-top: 0; }
+
+/* quote: light gray slide, the quote takes the headline's place, the name sits at the bottom */
+.quote { background: var(--surface); }
+.quote blockquote { font: 500 44px/56px var(--font-medium); letter-spacing: -.01em; margin: 12px 0 0; max-width: 960px; }
+.quote .who { margin: auto 0 36px; padding-top: 22px; position: relative; }
+.quote .who::before { content: ""; position: absolute; top: 0; left: 0; width: 64px; height: 2px; background: var(--primary); }
+.quote .who b { display: block; font: 500 26px/34px var(--font-medium); }
+.quote .who span { font-size: 22px; line-height: 30px; color: var(--muted); }
+.quote .who + .foot { margin-top: 0; }
 
 /* closing */
 .closing h2 { font-size: 72px; line-height: 78px; max-width: 14ch; margin-top: auto; }
@@ -252,7 +273,31 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
   <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">8</span></div>
 </section>
 
-<!-- 8 · CLOSING – full red, white text, contact with white icons. -->
+<!-- 8 · CHART – one comparison, horizontal bars. The highlighted bar is the hero (red), so the label is gray.
+     --v on each bar = its value / the largest value. 2–6 bars; source below. -->
+<section class="slide">
+  <div class="label label--gray">{{Section}}</div>
+  <h2>{{Headline as a claim about the data}}</h2>
+  <div class="bars">
+    <div class="bar bar--hi"><span>{{Bar}}</span><i style="--v:1"></i><b>{{Bar value}}</b></div>
+    <div class="bar"><span>{{Bar}}</span><i style="--v:.33"></i><b>{{Bar value}}</b></div>
+    <div class="bar"><span>{{Bar}}</span><i style="--v:.17"></i><b>{{Bar value}}</b></div>
+    <div class="bar"><span>{{Bar}}</span><i style="--v:.06"></i><b>{{Bar value}}</b></div>
+  </div>
+  <p class="chart-src">{{Chart source: what is measured, period.}}</p>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">9</span></div>
+</section>
+
+<!-- 9 · QUOTE – a client's own words. Light gray, red label allowed, no other red except the short rule.
+     Use the language's quotation marks: „…“ in Czech, “…” in English. -->
+<section class="slide quote">
+  <div class="label">{{Section}}</div>
+  <blockquote>“{{Client's words, one or two sentences}}”</blockquote>
+  <div class="who"><b>{{Client name}}</b><span>{{Role, hotel}}</span></div>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">10</span></div>
+</section>
+
+<!-- 10 · CLOSING – full red, white text, contact with white icons. -->
 <section class="slide slide--red closing">
   %%LOGO:white%%
   <h2>{{Closing line, e.g. a next step}}</h2>

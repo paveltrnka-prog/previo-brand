@@ -172,6 +172,11 @@ When the design system changes, update `tokens.md`; `SKILL.md` usually stays as 
 - Photos: new slide types full photo (`photo-full`) and gallery (2–3 photos); `focus` keeps the subject
   in view when cropping; `photo` can sit on the left; the generator warns about low-resolution photos
   and scales large ones down.
+- New slide types chart (horizontal bars, one highlighted red) and quote (client reference).
+- The generator adapts the layout before it refuses content: a list of 5–6 items goes into two
+  columns, spacing and type tighten down to the 12 pt minimum. Tested on a real 12-slide offer.
+- Inter is not embedded in a `.pptx`: install `fonts/` on every computer that opens it, or send a PDF
+  (`check_deck.py --render`). The generator prints this after every build.
 
 **v5**
 - New `templates/deck.html`: 16:9 deck with red cover and closing, red statement slide, icon lists,

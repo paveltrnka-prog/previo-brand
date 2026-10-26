@@ -69,6 +69,7 @@ def check(path):
         if red or full:  # red slides and full-slide photos have their own bottom-up layout
             rows.append((n, "red" if red else "photo", "", "", ""))
             continue
+        quote = bg == "f2f2f2"  # the quote replaces the headline and runs on; the name sits at the bottom
         texts = sorted([s for s in shapes if s.has_text_frame and s.text_frame.text.strip() and px(s.top) < 600],
                        key=lambda s: (px(s.top), px(s.left)))
         label = next((s for s in texts if px(s.top) < 90), None)
@@ -77,7 +78,9 @@ def check(path):
                 and not (s.shape_type == MSO_SHAPE_TYPE.PICTURE and px(s.top) <= 0)]  # skip half-slide photos from the top edge
         top = min((px(s.top) for s in body), default=None)
         rows.append((n, "content", label and px(label.top), head and px(head.top), top))
-        for name, got in (("label", label and px(label.top)), ("headline", head and px(head.top)), ("content", top)):
+        if quote:
+            rows[-1] = (n, "quote") + rows[-1][2:4] + ("",)
+        for name, got in (("label", label and px(label.top)), ("headline", head and px(head.top)), ("content", top))[:2 if quote else 3]:
             if got is None:
                 warnings.append(f"slide {n}: no {name} found")
             elif abs(got - GRID[name]) > TOL:

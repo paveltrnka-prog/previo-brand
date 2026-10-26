@@ -34,7 +34,7 @@ words), `"footer"` (deck title on every white slide), `"slides"`. Every slide ca
 | `type` | Fields (* required) | Limits |
 |---|---|---|
 | `cover` | `title`*, `label`, `subtitle`, `author`, `date`*, `photo`, `focus` | title ≤ 3 lines |
-| `list` | `label`, `title`*, `intro` (left column), `items`*: `[{icon, title, text}]`, `note` | 1–4 items |
+| `list` | `label`, `title`*, `intro` (left column), `items`*: `[{icon, title, text}]`, `note` | 1–6 items (1–4 next to an intro) |
 | `columns` | `label`, `title`*, `columns`*: two × `{prefix, title, items}`, `note` | 1–3 items per column, rows aligned |
 | `process` | `label`, `title`*, `steps`*: `[{icon, title, text, repeat, note}]` | 3–5 steps; `repeat: true` = dark tile |
 | `statement` | `number`, `title`*, `text` | red; one per 8 slides |
@@ -42,6 +42,8 @@ words), `"footer"` (deck title on every white slide), `"slides"`. Every slide ca
 | `photo` | `label`, `title`*, `text`, `photo`*, `focus`, `side` (`right`/`left`) | photo on one half |
 | `photo-full` | `label`, `title`*, `text`, `photo`*, `focus` | title ≤ 2 lines; hero: not next to a red slide, ≤ 2 per deck |
 | `gallery` | `label`, `title`*, `photos`*: `[{photo, caption, focus}]` | 2–3 photos, caption ≤ 2 lines |
+| `chart` | `label`, `title`*, `bars`*: `[{label, value, text, highlight}]`, `unit`, `source` | 2–6 bars, exactly one `highlight`; label gray |
+| `quote` | `label`, `text`*, `name`*, `role` | light gray; quote ≤ 5 lines, quotation marks added by `lang` |
 | `closing` | `title`*, `text`, `name`, `email`, `phone` | contact on one row |
 
 Photos: `photo` is a path relative to the JSON file. `focus` says what must stay in view when the
@@ -51,8 +53,17 @@ fewer pixels than 1.5 × its frame (a full-slide photo needs 1920 × 1080) and s
 down to JPEG, so the deck stays a few MB (needs Pillow, or `sips` on a Mac).
 
 `note` is a gray box under the content for a remark that must not get lost (e.g. what is not
-included). Headlines on white slides have room for two lines (≈ 22 characters per line at Inter
+included). Headlines on white slides have room for two lines (≈ 30 characters per line at Inter
 Medium): a headline that does not fit is a sign it is a sentence, not a claim.
+
+Layout adapts before it refuses: a `list` goes from one column to two (and three as a last resort),
+then to tighter spacing and smaller type (never under 22 px ≈ 12 pt); `columns` tightens the same way.
+Only when even the tightest layout overflows does the script stop and say by how much. Then shorten
+item texts to one line, drop an item or the note, or split the slide.
+
+After building, the script reminds you: **Inter must be installed where the .pptx is opened**, or
+PowerPoint swaps the font and the line breaks move. Send clients the PDF from
+`check_deck.py deck.pptx --render DIR`.
 
 ## Rhythm: a deck is not all gray
 
@@ -167,7 +178,9 @@ only section labels and the footer go down to 10 pt.
 - Use **one name** for the product/service throughout the deck (e.g. not "M+", "Program M+" and
   "Marketing+" mixed); introduce an abbreviation once on the cover or slide 2.
 - Font: headings `Inter Medium`, text `Inter` (installed from the skill's `fonts/`). If they cannot be
-  installed, tell the user. The .pptx does not carry the font: offer a PDF export for sharing.
+  installed, tell the user. **The .pptx does not carry the font**: whoever opens it without Inter sees
+  a substitute with different line breaks, and the deck looks uneven again. Tell the user to install
+  `fonts/Inter-Regular.ttf` and `fonts/Inter-Medium.ttf`, and send clients a PDF, not the .pptx.
 - Page number and a small footer (Gray 500, 10 pt, color logo 0.22 in high) on every white slide; not on red slides.
 - No three identical KPI cards, no status pills or tag clouds of pills, no grid of identical gray cards.
 
