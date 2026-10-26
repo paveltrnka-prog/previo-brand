@@ -32,7 +32,11 @@ pravidla značky v `previo-brand/SKILL.md`.
 
 ## Gotchy
 
-- Na Macu není LibreOffice, PIL ani rsvg/ImageMagick — vše se rasterizuje přes headless Chrome.
+- LibreOffice je nainstalovaný (`brew --cask libreoffice`, `soffice`), poppler taky (`pdftoppm`, `pdffonts`).
+  Headless LibreOffice **nevidí systémová písma** (ani Helveticu) → nahradí Inter Linux Libertine. Řešení:
+  fonty do `<profil>/user/fonts/` a `-env:UserInstallation=…`; dělá to `scripts/check_deck.py --render`.
+  V sandboxu Claude Code musí soffice běžet mimo sandbox.
+- PIL ani rsvg/ImageMagick nejsou — SVG se rasterizuje přes headless Chrome.
 - Headless Chrome se zasekne na zámku profilu: vždy vlastní `--user-data-dir` a `timeout`.
 - Headless Chrome má minimální velikost okna: malé PNG (ikony, logo) vykreslit na 800×800 vycentrované
   a oříznout `sips -c` na střed. Jinak vznikají natažené nebo uříznuté obrázky.
@@ -46,7 +50,8 @@ pravidla značky v `previo-brand/SKILL.md`.
 
 ## Otevřené
 
-- `.pptx` výstupy nejde lokálně vykreslit (chybí `soffice`); ověřuje se HTML náhledem se stejným
-  rozvržením. Finální kontrola v PowerPointu/Keynote je na člověku.
+- Render přes LibreOffice odpovídá PowerPointu jen přibližně (zalomení se může lišit o slovo); finální
+  pohled v PowerPointu/Keynote je na člověku.
+- `deck-offer.png` v README je ještě z v5 (stará mřížka, malé ikony) — přegenerovat z JSONu přes generátor.
 - Zpětná vazba kolegy k v5 a předělané nabídce (v `~/Downloads/…_v2.pptx/.pdf`, mimo repo):
   potvrdit Meta Ads ve fázi 1, datum na titulce, oficiální název Marketing+ vs. M+.

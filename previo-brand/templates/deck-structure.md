@@ -69,6 +69,7 @@ red cover → content → content → [red statement] → content → content �
 |---|---|---|
 | **Cover** | full red | White logo top left; label (uppercase, white 80 %), title (Inter Medium 54+ pt, white), subtitle, **name and date** at the bottom. Optional photo of the client/hotel on the right part, edge to edge (see Photos). |
 | **Content – intro + list** | white | Red section label, headline as a claim, short intro on the left (≈⅓), max. 3–4 items on the right, each with an **icon tile**. |
+| **Content – two columns** | white | Red section label, headline, two groups side by side with sub-headings (A/B, 01/02, gray prefix), max. 3 items with icon tiles each; rows of both columns aligned. Optional gray **note** under them for a remark that must not get lost (e.g. what is not included). |
 | **Content – process** | white | Red section label, headline, 3–5 steps on a timeline: icon tile per step on a gray line, small gray step numbers. A repeating step gets a dark tile. Only for sequential content. |
 | **Statement / section** | full red | Big section number (white, 35 % opacity) or one strong claim, white. Nothing else. |
 | **Content – text + number** | white | Section label **gray** `#515151` (the red number is the hero); headline as a claim; one dominant number in red; facts beside it with **gray** icon tiles. |
@@ -154,8 +155,10 @@ only section labels and the footer go down to 10 pt.
 
 ## Check before you hand it over
 
-Render the deck to images (e.g. `soffice --headless --convert-to pdf` then `pdftoppm -png`, or the
-pptx skill's own renderer) and look at **every** slide:
+Run `python3 scripts/check_deck.py deck.pptx --render out/`. It checks the grid without rendering
+(label, headline and content position on every slide, tile sizes, fonts, edges) and then renders the
+deck with LibreOffice into `out/slide-N.png` and `out/contact-sheet.png`, with Inter loaded so line
+breaks match PowerPoint. Fix every ERROR, then look at **every** rendered slide:
 
 1. Photos keep their proportions (no squeezed people, furniture or buildings).
 2. No text overflows its box or overlaps another element; nothing touches the slide edge.

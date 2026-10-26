@@ -133,6 +133,7 @@ previo-brand/          the skill (this folder is what gets packaged)
 ├── logo/              color / black / white SVG
 ├── icons/             line icons (SVG) + png/ in red / ink / white for .pptx
 ├── scripts/           build_deck.py: JSON outline → .pptx on the fixed grid (+ deck-example.json)
+│                      check_deck.py: grid check of any .pptx + render to PNG via LibreOffice
 ├── alfred/            mascot + AI icon
 └── templates/         self-contained HTML templates + deck-structure.md (generated, do not edit HTML)
 tools/                 maintenance only, not part of the skill
@@ -162,8 +163,10 @@ When the design system changes, update `tokens.md`; `SKILL.md` usually stays as 
 - New `scripts/build_deck.py`: writes a `.pptx` from a JSON outline on one fixed grid (label, headline
   and content start at the same place on every slide), with an HTML preview. Measures text with the
   Inter metrics and refuses content that would overflow; checks the red rhythm; crops photos.
-- Deck slide types `columns` (two columns with aligned rows) and `note` box (a remark that must not
-  get lost).
+- New `scripts/check_deck.py`: checks any `.pptx` against the grid (positions, tile sizes, fonts,
+  edges) and renders it to PNG through LibreOffice with Inter loaded.
+- New slide type two columns with sub-headings (A/B, 01/02) and a `note` box, in `deck.html` and in
+  the generator.
 - Bigger icon tiles (0.5 in, icon 0.25 in); grid measurements in `deck-structure.md`.
 - Logo PNGs for `.pptx` (`logo/png/`).
 

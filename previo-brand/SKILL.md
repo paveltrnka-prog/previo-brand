@@ -28,9 +28,10 @@ absolute path or a path from your own machine into an output.
 | `alfred/alfred.svg`, `alfred/ai-icon.svg` | Alfred mascot and the AI icon |
 | `icons/*.svg`, `icons/png/<name>-<red,ink,white>.png` | The Previo icon set (line, 24 px grid); PNG for `.pptx` |
 | `templates/*.html` | Self-contained HTML templates (font, logo and icons already embedded) |
-| `templates/deck.html` | Deck in 6 slide types, 1280 × 720 px: visual reference for `.pptx`, or a PDF deck |
+| `templates/deck.html` | Deck in 7 slide types (incl. two columns + note), 1280 × 720 px: visual reference for `.pptx`, or a PDF deck |
 | `templates/deck-structure.md` | Slide types, rhythm, grid, icons, photos and the pre-delivery check for decks |
 | `scripts/build_deck.py`, `scripts/deck-example.json` | Generator: JSON outline → `.pptx` on the fixed grid, with HTML preview and content checks |
+| `scripts/check_deck.py` | Checks any `.pptx` against the grid and renders it to PNG (LibreOffice) |
 | `logo/png/previo-logo-{color,white,black}.png` | Logo as PNG for `.pptx` |
 
 ## How people use it

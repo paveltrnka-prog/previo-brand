@@ -79,6 +79,18 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
 .item h3 { font: 500 28px/36px var(--font-medium); margin: 0; }
 .item p { margin: 4px 0 0; color: var(--muted); font-size: 23px; line-height: 32px; }
 
+/* two columns with sub-headings (A/B, 01/02); rows of both columns share their positions */
+.cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 80px; margin: 48px 0 0; }
+.cols .col-h { font: 500 26px/34px var(--font-medium); padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.cols .col-h b { font-weight: 500; color: var(--gray-400); margin-right: 12px; }
+.cols .list { gap: 20px; }
+.cols .item { gap: 20px; }
+.cols .tile { width: 56px; height: 56px; padding: 14px; border-radius: 14px; }
+.cols .item h3 { font-size: 24px; line-height: 32px; }
+.cols .item p { font-size: 22px; line-height: 30px; margin-top: 4px; }
+/* note: a remark that must not get lost (e.g. what is not included), under the content */
+.note { margin: 32px 0 0; padding: 16px 24px; border-radius: 12px; background: var(--surface); color: var(--muted); }
+
 /* timeline */
 .steps { display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 24px; margin: 48px 0 0; position: relative; }
 .steps::before { content: ""; position: absolute; left: 32px; right: 32px; top: 32px; border-top: 2px solid var(--border); }
@@ -153,6 +165,25 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
   <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">3</span></div>
 </section>
 
+<!-- 3b · TWO COLUMNS – two groups side by side with sub-headings (A/B, 01/02), max. 3 items each,
+     optional note under them. Keep the same number of items in both columns when you can. -->
+<section class="slide">
+  <div class="label">{{Section}}</div>
+  <h2>{{Headline as a claim about both groups}}</h2>
+  <div class="cols">
+    <div><div class="col-h"><b>{{A}}</b>{{Column 1}}</div><div class="list">
+      <div class="item"><span class="tile ico">%%ICON:chart%%</span><div><h3>{{Item}}</h3><p>{{One concrete sentence.}}</p></div></div>
+      <div class="item"><span class="tile ico">%%ICON:search%%</span><div><h3>{{Item}}</h3><p>{{One concrete sentence.}}</p></div></div>
+    </div></div>
+    <div><div class="col-h"><b>{{B}}</b>{{Column 2}}</div><div class="list">
+      <div class="item"><span class="tile ico">%%ICON:document%%</span><div><h3>{{Item}}</h3><p>{{One concrete sentence.}}</p></div></div>
+      <div class="item"><span class="tile ico">%%ICON:calendar%%</span><div><h3>{{Item}}</h3><p>{{One concrete sentence.}}</p></div></div>
+    </div></div>
+  </div>
+  <p class="note">{{Optional note, e.g. what is not included.}}</p>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">4</span></div>
+</section>
+
 <!-- 4 · STATEMENT / SECTION – full red, at most one in the middle of a deck (or one per part of a long deck).
      A section number or one strong claim; nothing else. -->
 <section class="slide slide--red statement">
@@ -177,7 +208,7 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
       <div class="fact"><span class="tile tile--ink ico">%%ICON:clock%%</span><div><h3>{{Fact}}</h3><p>{{Detail.}}</p></div></div>
     </div>
   </div>
-  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">5</span></div>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">6</span></div>
 </section>
 
 <!-- 6 · CLOSING – full red, white text, contact with white icons. -->
