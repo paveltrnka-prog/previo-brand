@@ -49,6 +49,7 @@ def check(path):
         except (AttributeError, TypeError):
             bg = "ffffff"
         red = bg in ("b50000", "910000")
+        full = any(s.shape_type == MSO_SHAPE_TYPE.PICTURE and px(s.width) * px(s.height) > .9 * W * H for s in shapes)
         for s in shapes:
             if s.left is None:
                 continue
@@ -65,15 +66,15 @@ def check(path):
                         if r.text.strip() and r.font.name not in FONTS:
                             errors.append(f"slide {n}: font {r.font.name or 'theme default'!r} in {r.text[:30]!r}; use Inter / Inter Medium")
                             break
-        if red:
-            rows.append((n, "red", "", "", ""))
+        if red or full:  # red slides and full-slide photos have their own bottom-up layout
+            rows.append((n, "red" if red else "photo", "", "", ""))
             continue
         texts = sorted([s for s in shapes if s.has_text_frame and s.text_frame.text.strip() and px(s.top) < 600],
                        key=lambda s: (px(s.top), px(s.left)))
         label = next((s for s in texts if px(s.top) < 90), None)
         head = next((s for s in texts if 90 <= px(s.top) < 200 and px(s.height) >= 50), None)
         body = [s for s in shapes if s.left is not None and px(s.top) >= 230 and px(s.top) < 640
-                and not (s.shape_type == MSO_SHAPE_TYPE.PICTURE and px(s.width) > W / 3)]
+                and not (s.shape_type == MSO_SHAPE_TYPE.PICTURE and px(s.top) <= 0)]  # skip half-slide photos from the top edge
         top = min((px(s.top) for s in body), default=None)
         rows.append((n, "content", label and px(label.top), head and px(head.top), top))
         for name, got in (("label", label and px(label.top)), ("headline", head and px(head.top)), ("content", top)):

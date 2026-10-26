@@ -168,7 +168,10 @@ When the design system changes, update `tokens.md`; `SKILL.md` usually stays as 
 - New slide type two columns with sub-headings (A/B, 01/02) and a `note` box, in `deck.html` and in
   the generator.
 - Bigger icon tiles (0.5 in, icon 0.25 in); grid measurements in `deck-structure.md`.
-- Logo PNGs for `.pptx` (`logo/png/`).
+- Logo PNGs for `.pptx` (`logo/png/`); footer logo 28 px instead of 20 px.
+- Photos: new slide types full photo (`photo-full`) and gallery (2–3 photos); `focus` keeps the subject
+  in view when cropping; `photo` can sit on the left; the generator warns about low-resolution photos
+  and scales large ones down.
 
 **v5**
 - New `templates/deck.html`: 16:9 deck with red cover and closing, red statement slide, icon lists,

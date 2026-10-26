@@ -91,6 +91,25 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
 /* note: a remark that must not get lost (e.g. what is not included), under the content */
 .note { margin: 32px 0 0; padding: 16px 24px; border-radius: 12px; background: var(--surface); color: var(--muted); }
 
+/* photos: always cropped, never stretched (object-fit: cover; move the crop with object-position).
+   .ph is a stand-in: replace it with <img class="photo" src="data:…" style="object-position: 50% 30%">. */
+.ph { background: linear-gradient(160deg, #c9d3dc, #8a9aa6); }
+/* full photo: the photo is the message; the claim sits on a dark gradient, white logo bottom right */
+.slide--photo { background: var(--ink); color: #fff; justify-content: flex-end; padding-bottom: 64px; }
+.slide--photo > .photo, .slide--photo > .ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.slide--photo::after { content: ""; position: absolute; inset: 160px 0 0; background: linear-gradient(rgba(20,20,22,0), rgba(20,20,22,.82)); }
+.slide--photo > :not(.photo):not(.ph):not(.logo) { position: relative; z-index: 1; }
+.slide--photo .label { color: #e0e0e0; }
+.slide--photo h2 { font-size: 64px; line-height: 72px; max-width: 760px; margin-top: 20px; }
+.slide--photo .lead { color: #e8e8e8; font-size: 24px; line-height: 34px; max-width: 720px; }
+.slide--photo .logo { position: absolute; right: 80px; bottom: 64px; z-index: 1; }
+.slide--photo .logo svg { height: 32px; }
+/* gallery: 2–3 photos of one height in a row, rounded 16 px, optional caption under each */
+.gallery { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 24px; margin: 48px 0 0; height: 364px; }
+.gallery figure { margin: 0; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.gallery .photo, .gallery .ph { flex: 1; min-height: 0; width: 100%; object-fit: cover; border-radius: 16px; }
+.gallery figcaption { color: var(--muted); font-size: 22px; line-height: 30px; }
+
 /* timeline */
 .steps { display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 24px; margin: 48px 0 0; position: relative; }
 .steps::before { content: ""; position: absolute; left: 32px; right: 32px; top: 32px; border-top: 2px solid var(--border); }
@@ -211,7 +230,29 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
   <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">6</span></div>
 </section>
 
-<!-- 6 · CLOSING – full red, white text, contact with white icons. -->
+<!-- 6 · FULL PHOTO – the photo is the message (the property, the area, the team). Counts as a hero like a
+     red slide: never next to a red slide, at most two per deck. Needs a photo of at least 1920 × 1080 px. -->
+<section class="slide slide--photo">
+  <div class="ph"></div>
+  <div class="label">{{Section}}</div>
+  <h2>{{Short claim the photo proves}}</h2>
+  <p class="lead">{{Optional single sentence.}}</p>
+  %%LOGO:white%%
+</section>
+
+<!-- 7 · GALLERY – 2–3 photos side by side (results, before/after, seasons), one height, optional captions. -->
+<section class="slide">
+  <div class="label">{{Section}}</div>
+  <h2>{{Headline as a claim about the photos}}</h2>
+  <div class="gallery">
+    <figure><div class="ph"></div><figcaption>{{Caption}}</figcaption></figure>
+    <figure><div class="ph"></div><figcaption>{{Caption}}</figcaption></figure>
+    <figure><div class="ph"></div><figcaption>{{Caption}}</figcaption></figure>
+  </div>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">8</span></div>
+</section>
+
+<!-- 8 · CLOSING – full red, white text, contact with white icons. -->
 <section class="slide slide--red closing">
   %%LOGO:white%%
   <h2>{{Closing line, e.g. a next step}}</h2>

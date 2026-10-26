@@ -44,6 +44,9 @@ pravidla značky v `previo-brand/SKILL.md`.
 - `python-pptx` není v systému (PEP 668); instalovat do venv (`python3 -m venv … && pip install python-pptx`).
 - Push do `paveltrnka-prog/previo-brand` jde jen z gh účtu `paveltrnka-prog`
   (`gh auth switch -u paveltrnka-prog && gh auth setup-git`); pod `trnkapavel` vrací 403.
+- Fotky v generátoru: cesta relativně k JSON, zmenšení přes Pillow nebo `sips` (Pillow na Macu není),
+  přechod pod textem celostránkové fotky je vygenerované PNG 1×256 (pptx nemá spolehlivý gradient s průhledností).
+  Testovací fotky z picsum.photos jen ve scratchpadu — do veřejného repa žádné fotky hotelů.
 - Generátor zalamuje o 4 % dřív než Chrome (PowerPoint láme dřív); nadpis má max. 2 řádky ≈ 22 znaků/řádek.
 - Bílé/černé logo SVG má jiný rozměr (118×64) než barevné (102×56) — poměr brát z PNG, ne natvrdo.
 - Merge PR přes Claude blokuje auto mode („merge bez review“) — merguje Pavel sám.

@@ -13,7 +13,7 @@ Fix the content, do not move the boxes. Colors follow the red rule automatically
 gets a gray label and gray icon tiles).
 --preview writes an HTML rendering of the same layout, for checking without PowerPoint.
 """
-import argparse, base64, json, pathlib, re, struct, sys
+import argparse, base64, json, pathlib, re, shutil, struct, subprocess, sys, tempfile, zlib
 
 SKILL = pathlib.Path(__file__).resolve().parent.parent
 EMU = 914400 / 128  # EMU per px: the 1280 px wide slide is 10 in
@@ -23,6 +23,9 @@ C = dict(red="b50000", soft="faeaeb", ink="202124", muted="515151", g400="b2b2b2
 ICONS = {p.stem for p in (SKILL / "icons").glob("*.svg")}
 CONTENT_TOP, CONTENT_BOTTOM = 268, 632  # content block on white slides; footer line at 656
 COMPACT = (56, "red", (24, 32), (22, 30), 20, 2)  # item in two columns: smaller tile and type
+FOCUS = dict(center=(.5, .5), top=(.5, 0), bottom=(.5, 1), left=(0, .5), right=(1, .5))
+SHARP = 1.5  # photo px per slide px: a full-slide photo needs 1920 x 1080 to stay sharp on a projector
+TMP = pathlib.Path(tempfile.mkdtemp(prefix="previo-deck-"))  # scaled photos and the scrim; the preview links to them
 
 
 def logo(variant):
@@ -38,6 +41,55 @@ def typeset(text, lang):
     if lang.startswith(("cs", "sk")):
         text = re.sub(r"(?<![\w\u00a0])([kKsSvVzZoOuUaAiI]) ", "\\1\u00a0", text)
     return text
+
+
+def crop(iw, ih, w, h, focus):
+    """Crop fractions (left, top, right, bottom) filling a w x h frame without stretching; the focus
+    point (0–1 from the left and top) stays in view. Same rule as CSS object-position."""
+    fx, fy = focus
+    if iw / ih > w / h:
+        c = 1 - (w / h) / (iw / ih)
+        return c * fx, 0, c * (1 - fx), 0
+    c = 1 - (iw / ih) / (w / h)
+    return 0, c * fy, 0, c * (1 - fy)
+
+
+def scrim():
+    """1 x 256 px PNG, clear at the top and dark at the bottom: stretched over a photo it keeps white text legible."""
+    path = TMP / "scrim.png"
+    if not path.exists():
+        rows = b"".join(b"\0" + bytes((20, 20, 22, round(210 * y / 255))) for y in range(256))
+        chunk = lambda t, d: struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d))
+        path.write_bytes(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 1, 256, 8, 6, 0, 0, 0))
+                         + chunk(b"IDAT", zlib.compress(rows)) + chunk(b"IEND", b""))
+    return path
+
+
+def shrink(path, w, h):
+    """JPEG copy scaled to SHARP x the frame, so a deck with photos stays a few MB. Uses Pillow, or sips
+    on a Mac; returns the original when neither is there or the photo is not larger than needed."""
+    try:
+        from PIL import Image, ImageOps
+        im = ImageOps.exif_transpose(Image.open(path))  # phone photos are often stored rotated
+        k = max(w * SHARP / im.width, h * SHARP / im.height)
+        if k >= 1 and path.suffix.lower() in (".jpg", ".jpeg"):
+            return path
+        out = TMP / f"{len(list(TMP.iterdir()))}-{path.stem}.jpg"
+        if k < 1:
+            im = im.resize((round(im.width * k), round(im.height * k)), Image.LANCZOS)
+        im.convert("RGB").save(out, quality=82, optimize=True)
+        return out
+    except ImportError:
+        pass
+    from pptx.parts.image import Image as PImage
+    iw, ih = PImage.from_file(str(path)).size
+    k = max(w * SHARP / iw, h * SHARP / ih)
+    if k >= 1 or not shutil.which("sips"):
+        return path
+    out = TMP / f"{len(list(TMP.iterdir()))}-{path.stem}.jpg"
+    subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "82", "-z", str(round(ih * k)), str(round(iw * k)),
+                    str(path), "--out", str(out)], check=True, capture_output=True)
+    return out
 
 
 def on_red(alpha):
@@ -126,8 +178,9 @@ class Slide:
     def rect(self, x, y, w, h, fill, r=0, line=None):
         self.els.append(dict(k="rect", x=x, y=y, w=w, h=h, fill=fill, r=r, line=line))
 
-    def image(self, x, y, w, h, path, cover=False):
-        self.els.append(dict(k="image", x=x, y=y, w=w, h=h, path=pathlib.Path(path), cover=cover))
+    def image(self, x, y, w, h, path, focus=None, r=0):
+        """focus = None stretches to the frame (icons, logo); a focus point crops a photo to fill it."""
+        self.els.append(dict(k="image", x=x, y=y, w=w, h=h, path=pathlib.Path(path), focus=focus, r=r))
 
     def text(self, x, y, w, h, text, size, lh, font="reg", color=C["ink"], anchor="top", align="left", spacing=0):
         self.els.append(dict(k="text", x=x, y=y, w=w, h=h, text=str(text), size=size, lh=lh, font=font,
@@ -135,8 +188,8 @@ class Slide:
 
 
 class Build:
-    def __init__(self, deck):
-        self.deck, self.errors, self.warnings, self.n = deck, [], [], 0
+    def __init__(self, deck, base=pathlib.Path(".")):
+        self.deck, self.base, self.errors, self.warnings, self.n = deck, base, [], [], 0
 
     def err(self, msg):
         self.errors.append(f"slide {self.n}: {msg}")
@@ -157,6 +210,29 @@ class Build:
             self.err(f"content ends at {y:.0f} px, limit {CONTENT_BOTTOM} px: shorten the texts or split the slide")
 
     # shared pieces
+
+    def photo_el(self, s, x, y, w, h, src, focus=None, r=0):
+        """Photo cropped to the frame around its focus point; warns when it is too small to stay sharp."""
+        path = next((p for p in (self.base / src, pathlib.Path(src)) if p.is_file()), None)
+        if path is None:
+            self.err(f"photo not found: {src} (paths are relative to the outline file)")
+            return
+        f = FOCUS.get(focus or "center") if not isinstance(focus, list) else tuple(focus)
+        if f is None or len(f) != 2 or not all(0 <= v <= 1 for v in f):
+            self.err(f"focus {focus!r}: use {', '.join(FOCUS)} or [x, y] from 0 to 1 (0, 0 = top left)")
+            f = FOCUS["center"]
+        from pptx.parts.image import Image
+        iw, ih = Image.from_file(str(path)).size
+        if min(iw / w, ih / h) < SHARP - .05:
+            self.warnings.append(f"slide {self.n}: photo {path.name} is {iw} × {ih} px, this frame needs "
+                                 f"{round(w * SHARP)} × {round(h * SHARP)} px to stay sharp; use a larger photo")
+        if path.stat().st_size > 3e6 and not shutil.which("sips"):
+            try:
+                import PIL  # noqa: F401
+            except ImportError:
+                self.warnings.append(f"slide {self.n}: photo {path.name} is {path.stat().st_size / 1e6:.0f} MB and cannot be "
+                                     "scaled down here (pip install pillow); the deck will be heavy")
+        s.image(x, y, w, h, shrink(path, w, h), f, r)
 
     def tile(self, s, x, y, size, icon, variant="red"):
         if icon not in ICONS:
@@ -179,18 +255,18 @@ class Build:
         s and self.tile(s, x, y, tile, it.get("icon", "check"), variant)
         return max(h, tile)
 
-    def content(self, d, gray_label=False, head_w=720):
+    def content(self, d, gray_label=False, head_w=720, x=80):
         s = Slide(C["white"], d.get("notes", ""))
-        s.text(80, 64, 1120, 24, d.get("label", "").upper(), 18, 24, "med", C["muted"] if gray_label else C["red"], spacing=.1)
+        s.text(x, 64, 1200 - x, 24, d.get("label", "").upper(), 18, 24, "med", C["muted"] if gray_label else C["red"], spacing=.1)
         n = self.fit(d["title"], 52, head_w, 2, "headline", "med", -.02)
-        s.text(80, 100, head_w, 120, d["title"], 52, 60, "med", spacing=-.02)  # always two lines tall
+        s.text(x, 100, head_w, 120, d["title"], 52, 60, "med", spacing=-.02)  # always two lines tall
         return s
 
-    def footer(self, s, right=1280):
-        s.rect(0, 656, right, 1, C["border"])
+    def footer(self, s, left=0, right=1280):
+        s.rect(left, 656, right - left, 1, C["border"])
         path, ratio = logo("color")
-        s.image(80, 674, 28 * ratio, 28, path)  # 28 px: at 20 px the logo reads as a gray dash
-        s.text(80 + 28 * ratio + 16, 676, right - 300, 24, self.deck.get("footer", ""), 18, 24, color=C["muted"])
+        s.image(left + 80, 674, 28 * ratio, 28, path)  # 28 px: at 20 px the logo reads as a gray dash
+        s.text(left + 80 + 28 * ratio + 16, 676, right - left - 300, 24, self.deck.get("footer", ""), 18, 24, color=C["muted"])
         s.text(right - 180, 676, 100, 24, self.n, 18, 24, color=C["muted"], align="right")
 
     def note(self, s, d, y):
@@ -211,7 +287,7 @@ class Build:
         s.image(80, 64, 40 * ratio, 40, path)
         w = 560
         if d.get("photo"):
-            s.image(720, 0, 560, 720, d["photo"], cover=True)
+            self.photo_el(s, 720, 0, 560, 720, d["photo"], d.get("focus"))
         s.rect(80, 576, w, 1, on_red(.3))
         x = 80
         for part in (d.get("author", ""), d.get("date", "")):
@@ -352,13 +428,50 @@ class Build:
         return s
 
     def photo(self, d):
-        s = self.content(d, head_w=480)
-        s.image(640, 0, 640, 720, d["photo"], cover=True)
+        left = d.get("side", "right") == "left"
+        x = 720 if left else 80
+        s = self.content(d, head_w=480, x=x)
+        self.photo_el(s, 0 if left else 640, 0, 640, 720, d["photo"], d.get("focus"))
         if d.get("text"):
             n = self.fit(d["text"], 28, 480, 8, "photo slide text")
-            s.text(80, CONTENT_TOP, 480, n * 40, d["text"], 28, 40)
+            s.text(x, CONTENT_TOP, 480, n * 40, d["text"], 28, 40)
             self.bottom(CONTENT_TOP + n * 40)
-        self.footer(s, right=640)
+        self.footer(s, *((640, 1280) if left else (0, 640)))
+        return s
+
+    def photo_full(self, d):
+        """The photo is the message: it fills the slide, the claim sits on a dark gradient at the bottom."""
+        s = Slide(C["ink"], d.get("notes", ""))
+        self.photo_el(s, 0, 0, 1280, 720, d["photo"], d.get("focus"))
+        s.image(0, 160, 1280, 560, scrim())
+        path, ratio = logo("white")
+        s.image(1200 - 32 * ratio, 624, 32 * ratio, 32, path)
+        y = 656
+        if d.get("text"):
+            n = self.fit(d["text"], 24, 720, 2, "photo text")
+            y -= n * 34
+            s.text(80, y, 720, n * 34, d["text"], 24, 34, color="e8e8e8")
+            y -= 16
+        n = self.fit(d["title"], 64, 760, 2, "photo title", "med", -.02)
+        y -= n * 72
+        s.text(80, y, 760, n * 72, d["title"], 64, 72, "med", C["white"], spacing=-.02)
+        if d.get("label"):
+            s.text(80, y - 44, 760, 24, d["label"].upper(), 18, 24, "med", "e0e0e0", spacing=.1)
+        return s
+
+    def gallery(self, d):
+        """2–3 photos of one height in a row, each with an optional caption; rounded like other frames."""
+        s = self.content(d)
+        items = self.count(d["photos"], 2, 3, "photos")
+        w = (1120 - 24 * (len(items) - 1)) / len(items)
+        lines = max([self.fit(it["caption"], 22, w, 2, "photo caption") for it in items if it.get("caption")] or [0])
+        h = CONTENT_BOTTOM - CONTENT_TOP - (12 + lines * 30 if lines else 0)
+        for i, it in enumerate(items):
+            x = 80 + i * (w + 24)
+            self.photo_el(s, x, CONTENT_TOP, w, h, it["photo"], it.get("focus"), r=16)
+            if it.get("caption"):
+                s.text(x, CONTENT_TOP + h + 12, w, lines * 30, it["caption"], 22, 30, color=C["muted"])
+        self.footer(s)
         return s
 
     def closing(self, d):
@@ -393,9 +506,9 @@ class Build:
     def run(self):
         lang = self.deck.get("lang", "cs-CZ")
         fix = lambda v: typeset(v, lang) if isinstance(v, str) else [fix(i) for i in v] if isinstance(v, list) \
-            else {k: fix(i) if k not in ("type", "icon", "photo") else i for k, i in v.items()} if isinstance(v, dict) else v
+            else {k: fix(i) if k not in ("type", "icon", "photo", "focus", "side") else i for k, i in v.items()} if isinstance(v, dict) else v
         self.deck["slides"] = fix(self.deck["slides"])
-        types = ("cover", "list", "columns", "process", "statement", "number", "photo", "closing")
+        types = ("cover", "list", "columns", "process", "statement", "number", "photo", "photo-full", "gallery", "closing")
         slides = []
         for self.n, d in enumerate(self.deck["slides"], 1):
             t = d.get("type")
@@ -403,26 +516,28 @@ class Build:
                 self.err(f"unknown type {t!r}; use one of {', '.join(types)}")
                 continue
             try:
-                slides.append(getattr(self, t)(d))
+                slides.append(getattr(self, t.replace("-", "_"))(d))
             except KeyError as e:
                 self.err(f"{t} slide is missing the field {e}")
         self.rhythm([d.get("type") for d in self.deck["slides"]])
         return slides
 
     def rhythm(self, types):
-        red = {"cover", "statement", "closing"}
+        red = {"cover", "statement", "closing", "photo-full"}  # heroes: never two in a row
         if types[:1] != ["cover"]:
             self.warnings.append("the deck should open with a red cover")
         if types[-1:] != ["closing"]:
             self.warnings.append("the deck should end with a red closing")
         for i in range(1, len(types)):
             if types[i] in red and types[i - 1] in red:
-                self.errors.append(f"slides {i}–{i + 1}: two red slides in a row")
+                self.errors.append(f"slides {i}–{i + 1}: two hero slides in a row (red or full photo); put a white slide between")
         for i in range(2, len(types)):
             if types[i] == types[i - 1] == types[i - 2] and types[i] not in red:
                 self.warnings.append(f"slides {i - 1}–{i + 1}: three {types[i]} slides in a row; alternate the types")
         if types.count("statement") > max(1, len(types) // 8):
             self.warnings.append("too many red statement slides: one per 8 slides")
+        if types.count("photo-full") > 2:
+            self.warnings.append("more than two full-slide photos: they stop standing out; use photo or gallery")
 
 
 # --- renderers ------------------------------------------------------------------------------------
@@ -465,13 +580,13 @@ def to_pptx(slides, out, lang):
                     shp._element.remove(style)
             elif el["k"] == "image":
                 pic = p.shapes.add_picture(str(el["path"]), x, y, w, h)
-                if el["cover"]:  # crop to the frame's ratio, never stretch
-                    iw, ih = pic.image.size
-                    fr, ir = el["w"] / el["h"], iw / ih
-                    if ir > fr:
-                        pic.crop_left = pic.crop_right = (1 - fr / ir) / 2
-                    else:
-                        pic.crop_top = pic.crop_bottom = (1 - ir / fr) / 2
+                if el["focus"]:  # crop to the frame's ratio around the focus point, never stretch
+                    pic.crop_left, pic.crop_top, pic.crop_right, pic.crop_bottom = crop(*pic.image.size, el["w"], el["h"], el["focus"])
+                if el["r"]:
+                    geom = pic._element.spPr.find(qn("a:prstGeom"))
+                    geom.set("prst", "roundRect")
+                    av = geom.find(qn("a:avLst"))
+                    av.append(av.makeelement(qn("a:gd"), {"name": "adj", "fmla": f"val {round(el['r'] / min(el['w'], el['h']) * 100000)}"}))
             else:
                 tf = p.shapes.add_textbox(x, y, w, h).text_frame
                 tf.word_wrap, tf.auto_size = True, MSO_AUTO_SIZE.NONE
@@ -512,8 +627,8 @@ def to_html(slides, out, lang):
                 line = f';box-shadow:inset 0 0 0 1px #{el["line"]}' if el["line"] else ""
                 html.append(f'<div style="{pos};background:#{el["fill"]};border-radius:{el["r"]}px{line}"></div>')
             elif el["k"] == "image":
-                fit = "cover" if el["cover"] else "fill"
-                html.append(f'<img src="{el["path"].resolve().as_uri()}" style="{pos};object-fit:{fit}">')
+                fit = f'cover;object-position:{el["focus"][0] * 100}% {el["focus"][1] * 100}%' if el["focus"] else "fill"
+                html.append(f'<img src="{el["path"].resolve().as_uri()}" style="{pos};object-fit:{fit};border-radius:{el["r"]}px">')
             else:
                 text = el["text"].replace("&", "&amp;").replace("<", "&lt;")
                 html.append(f'<div class="t" style="{pos};font:{el["size"]}px/{el["lh"]}px \'{FAMILY[el["font"]]}\';'
@@ -530,7 +645,7 @@ def main():
     ap.add_argument("--preview", help="also write an HTML preview of the same layout")
     a = ap.parse_args()
     deck = json.loads(pathlib.Path(a.outline).read_text())
-    b = Build(deck)
+    b = Build(deck, pathlib.Path(a.outline).resolve().parent)
     slides = b.run()
     for w in b.warnings:
         print("warning:", w, file=sys.stderr)

@@ -33,14 +33,22 @@ words), `"footer"` (deck title on every white slide), `"slides"`. Every slide ca
 
 | `type` | Fields (* required) | Limits |
 |---|---|---|
-| `cover` | `title`*, `label`, `subtitle`, `author`, `date`*, `photo` (path; right part, cropped) | title ≤ 3 lines |
+| `cover` | `title`*, `label`, `subtitle`, `author`, `date`*, `photo`, `focus` | title ≤ 3 lines |
 | `list` | `label`, `title`*, `intro` (left column), `items`*: `[{icon, title, text}]`, `note` | 1–4 items |
 | `columns` | `label`, `title`*, `columns`*: two × `{prefix, title, items}`, `note` | 1–3 items per column, rows aligned |
 | `process` | `label`, `title`*, `steps`*: `[{icon, title, text, repeat, note}]` | 3–5 steps; `repeat: true` = dark tile |
 | `statement` | `number`, `title`*, `text` | red; one per 8 slides |
 | `number` | `label`, `title`*, `value`* (e.g. `"15 %"`), `caption`, `source`, `facts`: `[{icon, title, text}]` | value one line, ≤ 3 facts |
-| `photo` | `label`, `title`*, `text`, `photo`* | photo on the right half, cropped |
+| `photo` | `label`, `title`*, `text`, `photo`*, `focus`, `side` (`right`/`left`) | photo on one half |
+| `photo-full` | `label`, `title`*, `text`, `photo`*, `focus` | title ≤ 2 lines; hero: not next to a red slide, ≤ 2 per deck |
+| `gallery` | `label`, `title`*, `photos`*: `[{photo, caption, focus}]` | 2–3 photos, caption ≤ 2 lines |
 | `closing` | `title`*, `text`, `name`, `email`, `phone` | contact on one row |
+
+Photos: `photo` is a path relative to the JSON file. `focus` says what must stay in view when the
+photo is cropped to its frame: `center` (default), `top`, `bottom`, `left`, `right`, or `[x, y]` from 0
+to 1 (`[0.5, 0.3]` = middle, upper third, e.g. a face or a roof). The script warns when a photo has
+fewer pixels than 1.5 × its frame (a full-slide photo needs 1920 × 1080) and scales larger photos
+down to JPEG, so the deck stays a few MB (needs Pillow, or `sips` on a Mac).
 
 `note` is a gray box under the content for a remark that must not get lost (e.g. what is not
 included). Headlines on white slides have room for two lines (≈ 22 characters per line at Inter
@@ -74,7 +82,9 @@ red cover → content → content → [red statement] → content → content �
 | **Statement / section** | full red | Big section number (white, 35 % opacity) or one strong claim, white. Nothing else. |
 | **Content – text + number** | white | Section label **gray** `#515151` (the red number is the hero); headline as a claim; one dominant number in red; facts beside it with **gray** icon tiles. |
 | **Content – chart/table** | white | Section label, headline as a claim, one visualization: the highlighted item red, the rest gray. Label gray when the highlighted item is the slide's hero, otherwise red. |
-| **Content – photo** | white or photo | Photo of the property covering half the slide or the whole slide (cropped), short claim beside or over it. Good for breaking up text-heavy decks. |
+| **Content – photo** | white | Photo on one half (right, or left to alternate), headline and short text on the other half. The photo supports the message. |
+| **Full photo** | photo | The photo is the message (the property, the area, the team): photo over the whole slide, dark gradient at the bottom, label, claim and one sentence in white bottom left, white logo bottom right, no footer. A hero like a red slide: never next to a red slide, at most two per deck. |
+| **Gallery** | white | 2–3 photos of one height in a row (results, before/after, seasons), rounded 16 px, optional one-line captions. |
 | **Quote / reference** | `#f2f2f2` | Quote, name, hotel. Red section label allowed, no other red. |
 | **Closing** | full red | White logo, closing line or next step (large, white), contact with white mail/phone icons. |
 
@@ -123,8 +133,16 @@ Photos of the client's property make a deck specific to them; use them when you 
   In python-pptx: compare the image ratio with the frame ratio and set `picture.crop_left/right`
   (image wider than frame) or `crop_top/bottom` (image taller), half on each side, so the visible
   part has the frame's ratio. A 4:3 photo in a tall frame must be cropped, not squeezed.
+- **Crop around what matters.** Centre crop cuts off heads and roofs; set the focus point
+  (`object-position` in HTML, `focus` in the generator) so the subject stays in view.
 - Photos go edge to edge (bleed) or into a frame with radius 16 px / 12 pt; no borders, no shadows.
-- Never put text directly over a busy photo; put it on the red/white part next to it.
+- **How much photo:** half slide (`photo`) when it supports the text, full slide when it is the message,
+  a gallery of 2–3 for results or comparisons. A full-slide photo counts as a hero, like a red slide.
+- **Text over a photo only on the dark gradient** of the full-photo slide, white, bottom left. Never
+  directly on a light or busy photo; never tint photos red.
+- **Resolution:** at least 1.5 × the frame in pixels (full slide 1920 × 1080, half slide 960 × 1080),
+  otherwise the photo goes soft on a projector. Scale big originals down (JPEG, quality ~80) so the
+  deck is not tens of MB.
 
 ## Text size: projected vs. read
 
