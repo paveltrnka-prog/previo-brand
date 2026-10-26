@@ -30,7 +30,7 @@ Just ask; branding happens automatically:
 | "Instagram post with 42 %." | `social-feed.html`, 4:5, exported to PNG. |
 | "Story for the campaign." | `social-story.html`, 9:16, full red, safe zones. |
 | "LinkedIn image for an article." | `social-linkedin.html`, 1200 × 627 px. |
-| "Client deck, 8 slides." | `.pptx` following `templates/deck-structure.md` and `templates/deck.html`: red cover and closing, icons, checked render. |
+| "Client deck, 8 slides." | `.pptx` from the generator `scripts/build_deck.py`: fixed grid, red cover and closing, icons, text that fits, HTML preview. |
 | "Show Alfred presenting a new feature." | The mascot `alfred/alfred.svg` next to the content, on a light background. |
 | "Plachta mockup with reservation states." | State colors from `tokens.md`. |
 
@@ -132,13 +132,14 @@ previo-brand/          the skill (this folder is what gets packaged)
 ├── fonts/             Inter 400 + 500 (SIL OFL 1.1)
 ├── logo/              color / black / white SVG
 ├── icons/             line icons (SVG) + png/ in red / ink / white for .pptx
+├── scripts/           build_deck.py: JSON outline → .pptx on the fixed grid (+ deck-example.json)
 ├── alfred/            mascot + AI icon
 └── templates/         self-contained HTML templates + deck-structure.md (generated, do not edit HTML)
 tools/                 maintenance only, not part of the skill
 ├── src/               template sources (edit here)
 ├── build.py           builds templates/ from src/ (embeds font, logo, icons)
 ├── examples.py        renders the README examples into docs/examples/
-└── icons.py           renders icons/png/ from icons/*.svg (needs Google Chrome, macOS sips)
+└── icons.py           renders icons/png/ and logo/png/ from the SVGs (needs Google Chrome, macOS sips)
 docs/examples/         README example images
 ```
 
@@ -156,6 +157,15 @@ docs/examples/         README example images
 When the design system changes, update `tokens.md`; `SKILL.md` usually stays as is.
 
 ## Changelog
+
+**v6**
+- New `scripts/build_deck.py`: writes a `.pptx` from a JSON outline on one fixed grid (label, headline
+  and content start at the same place on every slide), with an HTML preview. Measures text with the
+  Inter metrics and refuses content that would overflow; checks the red rhythm; crops photos.
+- Deck slide types `columns` (two columns with aligned rows) and `note` box (a remark that must not
+  get lost).
+- Bigger icon tiles (0.5 in, icon 0.25 in); grid measurements in `deck-structure.md`.
+- Logo PNGs for `.pptx` (`logo/png/`).
 
 **v5**
 - New `templates/deck.html`: 16:9 deck with red cover and closing, red statement slide, icon lists,

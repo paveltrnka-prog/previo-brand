@@ -1,0 +1,92 @@
+{
+  "lang": "cs-CZ",
+  "footer": "Marketing+ · Horský hotel Ukázka",
+  "slides": [
+    {
+      "type": "cover",
+      "label": "Nabídka spolupráce",
+      "title": "Marketing+ pro Horský hotel Ukázka",
+      "subtitle": "Web, kampaně, distribuce a práce s cenou od jednoho partnera.",
+      "author": "Previo Sales",
+      "date": "říjen 2026"
+    },
+    {
+      "type": "list",
+      "label": "Proč Marketing+",
+      "title": "Marketing+ spojí propagaci hotelu s prodejem",
+      "intro": "Kampaně, web i ceny vycházejí z dat v Previu a sledují jeden cíl: vyšší tržby hotelu.",
+      "items": [
+        {"icon": "bed", "title": "Více přímých rezervací", "text": "Nový web, kampaně a práce s vlastní databází hostů."},
+        {"icon": "chart", "title": "Lepší výnos z pokojů", "text": "Ceny podle poptávky, sezóny a obsazenosti."},
+        {"icon": "users", "title": "Průběžná podpora", "text": "Jeden plán pro marketing, distribuci i provoz."}
+      ]
+    },
+    {
+      "type": "process",
+      "label": "Postup",
+      "title": "Pět kroků od auditu dat po pravidelné vyhodnocení",
+      "steps": [
+        {"icon": "search", "title": "Audit", "text": "Data z Previa, Google Analytics a kampaní."},
+        {"icon": "chat", "title": "Úvodní schůzka", "text": "Aktuální stav, priority a rozdělení úkolů."},
+        {"icon": "globe", "title": "Fáze 1", "text": "Web, kampaně, ceny a balíčky, fotografie."},
+        {"icon": "link", "title": "Fáze 2", "text": "OTA, mailing, restrikce, Hotel Ads."},
+        {"icon": "repeat", "title": "Reporting", "text": "Každý měsíc, s meziročním srovnáním.", "repeat": true}
+      ]
+    },
+    {
+      "type": "columns",
+      "label": "Kroky 01–02",
+      "title": "Nejdřív čísla, potom dohoda o prioritách",
+      "columns": [
+        {"prefix": "01", "title": "Audit dat", "items": [
+          {"icon": "chart", "title": "Previo", "text": "Finance, obsazenost, ADR a RevPAR."},
+          {"icon": "search", "title": "Google Analytics", "text": "Návštěvnost webu a zdroje rezervací."},
+          {"icon": "megaphone", "title": "PPC a Meta", "text": "Výsledky kampaní, které už běží."}
+        ]},
+        {"prefix": "02", "title": "Úvodní schůzka", "items": [
+          {"icon": "document", "title": "Aktuální stav", "text": "Web, ceny, závislost na OTA."},
+          {"icon": "check", "title": "Priority a úkoly", "text": "Co řešíme jako první a kdo co dělá."},
+          {"icon": "calendar", "title": "Časový plán", "text": "Harmonogram obou fází spolupráce."}
+        ]}
+      ]
+    },
+    {
+      "type": "statement",
+      "number": "01",
+      "title": "Fáze 1 staví základ pro přímé rezervace",
+      "text": "Web, kampaně, ceny a fotografie spouštíme jako první."
+    },
+    {
+      "type": "list",
+      "label": "Fáze 1",
+      "title": "Web, kampaně, ceny a fotografie jako základ",
+      "items": [
+        {"icon": "monitor", "title": "Nový web", "text": "Napojený na Previo, se SEO a měřením."},
+        {"icon": "megaphone", "title": "Výkonnostní kampaně", "text": "Sklik a Google Ads, brand i lokální fráze."},
+        {"icon": "tag", "title": "Ceny a balíčky", "text": "Všední dny, víkendy a balíčky s wellness."},
+        {"icon": "camera", "title": "Fotografie hotelu", "text": "Jedna sada pro web, kampaně i portály."}
+      ]
+    },
+    {
+      "type": "number",
+      "label": "Podmínky",
+      "title": "Provize roste jen tehdy, když rostou tržby hotelu",
+      "value": "15 %",
+      "caption": "provize v prvních 18 měsících, poté 13 %",
+      "source": "Plus 6 % z meziročního nárůstu tržeb, bez DPH. Ukázkové podmínky.",
+      "facts": [
+        {"icon": "calendar", "title": "2 roky", "text": "Délka spolupráce, lze prodloužit."},
+        {"icon": "chart", "title": "Měsíční report", "text": "Meziroční srovnání a další kroky."},
+        {"icon": "check", "title": "Bez vstupního poplatku", "text": "Web a hosting jsou v provizi."}
+      ]
+    },
+    {
+      "type": "closing",
+      "title": "Začněme auditem dat hotelu Ukázka",
+      "text": "Rádi zodpovíme vaše doplňující dotazy.",
+      "name": "Previo Sales",
+      "email": "sales@previo.cz",
+      "phone": "+420 000 000 000"
+    }
+  ]
+}

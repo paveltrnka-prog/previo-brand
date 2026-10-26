@@ -1,5 +1,8 @@
 # Previo deck structure (.pptx)
 
+**For a `.pptx`, use the generator `scripts/build_deck.py`** (see **Generator** below): you write the
+content as JSON, the script places it on the fixed grid. Build slides by hand only for a slide type the
+generator does not have, and then follow the measurements in **Grid**.
 Use together with a pptx skill or library if one is available. Colors and fonts are in `tokens.md`,
 the red rule in `SKILL.md` ("Use of red"). Format 16:9.
 
@@ -7,6 +10,41 @@ the red rule in `SKILL.md` ("Use of red"). Format 16:9.
 the right proportions, icons and red rhythm. For a `.pptx`, rebuild the same slide types (1 px in the
 template = 7 144 EMU on a 10 in × 5.625 in slide). For a deck that is only sent and read, you may
 fill `deck.html` directly and print it to PDF: fonts, logo and icons travel inside.
+
+## Generator: `scripts/build_deck.py`
+
+```
+pip install python-pptx            # once, if missing
+python3 scripts/build_deck.py outline.json deck.pptx --preview deck.html
+```
+
+Write the outline as JSON (complete example: `scripts/deck-example.json`), run the script, then open
+the `--preview` HTML (same layout, renders in any browser; screenshot it when PowerPoint is not
+available) and go through **Check before you hand it over**. The script draws every slide on the grid,
+embeds icons and logo, crops photos, sets Inter and keeps the red rule (a `number` slide gets a gray
+label and gray tiles). It measures every text with the Inter metrics and **refuses to build** when
+something would overflow, collide or break the rhythm; the message says which slide and what to
+shorten or split. Fix the content, never the positions. Warnings (e.g. three slides of one type in a
+row) build the deck but should be fixed too.
+
+Top level: `"lang"` (`"cs-CZ"`, `"en-GB"`, …; Czech/Slovak get non-breaking spaces after one-letter
+words), `"footer"` (deck title on every white slide), `"slides"`. Every slide can have `"notes"`
+(speaker notes). Icons are names from `icons/` without `.svg`.
+
+| `type` | Fields (* required) | Limits |
+|---|---|---|
+| `cover` | `title`*, `label`, `subtitle`, `author`, `date`*, `photo` (path; right part, cropped) | title ≤ 3 lines |
+| `list` | `label`, `title`*, `intro` (left column), `items`*: `[{icon, title, text}]`, `note` | 1–4 items |
+| `columns` | `label`, `title`*, `columns`*: two × `{prefix, title, items}`, `note` | 1–3 items per column, rows aligned |
+| `process` | `label`, `title`*, `steps`*: `[{icon, title, text, repeat, note}]` | 3–5 steps; `repeat: true` = dark tile |
+| `statement` | `number`, `title`*, `text` | red; one per 8 slides |
+| `number` | `label`, `title`*, `value`* (e.g. `"15 %"`), `caption`, `source`, `facts`: `[{icon, title, text}]` | value one line, ≤ 3 facts |
+| `photo` | `label`, `title`*, `text`, `photo`* | photo on the right half, cropped |
+| `closing` | `title`*, `text`, `name`, `email`, `phone` | contact on one row |
+
+`note` is a gray box under the content for a remark that must not get lost (e.g. what is not
+included). Headlines on white slides have room for two lines (≈ 22 characters per line at Inter
+Medium): a headline that does not fit is a sign it is a sentence, not a claim.
 
 ## Rhythm: a deck is not all gray
 

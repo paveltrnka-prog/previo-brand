@@ -5,3 +5,4 @@ node_modules/
 # lokální nástroje (Claude Code, Serena)
 .claude/
 .serena/
+__pycache__/

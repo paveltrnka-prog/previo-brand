@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Renders the icon set: previo-brand/icons/*.svg -> previo-brand/icons/png/<name>-<color>.png.
+"""Renders the icon set: previo-brand/icons/*.svg -> previo-brand/icons/png/<name>-<color>.png,
+and the logo: previo-brand/logo/*.svg -> previo-brand/logo/png/*.png.
 
 PowerPoint libraries (python-pptx) cannot insert SVG, so every icon also ships as a transparent
 256 px PNG in the three allowed colors. Run after adding or changing an icon: python3 tools/icons.py
 """
-import pathlib, subprocess, tempfile  # macOS: uses Chrome + sips
+import pathlib, re, subprocess, tempfile  # macOS: uses Chrome + sips
 
 here = pathlib.Path(__file__).parent
 icons = here.parent / "previo-brand" / "icons"
@@ -29,3 +30,20 @@ with tempfile.TemporaryDirectory() as tmp:
             subprocess.run(["sips", "-c", str(size), str(size), str(png)],
                            check=True, capture_output=True)
     print(len(list((icons / "png").glob("*.png"))), "PNG files")
+    # logo for .pptx: 336 px high, transparent
+    logo = icons.parent / "logo"
+    (logo / "png").mkdir(exist_ok=True)
+    for variant in ("color", "white", "black"):
+        page = pathlib.Path(tmp) / f"logo-{variant}.html"
+        svg = (logo / f"previo-logo-{variant}.svg").read_text()
+        w, h = map(float, re.search(r'width="([\d.]+)" height="([\d.]+)"', svg).groups())  # variants differ in size
+        pw = round(336 * w / h)
+        page.write_text('<html><body style="margin:0;height:100vh;display:grid;place-items:center;background:transparent">'
+                        + svg.replace(f'width="{w:g}" height="{h:g}"', f'width="{pw}" height="336" style="display:block"', 1)
+                        + "</body></html>")
+        png = logo / "png" / f"previo-logo-{variant}.png"
+        subprocess.run([chrome, "--headless=new", "--disable-gpu", "--hide-scrollbars", f"--user-data-dir={tmp}/profile",
+                        "--default-background-color=00000000", "--window-size=800,800", "--force-device-scale-factor=1",
+                        f"--screenshot={png}", page.as_uri()], check=True, capture_output=True, timeout=60)
+        subprocess.run(["sips", "-c", "336", str(pw), str(png)], check=True, capture_output=True)
+    print(len(list((logo / "png").glob("*.png"))), "logo PNG files")

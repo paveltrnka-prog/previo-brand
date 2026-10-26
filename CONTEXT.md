@@ -1,6 +1,6 @@
 # CONTEXT — previo-brand
 
-Stav k 2026-10-20. Pro autora a pro Claude v nové session. Uživatelská dokumentace je v `README.md`,
+Stav k 2026-10-26. Pro autora a pro Claude v nové session. Uživatelská dokumentace je v `README.md`,
 pravidla značky v `previo-brand/SKILL.md`.
 
 ## Jak to funguje
@@ -10,7 +10,10 @@ pravidla značky v `previo-brand/SKILL.md`.
 - Šablony se needitují v `previo-brand/templates/*.html`, ale v `tools/src/`. `tools/build.py` do nich
   vloží base64 font Inter, inline logo (`%%LOGO:color|white%%`) a ikony (`%%ICON:name%%`).
 - `tools/examples.py` vyplní šablony ukázkovým obsahem a vykreslí `docs/examples/*.png` (headless Chrome).
-- `tools/icons.py` vyrobí z `icons/*.svg` PNG ve třech barvách pro `.pptx` (`icons/png/`).
+- `tools/icons.py` vyrobí z `icons/*.svg` PNG ve třech barvách pro `.pptx` (`icons/png/`) a PNG loga (`logo/png/`).
+- `previo-brand/scripts/build_deck.py` (součást skillu, v6): JSON osnova → `.pptx` na pevné mřížce + HTML náhled.
+  Pozice = px z `deck.html`. Text měří přes metriky Inter (vlastní čtečka TTF, bez knihoven) a při přetečení
+  odmítne build s hláškou, co zkrátit. Ukázka `scripts/deck-example.json`.
 - Prezentace: `deck.html` je vizuální vzor i hotová HTML/PDF prezentace; `deck-structure.md` popisuje
   převod do `.pptx` (1 px = 7 144 EMU, 1 px = 0,5625 pt). Velikosti v `deck.html` jsou pro prezentaci
   ke čtení (text ≥ 12 pt).
@@ -22,6 +25,9 @@ pravidla značky v `previo-brand/SKILL.md`.
   (titulka/závěr/statement), ikony, pravidla pro fotky, velikosti písma a kontrola před předáním.
 - **Repo je veřejné.** Ukázky v README musí být anonymizované (žádní klienti, kontakty, skutečné provize,
   fotky objektů). `docs/examples/deck-offer.png` je anonymizovaná verze reálné nabídky.
+- **v6 (2026-10-26)** z připomínek kolegy k v5: „rozskákané“ (obsah svisle centrovaný → pevná mřížka, obsah
+  od 268 px) a „ikony malinké“ (dlaždice 48 → 64 px). Generátor vznikl, protože ruční stavba v python-pptx
+  pokaždé rozhodila pozice.
 - Ikony jsou vlastní jednoduchá liniová sada (24px mřížka, tah 1,75, `currentColor`), ne cizí knihovna.
 
 ## Gotchy
@@ -34,6 +40,8 @@ pravidla značky v `previo-brand/SKILL.md`.
 - `python-pptx` není v systému (PEP 668); instalovat do venv (`python3 -m venv … && pip install python-pptx`).
 - Push do `paveltrnka-prog/previo-brand` jde jen z gh účtu `paveltrnka-prog`
   (`gh auth switch -u paveltrnka-prog && gh auth setup-git`); pod `trnkapavel` vrací 403.
+- Generátor zalamuje o 4 % dřív než Chrome (PowerPoint láme dřív); nadpis má max. 2 řádky ≈ 22 znaků/řádek.
+- Bílé/černé logo SVG má jiný rozměr (118×64) než barevné (102×56) — poměr brát z PNG, ne natvrdo.
 - Merge PR přes Claude blokuje auto mode („merge bez review“) — merguje Pavel sám.
 
 ## Otevřené
