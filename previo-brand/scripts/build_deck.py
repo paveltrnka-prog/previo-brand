@@ -189,8 +189,8 @@ class Build:
     def footer(self, s, right=1280):
         s.rect(0, 656, right, 1, C["border"])
         path, ratio = logo("color")
-        s.image(80, 678, 20 * ratio, 20, path)
-        s.text(80 + 20 * ratio + 16, 676, right - 300, 24, self.deck.get("footer", ""), 18, 24, color=C["muted"])
+        s.image(80, 674, 28 * ratio, 28, path)  # 28 px: at 20 px the logo reads as a gray dash
+        s.text(80 + 28 * ratio + 16, 676, right - 300, 24, self.deck.get("footer", ""), 18, 24, color=C["muted"])
         s.text(right - 180, 676, 100, 24, self.n, 18, 24, color=C["muted"], align="right")
 
     def note(self, s, d, y):

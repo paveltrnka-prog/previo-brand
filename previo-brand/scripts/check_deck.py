@@ -8,7 +8,7 @@ Works on any .pptx, built by scripts/build_deck.py or by hand. Needs python-pptx
 Grid check (no rendering needed): on every white content slide it finds the section label, the
 headline and the top of the content block and compares them with the grid in
 templates/deck-structure.md; it also reports icon tiles smaller than 0.44 in, icons of different
-sizes on one slide, shapes over the slide edge, text boxes that let PowerPoint shrink or grow text,
+sizes on one slide, a footer logo under 24 px, shapes over the slide edge, text boxes that let PowerPoint shrink or grow text,
 and fonts other than Inter / Inter Medium.
 
 --render converts the deck with LibreOffice (soffice) to PDF and PNG (one per slide plus
@@ -25,6 +25,7 @@ PX = 914400 / 128  # EMU per px of the 1280 px wide deck.html grid
 GRID = {"label": 64, "headline": 100, "content": 268}
 TOL = 6           # px tolerance
 MIN_TILE = 56     # px = 0.44 in
+MIN_LOGO = 24     # px = 0.19 in, footer logo height
 FONTS = {"Inter", "Inter Medium"}
 
 
@@ -96,6 +97,10 @@ def check(path):
                 errors.append(f"slide {n}: icon tile {px(tile.width)} px, min. {MIN_TILE} px (0.44 in)")
             if abs(px(p.width) * 2 - px(tile.width)) > 4:
                 warnings.append(f"slide {n}: icon is {px(p.width)} px in a {px(tile.width)} px tile; make it half the tile")
+        logos = [s for s in shapes if s.shape_type == MSO_SHAPE_TYPE.PICTURE and px(s.top) >= 656 and s.width > s.height * 1.4]
+        for lg in logos:
+            if px(lg.height) < MIN_LOGO:
+                warnings.append(f"slide {n}: footer logo {px(lg.height)} px high, min. {MIN_LOGO} px (0.19 in); smaller reads as a dash")
         if len(sizes) > 1:
             warnings.append(f"slide {n}: icon tiles of different sizes {sorted(sizes)} px")
     return rows, errors, warnings

@@ -105,7 +105,7 @@ on **every** white content slide (px in `deck.html` → inches on a 10 × 5.625 
 | Section label | top 64 px = 0.5 in |
 | Headline box | top 100 px = 0.78 in, height **always two lines** (120 px = 0.94 in), even for a one-line headline; text anchored to the top |
 | Content block | top **268 px = 2.09 in**, anchored to the top, never vertically centred |
-| Footer | line at 656 px = 5.125 in |
+| Footer | line at 656 px = 5.125 in; color logo **28 px = 0.22 in high** (never under 24 px, smaller reads as a dash), vertically centred in the 64 px band with the footer text |
 | Intro + list | intro column 400 px = 3.125 in wide; list starts at x 560 px = 4.375 in |
 
 - In python-pptx set the headline text frame to `vertical_anchor = TOP` and `auto_size = NONE`, the
@@ -150,7 +150,7 @@ only section labels and the footer go down to 10 pt.
   "Marketing+" mixed); introduce an abbreviation once on the cover or slide 2.
 - Font: headings `Inter Medium`, text `Inter` (installed from the skill's `fonts/`). If they cannot be
   installed, tell the user. The .pptx does not carry the font: offer a PDF export for sharing.
-- Page number and a small footer (Gray 500, 10 pt, color logo) on every white slide; not on red slides.
+- Page number and a small footer (Gray 500, 10 pt, color logo 0.22 in high) on every white slide; not on red slides.
 - No three identical KPI cards, no status pills or tag clouds of pills, no grid of identical gray cards.
 
 ## Check before you hand it over
