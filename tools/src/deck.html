@@ -40,6 +40,8 @@ body { font: 400 22px/32px var(--font); color: var(--ink); }
 .label { font: 500 18px/24px var(--font-medium); letter-spacing: .1em; text-transform: uppercase; color: var(--primary); }
 .label--gray { color: var(--muted); }
 h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12px 0 0; max-width: 22ch; }
+/* fixed grid: the headline box always reserves two lines, so content starts at the same y (268 px) on every content slide */
+.slide:not(.slide--red) h2 { min-height: 120px; }
 .lead { margin: 16px 0 0; color: var(--muted); max-width: 52ch; }
 .foot { margin-top: auto; height: 64px; display: flex; align-items: center; gap: 16px; font-size: 18px; color: var(--muted); border-top: 1px solid var(--border); margin-left: -80px; margin-right: -80px; padding: 0 80px; }
 .foot .logo svg { height: 20px; }
@@ -63,21 +65,23 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
 .statement .lead { color: #fff; opacity: .85; margin-top: 24px; }
 
 /* icon tile: the small signal that marks a list item */
-.tile { display: block; flex: none; width: 48px; height: 48px; border-radius: 12px; background: var(--primary-soft); color: var(--primary); padding: 12px; }
+.tile { display: block; flex: none; width: 64px; height: 64px; border-radius: 16px; background: var(--primary-soft); color: var(--primary); padding: 16px; }
 .tile--ink { background: var(--surface); color: var(--ink); }
 
 /* layout: intro + list (asymmetric) */
-.split { display: grid; grid-template-columns: 400px 1fr; gap: 80px; margin: auto 0; padding: 32px 0; }
+/* content blocks are anchored to the top (never vertically centred), 48 px below the headline box */
+.split { display: grid; grid-template-columns: 400px 1fr; gap: 80px; margin: 48px 0 0; }
 .split .intro { font-size: 28px; line-height: 40px; color: var(--ink); }
 .split .intro p { margin: 0; }
-.list { display: flex; flex-direction: column; gap: 32px; }
-.item { display: flex; gap: 20px; align-items: flex-start; }
+.list { display: flex; flex-direction: column; gap: 24px; }
+.item { display: flex; gap: 24px; align-items: flex-start; }
+.item h3 { padding-top: 2px; }
 .item h3 { font: 500 28px/36px var(--font-medium); margin: 0; }
 .item p { margin: 4px 0 0; color: var(--muted); font-size: 23px; line-height: 32px; }
 
 /* timeline */
-.steps { display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 24px; margin: auto 0; padding: 32px 0; position: relative; }
-.steps::before { content: ""; position: absolute; left: 24px; right: 24px; top: 56px; border-top: 2px solid var(--border); }
+.steps { display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 24px; margin: 48px 0 0; position: relative; }
+.steps::before { content: ""; position: absolute; left: 32px; right: 32px; top: 32px; border-top: 2px solid var(--border); }
 .step { position: relative; }
 .step .tile { box-shadow: 0 0 0 8px #fff; }
 .step .n { display: block; margin-top: 20px; font: 500 18px/24px var(--font-medium); color: var(--gray-400); }
@@ -86,15 +90,15 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
 .step--loop .tile { background: var(--ink); color: #fff; }
 
 /* number hero + facts */
-.hero { display: grid; grid-template-columns: 1fr 520px; gap: 80px; margin: auto 0; padding: 32px 0; align-items: center; }
+.hero { display: grid; grid-template-columns: 1fr 520px; gap: 80px; margin: 48px 0 0; align-items: start; }
 .big { font: 500 168px/1 var(--font-medium); letter-spacing: -.04em; color: var(--primary); }
 .hero .what { font: 500 28px/36px var(--font-medium); margin: 16px 0 0; max-width: 22ch; }
 .hero .src { color: var(--muted); font-size: 22px; margin: 12px 0 0; }
 .facts { border: 1px solid var(--border); border-radius: 16px; padding: 8px 32px; }
-.fact { display: flex; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+.fact { display: flex; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--border); }
 .fact:last-child { border-bottom: 0; }
-.fact .tile { width: 40px; height: 40px; padding: 10px; border-radius: 10px; }
-.fact h3 { font: 500 24px/32px var(--font-medium); margin: 0; }
+.fact .tile { width: 56px; height: 56px; padding: 14px; border-radius: 14px; }
+.fact h3 { font: 500 24px/32px var(--font-medium); margin: 0; padding-top: 2px; }
 .fact p { margin: 2px 0 0; color: var(--muted); font-size: 22px; line-height: 30px; }
 
 /* closing */
@@ -102,7 +106,7 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
 .closing .contact { display: flex; gap: 48px; margin-top: 48px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.3); font-size: 24px; }
 .closing .contact .who { font: 500 26px/34px var(--font-medium); }
 .closing .contact span { display: flex; align-items: center; gap: 12px; }
-.closing .ico { width: 24px; height: 24px; }
+.closing .ico { width: 28px; height: 28px; }
 </style>
 </head>
 <body>

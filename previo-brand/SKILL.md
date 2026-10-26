@@ -180,7 +180,8 @@ arrow). Use only these; never mix in another set or emoji.
 - **HTML/PDF:** paste the SVG inline; it uses `currentColor`, so the parent sets the color.
 - **.pptx:** insert `icons/png/<name>-red.png`, `-ink.png` or `-white.png` (256 px, transparent).
 - **Icon tile** (the standard way to use an icon next to text): rounded square, icon at half its
-  size. Red icon on `#faeaeb` by default; ink icon on `#f2f2f2` when the slide/page has a red number
+  size. In a deck the tile is 0.5 in (64 px at 1280 px width), never smaller than 0.44 in; small
+  icons look like dots. Red icon on `#faeaeb` by default; ink icon on `#f2f2f2` when the slide/page has a red number
   hero; white icon without a tile on red or dark areas.
 - One icon per item, labelling what the item is. Not on every line of text, not as decoration.
 - Missing icon? Pick the closest one and mention the gap in the feedback note (see the end).

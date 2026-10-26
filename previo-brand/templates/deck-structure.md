@@ -51,7 +51,30 @@ PNGs from `icons/png/<name>-<red|ink|white>.png`; in HTML paste the SVG inline (
   - red slide: icon **white**, no tile.
 - An icon marks **what kind of item** it is (web, campaign, price, report). One icon per list
   item, same size within a slide. No icons as decoration, no icons from another set, no emoji.
-- Sizes (pptx): tile 0.5 in (36 pt) with a 0.25 in icon in lists; 0.42 in tile in compact lists.
+- Sizes: tile **0.5 in (64 px)** with a **0.25 in (32 px)** icon in lists and timelines; 0.44 in
+  (56 px) tile with a 0.22 in icon in a compact facts box. Never smaller: a tile below 0.44 in reads
+  as a dot, not an icon. The icon is always half the tile, centred.
+
+## Grid: every content slide starts in the same place
+
+Paging through the deck, the label, headline and content must not jump. Use these fixed positions
+on **every** white content slide (px in `deck.html` → inches on a 10 × 5.625 in slide, 128 px = 1 in):
+
+| Element | Position |
+|---|---|
+| Side margins | 80 px = 0.625 in left and right |
+| Section label | top 64 px = 0.5 in |
+| Headline box | top 100 px = 0.78 in, height **always two lines** (120 px = 0.94 in), even for a one-line headline; text anchored to the top |
+| Content block | top **268 px = 2.09 in**, anchored to the top, never vertically centred |
+| Footer | line at 656 px = 5.125 in |
+| Intro + list | intro column 400 px = 3.125 in wide; list starts at x 560 px = 4.375 in |
+
+- In python-pptx set the headline text frame to `vertical_anchor = TOP` and `auto_size = NONE`, the
+  same size on every slide; never let PowerPoint shrink or grow it.
+- List items: fixed gap (24 px = 0.19 in) between items, title aligned to the top of the icon tile.
+  Two columns on one slide share the same top and the same row positions.
+- Same element = same position across slides: if slide 4 has a list at x 4.375 in, slide 7 does not
+  put it at 4.1 in. Reuse the measurements, do not eyeball them.
 
 ## Photos
 
@@ -105,6 +128,9 @@ pptx skill's own renderer) and look at **every** slide:
 6. Content is consistent: same product name everywhere, no slide promising what another excludes
    (e.g. "Meta Ads in phase 1" vs. "Meta campaigns are not included").
 7. Fonts are Inter / Inter Medium on every run (no Calibri/Arial left from defaults).
+8. Grid: page through the slides quickly; label, headline and content start at the same place on
+   every content slide (see **Grid**). Nothing jumps.
+9. Icons: tiles at least 0.5 in (0.44 in in a facts box), icon half the tile, same size on a slide.
 
 ## RGB for python-pptx
 
