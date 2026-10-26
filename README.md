@@ -44,8 +44,8 @@ illustrative, not real Previo data.
 <p><img src="docs/examples/deck.png" alt="Deck, 16:9"><br><b>Deck template</b> · 16:9, all slide types of <code>templates/deck.html</code>: red cover and closing, icon list, process timeline, red statement slide, number hero with a gray label.</p>
 
 <details>
-<summary><b>A real sales deck, 12 slides</b> (an actual offer rebuilt with the skill; client, contact and terms anonymized)</summary>
-<p><img src="docs/examples/deck-offer.png" alt="Sales deck, 12 slides"></p>
+<summary><b>A real sales deck as .pptx</b> (an actual offer rebuilt with <code>scripts/build_deck.py</code> from <code>scripts/deck-example.json</code>, rendered from the PowerPoint file; client, contact and terms anonymized)</summary>
+<p><img src="docs/examples/deck-offer.png" alt="Sales deck, 8 slides, built by the generator"></p>
 <p>What the skill changed compared to the first version: red cover and closing instead of white, one red statement slide before phase 1,
 an icon on every item instead of gray card grids and pill clouds, a gray label and gray icon tiles on the slide whose hero is the red
 15&nbsp;%, one product name throughout, text 13&nbsp;pt and up with at most 5 items per slide, and hotel photos cropped instead of

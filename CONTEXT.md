@@ -55,6 +55,6 @@ pravidla značky v `previo-brand/SKILL.md`.
 
 - Render přes LibreOffice odpovídá PowerPointu jen přibližně (zalomení se může lišit o slovo); finální
   pohled v PowerPointu/Keynote je na člověku.
-- `deck-offer.png` v README je ještě z v5 (stará mřížka, malé ikony) — přegenerovat z JSONu přes generátor.
+- `deck-offer.png` = render `.pptx` z `deck-example.json` (`check_deck.py --render`, contact-sheet.png).
 - Zpětná vazba kolegy k v5 a předělané nabídce (v `~/Downloads/…_v2.pptx/.pdf`, mimo repo):
   potvrdit Meta Ads ve fázi 1, datum na titulce, oficiální název Marketing+ vs. M+.
