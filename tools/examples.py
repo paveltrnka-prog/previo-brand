@@ -130,7 +130,8 @@ with tempfile.TemporaryDirectory() as tmp:
         page = pathlib.Path(tmp) / f"{name}.html"
         page.write_text(head + "<body>" + body)
         png = out / f"{name}.png"
-        subprocess.run([chrome, "--headless", "--disable-gpu", "--hide-scrollbars",
+        # own profile: without it Chrome attaches to the running browser and never exits
+        subprocess.run([chrome, "--headless", "--disable-gpu", "--hide-scrollbars", f"--user-data-dir={tmp}/chrome",
                         f"--window-size={w},{h}", f"--screenshot={png}", page.as_uri()],
-                       check=True, capture_output=True)
+                       check=True, capture_output=True, timeout=120)
         print(png.relative_to(here.parent))
