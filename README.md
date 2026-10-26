@@ -30,7 +30,7 @@ Just ask; branding happens automatically:
 | "Instagram post with 42 %." | `social-feed.html`, 4:5, exported to PNG. |
 | "Story for the campaign." | `social-story.html`, 9:16, full red, safe zones. |
 | "LinkedIn image for an article." | `social-linkedin.html`, 1200 × 627 px. |
-| "Client deck, 8 slides." | `.pptx` following `templates/deck-structure.md` and `templates/deck.html`: red cover and closing, icons, checked render. |
+| "Client deck, 8 slides." | `.pptx` from the generator `scripts/build_deck.py`: fixed grid, red cover and closing, icons, text that fits, HTML preview. |
 | "Show Alfred presenting a new feature." | The mascot `alfred/alfred.svg` next to the content, on a light background. |
 | "Plachta mockup with reservation states." | State colors from `tokens.md`. |
 
@@ -44,8 +44,8 @@ illustrative, not real Previo data.
 <p><img src="docs/examples/deck.png" alt="Deck, 16:9"><br><b>Deck template</b> · 16:9, all slide types of <code>templates/deck.html</code>: red cover and closing, icon list, process timeline, red statement slide, number hero with a gray label.</p>
 
 <details>
-<summary><b>A real sales deck, 12 slides</b> (an actual offer rebuilt with the skill; client, contact and terms anonymized)</summary>
-<p><img src="docs/examples/deck-offer.png" alt="Sales deck, 12 slides"></p>
+<summary><b>A real sales deck as .pptx</b> (an actual offer rebuilt with <code>scripts/build_deck.py</code> from <code>scripts/deck-example.json</code>, rendered from the PowerPoint file; client, contact and terms anonymized)</summary>
+<p><img src="docs/examples/deck-offer.png" alt="Sales deck, 8 slides, built by the generator"></p>
 <p>What the skill changed compared to the first version: red cover and closing instead of white, one red statement slide before phase 1,
 an icon on every item instead of gray card grids and pill clouds, a gray label and gray icon tiles on the slide whose hero is the red
 15&nbsp;%, one product name throughout, text 13&nbsp;pt and up with at most 5 items per slide, and hotel photos cropped instead of
@@ -132,13 +132,15 @@ previo-brand/          the skill (this folder is what gets packaged)
 ├── fonts/             Inter 400 + 500 (SIL OFL 1.1)
 ├── logo/              color / black / white SVG
 ├── icons/             line icons (SVG) + png/ in red / ink / white for .pptx
+├── scripts/           build_deck.py: JSON outline → .pptx on the fixed grid (+ deck-example.json)
+│                      check_deck.py: grid check of any .pptx + render to PNG via LibreOffice
 ├── alfred/            mascot + AI icon
 └── templates/         self-contained HTML templates + deck-structure.md (generated, do not edit HTML)
 tools/                 maintenance only, not part of the skill
 ├── src/               template sources (edit here)
 ├── build.py           builds templates/ from src/ (embeds font, logo, icons)
 ├── examples.py        renders the README examples into docs/examples/
-└── icons.py           renders icons/png/ from icons/*.svg (needs Google Chrome, macOS sips)
+└── icons.py           renders icons/png/ and logo/png/ from the SVGs (needs Google Chrome, macOS sips)
 docs/examples/         README example images
 ```
 
@@ -156,6 +158,25 @@ docs/examples/         README example images
 When the design system changes, update `tokens.md`; `SKILL.md` usually stays as is.
 
 ## Changelog
+
+**v6**
+- New `scripts/build_deck.py`: writes a `.pptx` from a JSON outline on one fixed grid (label, headline
+  and content start at the same place on every slide), with an HTML preview. Measures text with the
+  Inter metrics and refuses content that would overflow; checks the red rhythm; crops photos.
+- New `scripts/check_deck.py`: checks any `.pptx` against the grid (positions, tile sizes, fonts,
+  edges) and renders it to PNG through LibreOffice with Inter loaded.
+- New slide type two columns with sub-headings (A/B, 01/02) and a `note` box, in `deck.html` and in
+  the generator.
+- Bigger icon tiles (0.5 in, icon 0.25 in); grid measurements in `deck-structure.md`.
+- Logo PNGs for `.pptx` (`logo/png/`); footer logo 28 px instead of 20 px.
+- Photos: new slide types full photo (`photo-full`) and gallery (2–3 photos); `focus` keeps the subject
+  in view when cropping; `photo` can sit on the left; the generator warns about low-resolution photos
+  and scales large ones down.
+- New slide types chart (horizontal bars, one highlighted red) and quote (client reference).
+- The generator adapts the layout before it refuses content: a list of 5–6 items goes into two
+  columns, spacing and type tighten down to the 12 pt minimum. Tested on a real 12-slide offer.
+- Inter is not embedded in a `.pptx`: install `fonts/` on every computer that opens it, or send a PDF
+  (`check_deck.py --render`). The generator prints this after every build.
 
 **v5**
 - New `templates/deck.html`: 16:9 deck with red cover and closing, red statement slide, icon lists,

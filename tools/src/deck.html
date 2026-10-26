@@ -39,10 +39,12 @@ body { font: 400 22px/32px var(--font); color: var(--ink); }
 /* content slide chrome */
 .label { font: 500 18px/24px var(--font-medium); letter-spacing: .1em; text-transform: uppercase; color: var(--primary); }
 .label--gray { color: var(--muted); }
-h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12px 0 0; max-width: 22ch; }
+h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12px 0 0; max-width: 960px; }
+/* fixed grid: the headline box always reserves two lines, so content starts at the same y (268 px) on every content slide */
+.slide:not(.slide--red) h2 { min-height: 120px; }
 .lead { margin: 16px 0 0; color: var(--muted); max-width: 52ch; }
 .foot { margin-top: auto; height: 64px; display: flex; align-items: center; gap: 16px; font-size: 18px; color: var(--muted); border-top: 1px solid var(--border); margin-left: -80px; margin-right: -80px; padding: 0 80px; }
-.foot .logo svg { height: 20px; }
+.foot .logo svg { height: 28px; display: block; }
 .foot .num { margin-left: auto; font-variant-numeric: tabular-nums; }
 
 /* red slides: cover, statement, closing */
@@ -63,21 +65,54 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
 .statement .lead { color: #fff; opacity: .85; margin-top: 24px; }
 
 /* icon tile: the small signal that marks a list item */
-.tile { display: block; flex: none; width: 48px; height: 48px; border-radius: 12px; background: var(--primary-soft); color: var(--primary); padding: 12px; }
+.tile { display: block; flex: none; width: 64px; height: 64px; border-radius: 16px; background: var(--primary-soft); color: var(--primary); padding: 16px; }
 .tile--ink { background: var(--surface); color: var(--ink); }
 
 /* layout: intro + list (asymmetric) */
-.split { display: grid; grid-template-columns: 400px 1fr; gap: 80px; margin: auto 0; padding: 32px 0; }
+/* content blocks are anchored to the top (never vertically centred), 48 px below the headline box */
+.split { display: grid; grid-template-columns: 400px 1fr; gap: 80px; margin: 48px 0 0; }
 .split .intro { font-size: 28px; line-height: 40px; color: var(--ink); }
 .split .intro p { margin: 0; }
-.list { display: flex; flex-direction: column; gap: 32px; }
-.item { display: flex; gap: 20px; align-items: flex-start; }
+.list { display: flex; flex-direction: column; gap: 24px; }
+.item { display: flex; gap: 24px; align-items: flex-start; }
+.item h3 { padding-top: 2px; }
 .item h3 { font: 500 28px/36px var(--font-medium); margin: 0; }
 .item p { margin: 4px 0 0; color: var(--muted); font-size: 23px; line-height: 32px; }
 
+/* two columns with sub-headings (A/B, 01/02); rows of both columns share their positions */
+.cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 80px; margin: 48px 0 0; }
+.cols .col-h { font: 500 26px/34px var(--font-medium); padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.cols .col-h b { font-weight: 500; color: var(--gray-400); margin-right: 12px; }
+.cols .list { gap: 20px; }
+.cols .item { gap: 20px; }
+.cols .tile { width: 56px; height: 56px; padding: 14px; border-radius: 14px; }
+.cols .item h3 { font-size: 24px; line-height: 32px; }
+.cols .item p { font-size: 22px; line-height: 30px; margin-top: 4px; }
+/* note: a remark that must not get lost (e.g. what is not included), under the content */
+.note { margin: 24px 0 0; padding: 16px 24px; border-radius: 12px; background: var(--surface); color: var(--muted); }
+
+/* photos: always cropped, never stretched (object-fit: cover; move the crop with object-position).
+   .ph is a stand-in: replace it with <img class="photo" src="data:…" style="object-position: 50% 30%">. */
+.ph { background: linear-gradient(160deg, #c9d3dc, #8a9aa6); }
+/* full photo: the photo is the message; the claim sits on a dark gradient, white logo bottom right */
+.slide--photo { background: var(--ink); color: #fff; justify-content: flex-end; padding-bottom: 64px; }
+.slide--photo > .photo, .slide--photo > .ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.slide--photo::after { content: ""; position: absolute; inset: 160px 0 0; background: linear-gradient(rgba(20,20,22,0), rgba(20,20,22,.82)); }
+.slide--photo > :not(.photo):not(.ph):not(.logo) { position: relative; z-index: 1; }
+.slide--photo .label { color: #e0e0e0; }
+.slide--photo h2 { font-size: 64px; line-height: 72px; max-width: 760px; margin-top: 20px; }
+.slide--photo .lead { color: #e8e8e8; font-size: 24px; line-height: 34px; max-width: 720px; }
+.slide--photo .logo { position: absolute; right: 80px; bottom: 64px; z-index: 1; }
+.slide--photo .logo svg { height: 32px; }
+/* gallery: 2–3 photos of one height in a row, rounded 16 px, optional caption under each */
+.gallery { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 24px; margin: 48px 0 0; height: 364px; }
+.gallery figure { margin: 0; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.gallery .photo, .gallery .ph { flex: 1; min-height: 0; width: 100%; object-fit: cover; border-radius: 16px; }
+.gallery figcaption { color: var(--muted); font-size: 22px; line-height: 30px; }
+
 /* timeline */
-.steps { display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 24px; margin: auto 0; padding: 32px 0; position: relative; }
-.steps::before { content: ""; position: absolute; left: 24px; right: 24px; top: 56px; border-top: 2px solid var(--border); }
+.steps { display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 24px; margin: 48px 0 0; position: relative; }
+.steps::before { content: ""; position: absolute; left: 32px; right: 32px; top: 32px; border-top: 2px solid var(--border); }
 .step { position: relative; }
 .step .tile { box-shadow: 0 0 0 8px #fff; }
 .step .n { display: block; margin-top: 20px; font: 500 18px/24px var(--font-medium); color: var(--gray-400); }
@@ -86,23 +121,44 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
 .step--loop .tile { background: var(--ink); color: #fff; }
 
 /* number hero + facts */
-.hero { display: grid; grid-template-columns: 1fr 520px; gap: 80px; margin: auto 0; padding: 32px 0; align-items: center; }
+.hero { display: grid; grid-template-columns: 1fr 520px; gap: 80px; margin: 48px 0 0; align-items: start; }
 .big { font: 500 168px/1 var(--font-medium); letter-spacing: -.04em; color: var(--primary); }
 .hero .what { font: 500 28px/36px var(--font-medium); margin: 16px 0 0; max-width: 22ch; }
 .hero .src { color: var(--muted); font-size: 22px; margin: 12px 0 0; }
 .facts { border: 1px solid var(--border); border-radius: 16px; padding: 8px 32px; }
-.fact { display: flex; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+.fact { display: flex; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--border); }
 .fact:last-child { border-bottom: 0; }
-.fact .tile { width: 40px; height: 40px; padding: 10px; border-radius: 10px; }
-.fact h3 { font: 500 24px/32px var(--font-medium); margin: 0; }
+.fact .tile { width: 56px; height: 56px; padding: 14px; border-radius: 14px; }
+.fact h3 { font: 500 24px/32px var(--font-medium); margin: 0; padding-top: 2px; }
 .fact p { margin: 2px 0 0; color: var(--muted); font-size: 22px; line-height: 30px; }
+
+/* chart: horizontal bars, the highlighted one red, the rest gray; --v = value / largest value */
+.bars { display: grid; gap: 34px; margin: 48px 0 0; }
+.bar { display: flex; align-items: center; font-size: 22px; line-height: 30px; }
+.bar span { width: 300px; margin-right: 20px; }
+.bar i { width: calc(640px * var(--v)); min-width: 4px; height: 28px; border-radius: 4px; background: var(--gray-400); margin-right: 16px; }
+.bar b { font: 500 22px/30px var(--font-medium); }
+.bar--hi span { font-family: var(--font-medium); font-weight: 500; }
+.bar--hi i { background: var(--primary); }
+.bar--hi b { color: var(--primary); }
+.chart-src { margin: auto 0 24px; font-size: 18px; line-height: 24px; color: var(--muted); }
+.chart-src + .foot { margin-top: 0; }
+
+/* quote: light gray slide, the quote takes the headline's place, the name sits at the bottom */
+.quote { background: var(--surface); }
+.quote blockquote { font: 500 44px/56px var(--font-medium); letter-spacing: -.01em; margin: 12px 0 0; max-width: 960px; }
+.quote .who { margin: auto 0 36px; padding-top: 22px; position: relative; }
+.quote .who::before { content: ""; position: absolute; top: 0; left: 0; width: 64px; height: 2px; background: var(--primary); }
+.quote .who b { display: block; font: 500 26px/34px var(--font-medium); }
+.quote .who span { font-size: 22px; line-height: 30px; color: var(--muted); }
+.quote .who + .foot { margin-top: 0; }
 
 /* closing */
 .closing h2 { font-size: 72px; line-height: 78px; max-width: 14ch; margin-top: auto; }
 .closing .contact { display: flex; gap: 48px; margin-top: 48px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.3); font-size: 24px; }
 .closing .contact .who { font: 500 26px/34px var(--font-medium); }
 .closing .contact span { display: flex; align-items: center; gap: 12px; }
-.closing .ico { width: 24px; height: 24px; }
+.closing .ico { width: 28px; height: 28px; }
 </style>
 </head>
 <body>
@@ -149,6 +205,25 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
   <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">3</span></div>
 </section>
 
+<!-- 3b · TWO COLUMNS – two groups side by side with sub-headings (A/B, 01/02), max. 3 items each,
+     optional note under them. Keep the same number of items in both columns when you can. -->
+<section class="slide">
+  <div class="label">{{Section}}</div>
+  <h2>{{Headline as a claim about both groups}}</h2>
+  <div class="cols">
+    <div><div class="col-h"><b>{{A}}</b>{{Column 1}}</div><div class="list">
+      <div class="item"><span class="tile ico">%%ICON:chart%%</span><div><h3>{{Item}}</h3><p>{{One concrete sentence.}}</p></div></div>
+      <div class="item"><span class="tile ico">%%ICON:search%%</span><div><h3>{{Item}}</h3><p>{{One concrete sentence.}}</p></div></div>
+    </div></div>
+    <div><div class="col-h"><b>{{B}}</b>{{Column 2}}</div><div class="list">
+      <div class="item"><span class="tile ico">%%ICON:document%%</span><div><h3>{{Item}}</h3><p>{{One concrete sentence.}}</p></div></div>
+      <div class="item"><span class="tile ico">%%ICON:calendar%%</span><div><h3>{{Item}}</h3><p>{{One concrete sentence.}}</p></div></div>
+    </div></div>
+  </div>
+  <p class="note">{{Optional note, e.g. what is not included.}}</p>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">4</span></div>
+</section>
+
 <!-- 4 · STATEMENT / SECTION – full red, at most one in the middle of a deck (or one per part of a long deck).
      A section number or one strong claim; nothing else. -->
 <section class="slide slide--red statement">
@@ -173,10 +248,56 @@ h2 { font: 500 52px/60px var(--font-medium); letter-spacing: -.02em; margin: 12p
       <div class="fact"><span class="tile tile--ink ico">%%ICON:clock%%</span><div><h3>{{Fact}}</h3><p>{{Detail.}}</p></div></div>
     </div>
   </div>
-  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">5</span></div>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">6</span></div>
 </section>
 
-<!-- 6 · CLOSING – full red, white text, contact with white icons. -->
+<!-- 6 · FULL PHOTO – the photo is the message (the property, the area, the team). Counts as a hero like a
+     red slide: never next to a red slide, at most two per deck. Needs a photo of at least 1920 × 1080 px. -->
+<section class="slide slide--photo">
+  <div class="ph"></div>
+  <div class="label">{{Section}}</div>
+  <h2>{{Short claim the photo proves}}</h2>
+  <p class="lead">{{Optional single sentence.}}</p>
+  %%LOGO:white%%
+</section>
+
+<!-- 7 · GALLERY – 2–3 photos side by side (results, before/after, seasons), one height, optional captions. -->
+<section class="slide">
+  <div class="label">{{Section}}</div>
+  <h2>{{Headline as a claim about the photos}}</h2>
+  <div class="gallery">
+    <figure><div class="ph"></div><figcaption>{{Caption}}</figcaption></figure>
+    <figure><div class="ph"></div><figcaption>{{Caption}}</figcaption></figure>
+    <figure><div class="ph"></div><figcaption>{{Caption}}</figcaption></figure>
+  </div>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">8</span></div>
+</section>
+
+<!-- 8 · CHART – one comparison, horizontal bars. The highlighted bar is the hero (red), so the label is gray.
+     --v on each bar = its value / the largest value. 2–6 bars; source below. -->
+<section class="slide">
+  <div class="label label--gray">{{Section}}</div>
+  <h2>{{Headline as a claim about the data}}</h2>
+  <div class="bars">
+    <div class="bar bar--hi"><span>{{Bar}}</span><i style="--v:1"></i><b>{{Bar value}}</b></div>
+    <div class="bar"><span>{{Bar}}</span><i style="--v:.33"></i><b>{{Bar value}}</b></div>
+    <div class="bar"><span>{{Bar}}</span><i style="--v:.17"></i><b>{{Bar value}}</b></div>
+    <div class="bar"><span>{{Bar}}</span><i style="--v:.06"></i><b>{{Bar value}}</b></div>
+  </div>
+  <p class="chart-src">{{Chart source: what is measured, period.}}</p>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">9</span></div>
+</section>
+
+<!-- 9 · QUOTE – a client's own words. Light gray, red label allowed, no other red except the short rule.
+     Use the language's quotation marks: „…“ in Czech, “…” in English. -->
+<section class="slide quote">
+  <div class="label">{{Section}}</div>
+  <blockquote>“{{Client's words, one or two sentences}}”</blockquote>
+  <div class="who"><b>{{Client name}}</b><span>{{Role, hotel}}</span></div>
+  <div class="foot">%%LOGO:color%%<span>{{Footer: deck title}}</span><span class="num">10</span></div>
+</section>
+
+<!-- 10 · CLOSING – full red, white text, contact with white icons. -->
 <section class="slide slide--red closing">
   %%LOGO:white%%
   <h2>{{Closing line, e.g. a next step}}</h2>

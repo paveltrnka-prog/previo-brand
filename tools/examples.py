@@ -54,7 +54,7 @@ examples = [
         "{{One or two sentences: the recommendation or decision that follows from the data.}}": "Move part of the OTA commission budget into the direct booking engine promo for Q4.",
         "{{Data source, metric definitions, export date.}}": "Source: Previo PMS, confirmed reservations, exported 1 October 2026. Sample data.",
     }, ["{{Q1}}", "Q3 25", "Q3 26"]),
-    ("deck", 1312, 1144, {
+    ("deck", 1312, 2272, {
         "{{Deck type, e.g. Offer}}": "Offer",
         "{{Title: what the client gets}}": "Marketing+ for Hotel Example",
         "{{Subtitle: client name, place or one concrete promise}}": "Website, campaigns and pricing from one partner, measured on revenue.",
@@ -64,20 +64,34 @@ examples = [
         "{{Two or three sentences of context: why this matters to the client.}}": "Campaigns, website and prices run on data from Previo and follow one goal: higher hotel revenue.",
         "{{Item 1}}": "More direct bookings", "{{Item 2}}": "Better yield per room", "{{Item 3}}": "Ongoing support",
         "{{Headline as a claim about the process}}": "From data audit to a monthly review in five steps",
+        "{{Headline as a claim about both groups}}": "Numbers first, then agreed priorities",
+        "{{Short claim the photo proves}}": "Mountains and a lake within reach",
+        "{{Headline as a claim about the photos}}": "One photo set for website and campaigns",
+        "{{A}}": "01", "{{B}}": "02", "{{Column 1}}": "Data audit", "{{Column 2}}": "Kick-off meeting",
+        "{{Optional note, e.g. what is not included.}}": "Meta campaigns are part of the basic Marketing+ activities.",
         "{{02}}": "02",
         "{{One strong claim or section title}}": "Phase 1 builds the base for direct bookings",
-        "{{Optional single sentence.}}": "Website, campaigns, pricing and photos first.",
         "{{Headline as a claim about the number}}": "Commission only grows when your revenue grows",
         "42 %": "15 %",
         "{{What the number means}}": "commission for the first 18 months, then 13 %",
         "{{Source, period or condition.}}": "Plus 6 % of the year-on-year revenue increase, excl. VAT. Sample terms.",
+        "{{Headline as a claim about the data}}": "Direct bookings grew faster than OTAs",
+        "{{Chart source: what is measured, period.}}": "Year-on-year change in bookings, Q3 2026 vs. Q3 2025. Sample data.",
+        "{{Client's words, one or two sentences}}": "In the first year direct bookings paid for the new website, with budget left for campaigns.",
+        "{{Client name}}": "Hotel director", "{{Role, hotel}}": "Mountain hotel, 60 rooms (sample reference)",
         "{{Closing line, e.g. a next step}}": "Let us start with an audit of your data",
         "{{Name Surname}}": "Previo Sales", "{{e-mail}}": "sales@previo.cz", "{{phone}}": "+420 000 000 000",
-    }, [("{{Section}}", "Why Marketing+", "Process", "Terms"),
-        ("{{Footer: deck title}}", "Marketing+ · Hotel Example", "Marketing+ · Hotel Example", "Marketing+ · Hotel Example"),
-        ("{{One concrete sentence.}}", "New website, campaigns and your own guest database.", "Prices follow demand, season and occupancy.", "One plan for marketing, distribution and operations."),
+    }, [("{{Section}}", "Why Marketing+", "Process", "Steps 01–02", "Terms", "Location", "Results", "Bookings", "Reference"),
+        ("{{Footer: deck title}}",) + ("Marketing+ · Hotel Example",) * 7,
+        ("{{Bar}}", "Direct web", "Phone and e-mail", "Booking.com", "Expedia"),
+        ("{{Bar value}}", "+18 %", "+6 %", "+3 %", "+1 %"),
+        ("{{One concrete sentence.}}", "New website, campaigns and your own guest database.", "Prices follow demand, season and occupancy.", "One plan for marketing, distribution and operations.",
+         "Occupancy, ADR and RevPAR.", "Traffic and booking sources.", "Website, prices, OTA dependence.", "Timeline for both phases."),
+        ("{{Item}}", "Previo", "Google Analytics", "Current state", "Schedule"),
         ("{{Step}}", "Audit", "Kick-off", "Phase 1", "Phase 2", "Reporting"),
         ("{{What happens.}}", "Data from Previo, Analytics and campaigns.", "Priorities and who does what.", "Website, campaigns, prices, photos.", "OTA, mailing, restrictions, Hotel Ads.", "Every month, year on year."),
+        ("{{Optional single sentence.}}", "Website, campaigns, pricing and photos first.", "Two hours from Prague, open all year."),
+        ("{{Caption}}", "Winter: skiing and wellness", "Summer: river and cycle paths", "Trips nearby"),
         ("{{Fact}}", "2 years", "Monthly report", "No setup fee"),
         ("{{Detail.}}", "Contract length, can be extended.", "Year-on-year, with next steps.", "Website and hosting included in the commission."),
     ], "body{background:#d9d9d9;zoom:.5;display:grid;grid-template-columns:1280px 1280px;gap:32px;padding:32px}.slide{margin:0}"),
@@ -122,7 +136,8 @@ with tempfile.TemporaryDirectory() as tmp:
         page = pathlib.Path(tmp) / f"{name}.html"
         page.write_text(head + "<body>" + body)
         png = out / f"{name}.png"
-        subprocess.run([chrome, "--headless", "--disable-gpu", "--hide-scrollbars",
+        # own profile: without it Chrome attaches to the running browser and never exits
+        subprocess.run([chrome, "--headless", "--disable-gpu", "--hide-scrollbars", f"--user-data-dir={tmp}/chrome",
                         f"--window-size={w},{h}", f"--screenshot={png}", page.as_uri()],
-                       check=True, capture_output=True)
+                       check=True, capture_output=True, timeout=120)
         print(png.relative_to(here.parent))

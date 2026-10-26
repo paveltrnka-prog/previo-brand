@@ -28,8 +28,11 @@ absolute path or a path from your own machine into an output.
 | `alfred/alfred.svg`, `alfred/ai-icon.svg` | Alfred mascot and the AI icon |
 | `icons/*.svg`, `icons/png/<name>-<red,ink,white>.png` | The Previo icon set (line, 24 px grid); PNG for `.pptx` |
 | `templates/*.html` | Self-contained HTML templates (font, logo and icons already embedded) |
-| `templates/deck.html` | Deck in 6 slide types, 1280 × 720 px: visual reference for `.pptx`, or a PDF deck |
-| `templates/deck-structure.md` | Slide types, rhythm, icons, photos and the pre-delivery check for decks |
+| `templates/deck.html` | Deck in 11 slide types (incl. two columns + note, full photo, gallery, chart, quote), 1280 × 720 px: visual reference for `.pptx`, or a PDF deck |
+| `templates/deck-structure.md` | Slide types, rhythm, grid, icons, photos and the pre-delivery check for decks |
+| `scripts/build_deck.py`, `scripts/deck-example.json` | Generator: JSON outline → `.pptx` on the fixed grid, with HTML preview and content checks |
+| `scripts/check_deck.py` | Checks any `.pptx` against the grid and renders it to PNG (LibreOffice) |
+| `logo/png/previo-logo-{color,white,black}.png` | Logo as PNG for `.pptx` |
 
 ## How people use it
 
@@ -180,7 +183,8 @@ arrow). Use only these; never mix in another set or emoji.
 - **HTML/PDF:** paste the SVG inline; it uses `currentColor`, so the parent sets the color.
 - **.pptx:** insert `icons/png/<name>-red.png`, `-ink.png` or `-white.png` (256 px, transparent).
 - **Icon tile** (the standard way to use an icon next to text): rounded square, icon at half its
-  size. Red icon on `#faeaeb` by default; ink icon on `#f2f2f2` when the slide/page has a red number
+  size. In a deck the tile is 0.5 in (64 px at 1280 px width), never smaller than 0.44 in; small
+  icons look like dots. Red icon on `#faeaeb` by default; ink icon on `#f2f2f2` when the slide/page has a red number
   hero; white icon without a tile on red or dark areas.
 - One icon per item, labelling what the item is. Not on every line of text, not as decoration.
 - Missing icon? Pick the closest one and mention the gap in the feedback note (see the end).
@@ -219,7 +223,9 @@ arrow). Use only these; never mix in another set or emoji.
 
 ## Output instructions
 
-- **.pptx**: follow `templates/deck-structure.md` and copy the look of `templates/deck.html`; apply
+- **.pptx**: build it with `scripts/build_deck.py` (JSON outline → `.pptx` on the fixed grid, see
+  "Generator" in `templates/deck-structure.md`). Only when a slide type is missing, build by hand:
+  follow `templates/deck-structure.md` and copy the look of `templates/deck.html`; apply
   colors inline (with a pptx skill or library if one is available). Red cover and red closing with
   white text, white content slides with section label, icon tiles, footer and page number. Headings
   Inter Medium (see **Fonts**). **Before handing it over, render it and go through the check list at

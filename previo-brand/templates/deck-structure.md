@@ -1,5 +1,8 @@
 # Previo deck structure (.pptx)
 
+**For a `.pptx`, use the generator `scripts/build_deck.py`** (see **Generator** below): you write the
+content as JSON, the script places it on the fixed grid. Build slides by hand only for a slide type the
+generator does not have, and then follow the measurements in **Grid**.
 Use together with a pptx skill or library if one is available. Colors and fonts are in `tokens.md`,
 the red rule in `SKILL.md` ("Use of red"). Format 16:9.
 
@@ -7,6 +10,60 @@ the red rule in `SKILL.md` ("Use of red"). Format 16:9.
 the right proportions, icons and red rhythm. For a `.pptx`, rebuild the same slide types (1 px in the
 template = 7 144 EMU on a 10 in × 5.625 in slide). For a deck that is only sent and read, you may
 fill `deck.html` directly and print it to PDF: fonts, logo and icons travel inside.
+
+## Generator: `scripts/build_deck.py`
+
+```
+pip install python-pptx            # once, if missing
+python3 scripts/build_deck.py outline.json deck.pptx --preview deck.html
+```
+
+Write the outline as JSON (complete example: `scripts/deck-example.json`), run the script, then open
+the `--preview` HTML (same layout, renders in any browser; screenshot it when PowerPoint is not
+available) and go through **Check before you hand it over**. The script draws every slide on the grid,
+embeds icons and logo, crops photos, sets Inter and keeps the red rule (a `number` slide gets a gray
+label and gray tiles). It measures every text with the Inter metrics and **refuses to build** when
+something would overflow, collide or break the rhythm; the message says which slide and what to
+shorten or split. Fix the content, never the positions. Warnings (e.g. three slides of one type in a
+row) build the deck but should be fixed too.
+
+Top level: `"lang"` (`"cs-CZ"`, `"en-GB"`, …; Czech/Slovak get non-breaking spaces after one-letter
+words), `"footer"` (deck title on every white slide), `"slides"`. Every slide can have `"notes"`
+(speaker notes). Icons are names from `icons/` without `.svg`.
+
+| `type` | Fields (* required) | Limits |
+|---|---|---|
+| `cover` | `title`*, `label`, `subtitle`, `author`, `date`*, `photo`, `focus` | title ≤ 3 lines |
+| `list` | `label`, `title`*, `intro` (left column), `items`*: `[{icon, title, text}]`, `note` | 1–6 items (1–4 next to an intro) |
+| `columns` | `label`, `title`*, `columns`*: two × `{prefix, title, items}`, `note` | 1–3 items per column, rows aligned |
+| `process` | `label`, `title`*, `steps`*: `[{icon, title, text, repeat, note}]` | 3–5 steps; `repeat: true` = dark tile |
+| `statement` | `number`, `title`*, `text` | red; one per 8 slides |
+| `number` | `label`, `title`*, `value`* (e.g. `"15 %"`), `caption`, `source`, `facts`: `[{icon, title, text}]` | value one line, ≤ 3 facts |
+| `photo` | `label`, `title`*, `text`, `photo`*, `focus`, `side` (`right`/`left`) | photo on one half |
+| `photo-full` | `label`, `title`*, `text`, `photo`*, `focus` | title ≤ 2 lines; hero: not next to a red slide, ≤ 2 per deck |
+| `gallery` | `label`, `title`*, `photos`*: `[{photo, caption, focus}]` | 2–3 photos, caption ≤ 2 lines |
+| `chart` | `label`, `title`*, `bars`*: `[{label, value, text, highlight}]`, `unit`, `source` | 2–6 bars, exactly one `highlight`; label gray |
+| `quote` | `label`, `text`*, `name`*, `role` | light gray; quote ≤ 5 lines, quotation marks added by `lang` |
+| `closing` | `title`*, `text`, `name`, `email`, `phone` | contact on one row |
+
+Photos: `photo` is a path relative to the JSON file. `focus` says what must stay in view when the
+photo is cropped to its frame: `center` (default), `top`, `bottom`, `left`, `right`, or `[x, y]` from 0
+to 1 (`[0.5, 0.3]` = middle, upper third, e.g. a face or a roof). The script warns when a photo has
+fewer pixels than 1.5 × its frame (a full-slide photo needs 1920 × 1080) and scales larger photos
+down to JPEG, so the deck stays a few MB (needs Pillow, or `sips` on a Mac).
+
+`note` is a gray box under the content for a remark that must not get lost (e.g. what is not
+included). Headlines on white slides have room for two lines (≈ 30 characters per line at Inter
+Medium): a headline that does not fit is a sign it is a sentence, not a claim.
+
+Layout adapts before it refuses: a `list` goes from one column to two (and three as a last resort),
+then to tighter spacing and smaller type (never under 22 px ≈ 12 pt); `columns` tightens the same way.
+Only when even the tightest layout overflows does the script stop and say by how much. Then shorten
+item texts to one line, drop an item or the note, or split the slide.
+
+After building, the script reminds you: **Inter must be installed where the .pptx is opened**, or
+PowerPoint swaps the font and the line breaks move. Send clients the PDF from
+`check_deck.py deck.pptx --render DIR`.
 
 ## Rhythm: a deck is not all gray
 
@@ -31,11 +88,14 @@ red cover → content → content → [red statement] → content → content �
 |---|---|---|
 | **Cover** | full red | White logo top left; label (uppercase, white 80 %), title (Inter Medium 54+ pt, white), subtitle, **name and date** at the bottom. Optional photo of the client/hotel on the right part, edge to edge (see Photos). |
 | **Content – intro + list** | white | Red section label, headline as a claim, short intro on the left (≈⅓), max. 3–4 items on the right, each with an **icon tile**. |
+| **Content – two columns** | white | Red section label, headline, two groups side by side with sub-headings (A/B, 01/02, gray prefix), max. 3 items with icon tiles each; rows of both columns aligned. Optional gray **note** under them for a remark that must not get lost (e.g. what is not included). |
 | **Content – process** | white | Red section label, headline, 3–5 steps on a timeline: icon tile per step on a gray line, small gray step numbers. A repeating step gets a dark tile. Only for sequential content. |
 | **Statement / section** | full red | Big section number (white, 35 % opacity) or one strong claim, white. Nothing else. |
 | **Content – text + number** | white | Section label **gray** `#515151` (the red number is the hero); headline as a claim; one dominant number in red; facts beside it with **gray** icon tiles. |
 | **Content – chart/table** | white | Section label, headline as a claim, one visualization: the highlighted item red, the rest gray. Label gray when the highlighted item is the slide's hero, otherwise red. |
-| **Content – photo** | white or photo | Photo of the property covering half the slide or the whole slide (cropped), short claim beside or over it. Good for breaking up text-heavy decks. |
+| **Content – photo** | white | Photo on one half (right, or left to alternate), headline and short text on the other half. The photo supports the message. |
+| **Full photo** | photo | The photo is the message (the property, the area, the team): photo over the whole slide, dark gradient at the bottom, label, claim and one sentence in white bottom left, white logo bottom right, no footer. A hero like a red slide: never next to a red slide, at most two per deck. |
+| **Gallery** | white | 2–3 photos of one height in a row (results, before/after, seasons), rounded 16 px, optional one-line captions. |
 | **Quote / reference** | `#f2f2f2` | Quote, name, hotel. Red section label allowed, no other red. |
 | **Closing** | full red | White logo, closing line or next step (large, white), contact with white mail/phone icons. |
 
@@ -51,7 +111,30 @@ PNGs from `icons/png/<name>-<red|ink|white>.png`; in HTML paste the SVG inline (
   - red slide: icon **white**, no tile.
 - An icon marks **what kind of item** it is (web, campaign, price, report). One icon per list
   item, same size within a slide. No icons as decoration, no icons from another set, no emoji.
-- Sizes (pptx): tile 0.5 in (36 pt) with a 0.25 in icon in lists; 0.42 in tile in compact lists.
+- Sizes: tile **0.5 in (64 px)** with a **0.25 in (32 px)** icon in lists and timelines; 0.44 in
+  (56 px) tile with a 0.22 in icon in a compact facts box. Never smaller: a tile below 0.44 in reads
+  as a dot, not an icon. The icon is always half the tile, centred.
+
+## Grid: every content slide starts in the same place
+
+Paging through the deck, the label, headline and content must not jump. Use these fixed positions
+on **every** white content slide (px in `deck.html` → inches on a 10 × 5.625 in slide, 128 px = 1 in):
+
+| Element | Position |
+|---|---|
+| Side margins | 80 px = 0.625 in left and right |
+| Section label | top 64 px = 0.5 in |
+| Headline box | top 100 px = 0.78 in, height **always two lines** (120 px = 0.94 in), even for a one-line headline; text anchored to the top |
+| Content block | top **268 px = 2.09 in**, anchored to the top, never vertically centred |
+| Footer | line at 656 px = 5.125 in; color logo **28 px = 0.22 in high** (never under 24 px, smaller reads as a dash), vertically centred in the 64 px band with the footer text |
+| Intro + list | intro column 400 px = 3.125 in wide; list starts at x 560 px = 4.375 in |
+
+- In python-pptx set the headline text frame to `vertical_anchor = TOP` and `auto_size = NONE`, the
+  same size on every slide; never let PowerPoint shrink or grow it.
+- List items: fixed gap (24 px = 0.19 in) between items, title aligned to the top of the icon tile.
+  Two columns on one slide share the same top and the same row positions.
+- Same element = same position across slides: if slide 4 has a list at x 4.375 in, slide 7 does not
+  put it at 4.1 in. Reuse the measurements, do not eyeball them.
 
 ## Photos
 
@@ -61,8 +144,16 @@ Photos of the client's property make a deck specific to them; use them when you 
   In python-pptx: compare the image ratio with the frame ratio and set `picture.crop_left/right`
   (image wider than frame) or `crop_top/bottom` (image taller), half on each side, so the visible
   part has the frame's ratio. A 4:3 photo in a tall frame must be cropped, not squeezed.
+- **Crop around what matters.** Centre crop cuts off heads and roofs; set the focus point
+  (`object-position` in HTML, `focus` in the generator) so the subject stays in view.
 - Photos go edge to edge (bleed) or into a frame with radius 16 px / 12 pt; no borders, no shadows.
-- Never put text directly over a busy photo; put it on the red/white part next to it.
+- **How much photo:** half slide (`photo`) when it supports the text, full slide when it is the message,
+  a gallery of 2–3 for results or comparisons. A full-slide photo counts as a hero, like a red slide.
+- **Text over a photo only on the dark gradient** of the full-photo slide, white, bottom left. Never
+  directly on a light or busy photo; never tint photos red.
+- **Resolution:** at least 1.5 × the frame in pixels (full slide 1920 × 1080, half slide 960 × 1080),
+  otherwise the photo goes soft on a projector. Scale big originals down (JPEG, quality ~80) so the
+  deck is not tens of MB.
 
 ## Text size: projected vs. read
 
@@ -87,14 +178,18 @@ only section labels and the footer go down to 10 pt.
 - Use **one name** for the product/service throughout the deck (e.g. not "M+", "Program M+" and
   "Marketing+" mixed); introduce an abbreviation once on the cover or slide 2.
 - Font: headings `Inter Medium`, text `Inter` (installed from the skill's `fonts/`). If they cannot be
-  installed, tell the user. The .pptx does not carry the font: offer a PDF export for sharing.
-- Page number and a small footer (Gray 500, 10 pt, color logo) on every white slide; not on red slides.
+  installed, tell the user. **The .pptx does not carry the font**: whoever opens it without Inter sees
+  a substitute with different line breaks, and the deck looks uneven again. Tell the user to install
+  `fonts/Inter-Regular.ttf` and `fonts/Inter-Medium.ttf`, and send clients a PDF, not the .pptx.
+- Page number and a small footer (Gray 500, 10 pt, color logo 0.22 in high) on every white slide; not on red slides.
 - No three identical KPI cards, no status pills or tag clouds of pills, no grid of identical gray cards.
 
 ## Check before you hand it over
 
-Render the deck to images (e.g. `soffice --headless --convert-to pdf` then `pdftoppm -png`, or the
-pptx skill's own renderer) and look at **every** slide:
+Run `python3 scripts/check_deck.py deck.pptx --render out/`. It checks the grid without rendering
+(label, headline and content position on every slide, tile sizes, fonts, edges) and then renders the
+deck with LibreOffice into `out/slide-N.png` and `out/contact-sheet.png`, with Inter loaded so line
+breaks match PowerPoint. Fix every ERROR, then look at **every** rendered slide:
 
 1. Photos keep their proportions (no squeezed people, furniture or buildings).
 2. No text overflows its box or overlaps another element; nothing touches the slide edge.
@@ -105,6 +200,9 @@ pptx skill's own renderer) and look at **every** slide:
 6. Content is consistent: same product name everywhere, no slide promising what another excludes
    (e.g. "Meta Ads in phase 1" vs. "Meta campaigns are not included").
 7. Fonts are Inter / Inter Medium on every run (no Calibri/Arial left from defaults).
+8. Grid: page through the slides quickly; label, headline and content start at the same place on
+   every content slide (see **Grid**). Nothing jumps.
+9. Icons: tiles at least 0.5 in (0.44 in in a facts box), icon half the tile, same size on a slide.
 
 ## RGB for python-pptx
 
