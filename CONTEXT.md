@@ -1,6 +1,6 @@
 # CONTEXT — previo-brand
 
-Stav k 2026-10-26. Pro autora a pro Claude v nové session. Uživatelská dokumentace je v `README.md`,
+Stav k 2026-11-02 (v7). Pro autora a pro Claude v nové session. Uživatelská dokumentace je v `README.md`,
 pravidla značky v `previo-brand/SKILL.md`.
 
 ## Jak to funguje
@@ -59,3 +59,5 @@ pravidla značky v `previo-brand/SKILL.md`.
 - `deck-offer.png` = render `.pptx` z `deck-example.json` (`check_deck.py --render`, contact-sheet.png).
 - Zpětná vazba kolegy k v5 a předělané nabídce (v `~/Downloads/…_v2.pptx/.pdf`, mimo repo):
   potvrdit Meta Ads ve fázi 1, datum na titulce, oficiální název Marketing+ vs. M+.
+- Deck M+ pro Horský hotel Jelenovská (`~/Downloads/…_v6.pptx/.pdf`, mimo repo) přestavěn v6: 14 slidů, graf a loga partnerů jako `photo` slidy (obrázek vycpán bílou na poměr rámu). Čeká na zpětnou vazbu Jakuba; datum na titulce „listopad 2026“ a věta u partnerů jsou doplněné, ne z originálu.
+- Kolegové si musí nahrát `previo-brand-v7.skill` ručně (Claude Desktop → Skills → Upload); `~/.claude/skills/previo-brand` u Pavla je stále stará verze bez generátoru.
