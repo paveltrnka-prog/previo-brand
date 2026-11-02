@@ -87,8 +87,11 @@ The skill fills in the brand by itself; the prompt decides the content. These ma
    error in decks built from several sources.
 7. **Say what is not included or must not be promised.** Exclusions in one place keep other slides from
    contradicting them.
-8. **Ask for the check.** "Render every slide and run the check from deck-structure.md before you hand it
-   over" catches overflowing text, squeezed photos and red used twice.
+8. **Attach everything that belongs in the deck** (screenshots, charts, photos, logos). The skill keeps
+   all of it, never drops it silently, and pads charts and screenshots so they are not cropped.
+   You do not need to ask for the build or the check: since v7 the skill always builds with the
+   generator, renders every slide, fixes what the check finds and ends with a note on what was left
+   out, what to verify and that the `.pptx` needs Inter.
 9. **Refine in plain words**, one slide at a time: "slide 6 is too dense, split it", "less red on slide 4",
    "swap the icon for a calendar".
 
@@ -101,8 +104,8 @@ jana.novakova@previo.cz, +420 000 000 000, date October 2026.
 Slides: 1 why Marketing+ (more direct bookings, better yield, ongoing support), 2 five-step process,
 3 phase 1 (web, Sklik + Google Ads, prices and packages, photos), 4 phase 2 (OTA, mailing, Hotel Ads),
 5 monthly reporting, 6 terms: the hero is 15 % commission for 18 months, then 13 %; 2-year contract.
-Meta/Facebook campaigns are NOT included. Use the attached lobby photo on the cover.
-Render every slide and run the check before you hand it over.
+Meta/Facebook campaigns are NOT included. Use the attached lobby photo on the cover, put the
+attached website screenshot on the phase 1 slide and the partner logos on a slide before the closing.
 ```
 
 ## Color roles at a glance
