@@ -5,7 +5,7 @@ to visual outputs: decks, PDFs, HTML reports and dashboards, one-pagers, social 
 come from the Previo design system in Figma (**P – design system**). The skill ships ready-made
 templates, so most outputs start from a proven Previo layout.
 
-**Download:** [previo-brand-v6.skill](https://github.com/paveltrnka-prog/previo-brand/releases/download/v7/previo-brand-v7.skill) (v7) · all versions in [Releases](https://github.com/paveltrnka-prog/previo-brand/releases)
+**Download:** [previo-brand-v7.skill](https://github.com/paveltrnka-prog/previo-brand/releases/download/v7/previo-brand-v7.skill) (v7) · all versions in [Releases](https://github.com/paveltrnka-prog/previo-brand/releases)
 
 ## Install
 
