@@ -230,6 +230,13 @@ arrow). Use only these; never mix in another set or emoji.
   white text, white content slides with section label, icon tiles, footer and page number. Headings
   Inter Medium (see **Fonts**). **Before handing it over, render it and go through the check list at
   the end of `deck-structure.md`** (distorted photos, overflow, red rule, consistency of content).
+- **.pptx workflow, always, without being asked:** write the JSON outline and build with
+  `build_deck.py`; if it refuses overflowing text, shorten the content, never move positions. Then run
+  `check_deck.py --render`, look at every slide and fix what it finds. **Never drop material the user
+  supplied** (screenshots, charts, photos, logos): keep it as a `photo`/`gallery` slide, padding a
+  chart or screenshot with white to the frame ratio so it is not cropped. If something truly cannot be
+  kept, say so. End with a short note: what was left out or shortened, which facts to verify (numbers,
+  names, date), and that the `.pptx` needs Inter installed (send the PDF to clients).
 - **Deck that is only sent and read** (an offer, a proposal): consider filling `templates/deck.html`
   and exporting it to PDF; it carries Inter, the logo and icons, so it looks right on any machine.
 - **PDF / HTML**: start from the closest template. If you build from scratch, take the CSS variables

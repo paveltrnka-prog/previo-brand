@@ -11,7 +11,7 @@ pravidla značky v `previo-brand/SKILL.md`.
   vloží base64 font Inter, inline logo (`%%LOGO:color|white%%`) a ikony (`%%ICON:name%%`).
 - `tools/examples.py` vyplní šablony ukázkovým obsahem a vykreslí `docs/examples/*.png` (headless Chrome).
 - `tools/icons.py` vyrobí z `icons/*.svg` PNG ve třech barvách pro `.pptx` (`icons/png/`) a PNG loga (`logo/png/`).
-- `previo-brand/scripts/build_deck.py` (součást skillu, v6): JSON osnova → `.pptx` na pevné mřížce + HTML náhled.
+- `previo-brand/scripts/build_deck.py` (součást skillu, od v6): JSON osnova → `.pptx` na pevné mřížce + HTML náhled.
   Pozice = px z `deck.html`. Text měří přes metriky Inter (vlastní čtečka TTF, bez knihoven) a při přetečení
   odmítne build s hláškou, co zkrátit. Ukázka `scripts/deck-example.json`.
 - Prezentace: `deck.html` je vizuální vzor i hotová HTML/PDF prezentace; `deck-structure.md` popisuje
@@ -28,6 +28,7 @@ pravidla značky v `previo-brand/SKILL.md`.
 - **v6 (2026-10-26)** z připomínek kolegy k v5: „rozskákané“ (obsah svisle centrovaný → pevná mřížka, obsah
   od 268 px) a „ikony malinké“ (dlaždice 48 → 64 px). Generátor vznikl, protože ruční stavba v python-pptx
   pokaždé rozhodila pozice.
+- **v7 (2026-11-02)** zpětná vazba kolegy (Jakub) k v6: deck vynechal screeny a graf z originálu a technický odstavec v promptu nikdo psát nebude → pravidlo „nevynechej dodaný materiál + vždy build/check/závěrečná poznámka“ je přímo v SKILL.md.
 - Ikony jsou vlastní jednoduchá liniová sada (24px mřížka, tah 1,75, `currentColor`), ne cizí knihovna.
 
 ## Gotchy
