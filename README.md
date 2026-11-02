@@ -5,7 +5,7 @@ to visual outputs: decks, PDFs, HTML reports and dashboards, one-pagers, social 
 come from the Previo design system in Figma (**P – design system**). The skill ships ready-made
 templates, so most outputs start from a proven Previo layout.
 
-**Download:** [previo-brand-v6.skill](https://github.com/paveltrnka-prog/previo-brand/releases/download/v6/previo-brand-v6.skill) (v6) · all versions in [Releases](https://github.com/paveltrnka-prog/previo-brand/releases)
+**Download:** [previo-brand-v6.skill](https://github.com/paveltrnka-prog/previo-brand/releases/download/v7/previo-brand-v7.skill) (v7) · all versions in [Releases](https://github.com/paveltrnka-prog/previo-brand/releases)
 
 ## Install
 
@@ -148,16 +148,20 @@ docs/examples/         README example images
 
 1. Edit `tools/src/*.html`, then run `python3 tools/build.py` and `python3 tools/examples.py`
    (refreshes the example images; needs Google Chrome).
-2. Package: `zip -r -X previo-brand-v6.skill previo-brand -x '.*'`.
+2. Package: `zip -r -X previo-brand-v7.skill previo-brand -x '.*'`.
 3. Publish the `.skill` file as a GitHub Release with tag `vN` and update the download link at the
    top of this README. The package is a build artifact and is not committed (`.gitignore`).
    ```bash
-   gh release create v6 previo-brand-v6.skill --title "previo-brand v6" --notes "…"
+   gh release create v7 previo-brand-v7.skill --title "previo-brand v7" --notes "…"
    ```
 
 When the design system changes, update `tokens.md`; `SKILL.md` usually stays as is.
 
 ## Changelog
+
+**v7**
+- `.pptx` workflow is now the default without being asked: JSON outline → `build_deck.py` → `check_deck.py --render` → fix → short closing note (what was left out, what to verify, Inter must be installed). Users no longer need to write this into their prompt.
+- Supplied material (screenshots, charts, photos, logos) is never dropped; charts and screenshots are padded with white to the frame so they are not cropped.
 
 **v6**
 - New `scripts/build_deck.py`: writes a `.pptx` from a JSON outline on one fixed grid (label, headline
